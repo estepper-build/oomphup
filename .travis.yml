@@ -1,0 +1,2 @@
+language: java
+script: mvn -DskipTests=true clean verify

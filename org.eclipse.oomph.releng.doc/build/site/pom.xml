@@ -16,23 +16,10 @@
     <groupId>oomphup</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../../..</relativePath>
   </parent>
   <groupId>oomphup</groupId>
-  <artifactId>org.eclipse.oomph.releng.doc</artifactId>
+  <artifactId>oomphup.site</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>.</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>about.mappings</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
-
+  <packaging>eclipse-repository</packaging>
 </project>

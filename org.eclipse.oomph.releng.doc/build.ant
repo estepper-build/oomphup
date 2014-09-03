@@ -9,7 +9,7 @@
 	Contributors:
 	  Eike Stepper - initial API and implementation
 -->
-<project name="JavaDoc" default="build" basedir="../..">
+<project name="JavaDoc" default="build">
 
   <property file="${user.home}/org.eclipse.oomph.doc_1.0.properties" />
 
@@ -28,6 +28,7 @@
 				</fileset>
 			</classpath>
 			<arg file="${plugins.dir}" />
+			<arg file="${helpcenter.project}" />
 			<arg file="${releng.project}" />
 		</java>
 	</target>
@@ -52,6 +53,11 @@
 	</target>
 
 	<target name="build" depends="assemble.scripts">
+    <copy todir="${helpcenter.project}/html" failonerror="true" overwrite="true">
+      <fileset dir="${releng.project}/html/helpcenter">
+        <include name="**/*" />
+      </fileset>
+    </copy>
 		<ant antfile="${releng.project}/buildLib.ant" target="delegate">
 			<property name="delegate.target" value="build" />
 		</ant>

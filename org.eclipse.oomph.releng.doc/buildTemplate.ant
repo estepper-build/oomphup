@@ -9,7 +9,7 @@
 	Contributors:
 	  Eike Stepper - initial API and implementation
 -->
-<project name="JavaDoc" default="build" basedir="../..">
+<project name="JavaDoc" default="build">
 
 	<!-- GENERATION WARNING -->
 
@@ -67,8 +67,20 @@
 			</fileset>
 		</delete>
 
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${javadoc.destdir}" defaultexcludes="true">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+
+    <copy todir="${helpcenter.project}/debug" verbose="true" failonerror="false" overwrite="true">
+      <fileset dir="${releng.project}/html/debug" defaultexcludes="true">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+
 		<property name="warningsfile"
-		          location="${releng.project}/debug/${PROJECT-NAME}.warnings" />
+		          location="${helpcenter.project}/debug/${PROJECT-NAME}.warnings" />
 
 		<javadoc destdir="${javadoc.destdir}"
 		         encoding="ISO-8859-1"
@@ -135,7 +147,7 @@
 
 		<!-- Copy javadoc.css -->
 		<copy todir="${javadoc.destdir}" verbose="true" failonerror="false" overwrite="true">
-			<fileset dir="${releng.project}" defaultexcludes="true">
+			<fileset dir="${releng.project}/html" defaultexcludes="true">
 				<include name="stylesheet.css" />
 			</fileset>
 		</copy>
@@ -212,7 +224,7 @@
 
 		<mkdir dir="${schemadoc.destdir}" />
 		<copy todir="${schemadoc.destdir}" failonerror="true" verbose="true">
-			<fileset dir="${releng.project}">
+			<fileset dir="${releng.project}/html">
 				<include name="schema.css" />
 			</fileset>
 		</copy>
@@ -241,11 +253,11 @@
 
 		<mkdir dir="${article.destdir}" />
 		<copy todir="${project.path}/images" verbose="true" failonerror="false">
-			<fileset dir="${releng.project}/images" defaultexcludes="true">
+			<fileset dir="${releng.project}/html/images" defaultexcludes="true">
 				<include name="**/*" />
 			</fileset>
 		</copy>
-		<copy file="${releng.project}/book.css"
+		<copy file="${releng.project}/html/book.css"
 		      todir="${project.path}/html"
 		      verbose="true"
 		      failonerror="false" />

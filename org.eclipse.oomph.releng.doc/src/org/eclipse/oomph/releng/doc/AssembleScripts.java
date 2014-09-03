@@ -10,17 +10,18 @@
  */
 package org.eclipse.oomph.releng.doc;
 
+import org.eclipse.oomph.releng.doc.article.ArticleFactory;
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
+import org.eclipse.oomph.releng.doc.article.JavaPackage;
+import org.eclipse.oomph.releng.doc.article.Plugin;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import org.eclipse.oomph.releng.doc.article.ArticleFactory;
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
-import org.eclipse.oomph.releng.doc.article.JavaPackage;
-import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.osgi.util.ManifestElement;
 
 import org.osgi.framework.BundleException;
@@ -63,14 +64,15 @@ public class AssembleScripts
 
   private static final AntLib ANTLIB = new AntLib();
 
-  private static final Pattern PACKAGE_INFO_PATTERN = Pattern.compile(".*<body[^>]*>\\s*(.*)\\s*<p>\\s*</body>.*",
-      Pattern.MULTILINE | Pattern.DOTALL);
+  private static final Pattern PACKAGE_INFO_PATTERN = Pattern.compile(".*<body[^>]*>\\s*(.*)\\s*<p>\\s*</body>.*", Pattern.MULTILINE | Pattern.DOTALL);
 
   private static final int CURRENT_YEAR = new GregorianCalendar().get(Calendar.YEAR);
 
   private static final String COPYRIGHT_YEARS = "2014" + (CURRENT_YEAR == 2014 ? "" : "-" + CURRENT_YEAR);
 
   private static final String NL = System.getProperty("line.separator");
+
+  private static File helpcenter;
 
   private static File plugins;
 
@@ -81,7 +83,8 @@ public class AssembleScripts
     try
     {
       plugins = new File(args[0]).getCanonicalFile();
-      releng = new File(args[1]).getCanonicalFile();
+      helpcenter = new File(args[1]).getCanonicalFile();
+      releng = new File(args[2]).getCanonicalFile();
 
       for (File plugin : plugins.listFiles())
       {
@@ -128,8 +131,7 @@ public class AssembleScripts
     }
   }
 
-  private static void assembleJavaDocOptions(File plugin, String javadocProject, Set<String> excludedPackages)
-      throws IOException, BundleException
+  private static void assembleJavaDocOptions(File plugin, String javadocProject, Set<String> excludedPackages) throws IOException, BundleException
   {
     SourcePlugin sourcePlugin = ANTLIB.getSourcePlugin(plugin.getName());
     JavaDoc javaDoc = ANTLIB.getJavaDoc(javadocProject);
@@ -465,8 +467,7 @@ public class AssembleScripts
         List<JavaDoc> javaDocs = (List<JavaDoc>)getJavaDocsSortedByDependencies();
         for (JavaDoc javaDoc : javaDocs)
         {
-          writer.write("\t\t<ant antfile=\"${plugins.dir}/" + javaDoc.getProject().getName()
-              + "/build.xml\" target=\"${delegate.target}\" />" + NL);
+          writer.write("\t\t<ant antfile=\"${plugins.dir}/" + javaDoc.getProject().getName() + "/build.xml\" target=\"${delegate.target}\" />" + NL);
         }
 
         writer.write("\t</target>" + NL);
@@ -474,8 +475,8 @@ public class AssembleScripts
 
         // Generate toc
         writer.write("\t<target name=\"toc\">" + NL);
-        writer.write("\t\t<concat destfile=\"${releng.project}/help/toc.html\">" + NL);
-        writer.write("\t\t\t<path path=\"${releng.project}/tocHeader.html\" />" + NL);
+        writer.write("\t\t<concat destfile=\"${helpcenter.project}/html/toc.html\">" + NL);
+        writer.write("\t\t\t<path path=\"${releng.project}/html/tocHeader.html\" />" + NL);
 
         Collections.reverse(javaDocs);
         for (JavaDoc javaDoc : javaDocs)
@@ -486,7 +487,7 @@ public class AssembleScripts
           }
         }
 
-        writer.write("\t\t\t<path path=\"${releng.project}/tocFooter.html\" />" + NL);
+        writer.write("\t\t\t<path path=\"${releng.project}/html/tocFooter.html\" />" + NL);
         writer.write("\t\t</concat>" + NL);
         writer.write("\t</target>" + NL);
         writer.write("" + NL);
@@ -509,7 +510,8 @@ public class AssembleScripts
 
       try
       {
-        File target = new File(new File(releng, "help"), "docs.txt");
+        File target = new File(helpcenter, "docs.txt");
+        target.getParentFile().mkdirs();
         System.out.println("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
@@ -544,7 +546,8 @@ public class AssembleScripts
 
       try
       {
-        File target = new File(releng, "debug/frame.html");
+        File target = new File(helpcenter, "debug/frame.html");
+        target.getParentFile().mkdirs();
         System.out.println("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
@@ -564,16 +567,14 @@ public class AssembleScripts
               continue;
             }
 
-            writer.write("<b><a href=\"../../" + javaDoc.getProject().getName() + "/javadoc/"
-                + sortedPackageNames.get(0).replace('.', '/') + "/package-summary.html\" target=\"debugDetails\">"
-                + sourcePlugin.getLabel() + "</a></b>" + NL);
+            writer.write("<b><a href=\"../../" + javaDoc.getProject().getName() + "/javadoc/" + sortedPackageNames.get(0).replace('.', '/')
+                + "/package-summary.html\" target=\"debugDetails\">" + sourcePlugin.getLabel() + "</a></b>" + NL);
             writer.write("<ul>" + NL);
 
             for (String packageName : sortedPackageNames)
             {
-              writer.write("\t<li><a href=\"../../" + javaDoc.getProject().getName() + "/javadoc/"
-                  + packageName.replace('.', '/') + "/package-summary.html\" target=\"debugDetails\">" + packageName
-                  + "</a>" + NL);
+              writer.write("\t<li><a href=\"../../" + javaDoc.getProject().getName() + "/javadoc/" + packageName.replace('.', '/')
+                  + "/package-summary.html\" target=\"debugDetails\">" + packageName + "</a>" + NL);
             }
 
             writer.write("</ul>" + NL);
@@ -976,18 +977,16 @@ public class AssembleScripts
             {
               for (String schemaPlugin : sort(schemaPlugins))
               {
-                writer
-                .write("\t\t<pde.convertSchemaToHTML destination=\"${schemadoc.destdir}\" manifest=\"${plugins.dir}/"
-                    + schemaPlugin + "/plugin.xml\" />" + NL);
+                writer.write("\t\t<pde.convertSchemaToHTML destination=\"${schemadoc.destdir}\" manifest=\"${plugins.dir}/" + schemaPlugin + "/plugin.xml\" />"
+                    + NL);
               }
             }
             else if ("<!-- JAVADOC DEPENDENCIES -->".equals(id))
             {
               for (String dependency : sort(getAllDependencies()))
               {
-                writer.write("\t\t\t<link href=\"MAKE-RELATIVE/" + dependency
-                    + "/javadoc\" offline=\"true\" packagelistloc=\"${plugins.dir}/" + dependency + "/javadoc\" />"
-                    + NL);
+                writer.write("\t\t\t<link href=\"MAKE-RELATIVE/" + dependency + "/javadoc\" offline=\"true\" packagelistloc=\"${plugins.dir}/" + dependency
+                    + "/javadoc\" />" + NL);
               }
             }
             else if ("<!-- ARTICLE DEPENDENCIES -->".equals(id))

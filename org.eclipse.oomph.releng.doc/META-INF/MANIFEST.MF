@@ -4,6 +4,7 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.oomph.releng.doc;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
+Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.osgi.util;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.osgi;bundle-version="[3.0.0,4.0.0)",
@@ -24,3 +25,4 @@ Bundle-ClassPath: org.eclipse.oomph.releng.doc.jar,
  lib/poi-scratchpad-3.8-beta4-20110826.jar,
  lib/tools.jar,
  lib/xmlbeans-2.3.0.jar
+Eclipse-BundleShape: dir
