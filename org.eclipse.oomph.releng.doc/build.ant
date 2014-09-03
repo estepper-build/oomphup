@@ -22,8 +22,9 @@
 			<classpath path="${tp.classpath}" />
 			<classpath path="${releng.project}/bin" />
 			<classpath>
-				<fileset dir="${releng.project.supplemental}">
+				<fileset dir="${releng.project}">
 					<include name="*.jar" />
+					<include name="lib/*.jar" />
 				</fileset>
 			</classpath>
 			<arg file="${plugins.dir}" />

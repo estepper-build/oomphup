@@ -41,10 +41,11 @@
     <dirset dir="${plugins.dir}">
       <include name="*/bin" />
     </dirset>
-    <fileset dir="${releng.project.supplemental}">
+    <fileset dir="${releng.project}">
       <include name="*.jar" />
+      <include name="lib/*.jar" />
     </fileset>
-    <dirset dir="${releng.project.supplemental}">
+    <dirset dir="${releng.project}">
       <include name="bin" />
     </dirset>
   </path>
@@ -88,7 +89,7 @@
 		         bottom="&lt;i>Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.&lt;/i>">
 
 			<!-- Disable APIviz UML diagram generation
-			<doclet name="org.jboss.apiviz.APIviz" path="${releng.project.supplemental}/bin">
+			<doclet name="org.jboss.apiviz.APIviz" path="${releng.project}/bin">
 				<param name="-nopackagediagram" />
 				<param name="-nosubtypes" />
 				<param name="-warningsfile" value="${warningsfile}" />
@@ -258,7 +259,7 @@
 		         private="true">
 
 			<doclet name="org.eclipse.oomph.releng.doc.article.impl.ArticleDoclet"
-			          path="${releng.project}/bin;${releng.project.supplemental}/bin;${tp.classpath};${releng.project.supplemental}/dom4j-1.6.1.jar;${releng.project.supplemental}/poi-3.8-beta4-20110826.jar;${releng.project.supplemental}/poi-ooxml-3.8-beta4-20110826.jar;${releng.project.supplemental}/poi-ooxml-schemas-3.8-beta4-20110826.jar;${releng.project.supplemental}/xmlbeans-2.3.0.jar">
+			          path="${releng.project}/bin;${releng.project}/bin;${tp.classpath};${releng.project}/lib/dom4j-1.6.1.jar;${releng.project}/lib/poi-3.8-beta4-20110826.jar;${releng.project}/lib/poi-ooxml-3.8-beta4-20110826.jar;${releng.project}/lib/poi-ooxml-schemas-3.8-beta4-20110826.jar;${releng.project}/lib/xmlbeans-2.3.0.jar">
 				<param name="-starttime" value="${start.time}" />
 				<param name="-basefolder" value="${plugins.dir}/.." />
 				<param name="-project" value="${PROJECT-NAME}" />

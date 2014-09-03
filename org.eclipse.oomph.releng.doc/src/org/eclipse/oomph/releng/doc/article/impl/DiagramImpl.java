@@ -10,12 +10,12 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.Diagram;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.Tag;
 
@@ -32,7 +32,6 @@ import java.io.PrintWriter;
  */
 public class DiagramImpl extends BodyElementImpl implements Diagram
 {
-  // org.eclipse.oomph.releng.doc.supplemental;bundle-version="[1.0.0,2.0.0)";resolution:=optional,
   // org.eclipse.gmf.runtime.diagram.ui.render;bundle-version="1.4.1",
   // org.eclipse.gmf.runtime.diagram.ui;bundle-version="1.5.0",
   // org.eclipse.core.runtime;bundle-version="3.7.0",
