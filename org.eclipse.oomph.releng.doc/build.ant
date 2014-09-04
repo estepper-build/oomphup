@@ -36,22 +36,22 @@
   </target>
 
   <target name="build.java" depends="assemble.scripts">
-    <ant antfile="${releng.project}/buildLib.ant" target="delegate">
+    <ant antfile="${helpcenter.project}/buildLib.ant" target="delegate">
       <property name="delegate.target" value="build.java" />
     </ant>
   </target>
 
   <target name="build.schema" depends="assemble.scripts">
-    <ant antfile="${releng.project}/buildLib.ant" target="delegate">
+    <ant antfile="${helpcenter.project}/buildLib.ant" target="delegate">
       <property name="delegate.target" value="build.schema" />
     </ant>
   </target>
 
   <target name="build.article" depends="assemble.scripts">
-    <ant antfile="${releng.project}/buildLib.ant" target="delegate">
+    <ant antfile="${helpcenter.project}/buildLib.ant" target="delegate">
       <property name="delegate.target" value="build.article" />
     </ant>
-    <ant antfile="${releng.project}/buildLib.ant" target="toc" />
+    <ant antfile="${helpcenter.project}/buildLib.ant" target="toc" />
   </target>
 
   <target name="build" depends="assemble.scripts">
@@ -60,10 +60,10 @@
         <include name="**/*" />
       </fileset>
     </copy>
-    <ant antfile="${releng.project}/buildLib.ant" target="delegate">
+    <ant antfile="${helpcenter.project}/buildLib.ant" target="delegate">
       <property name="delegate.target" value="build" />
     </ant>
-    <ant antfile="${releng.project}/buildLib.ant" target="toc" />
+    <ant antfile="${helpcenter.project}/buildLib.ant" target="toc" />
   </target>
 
 </project>

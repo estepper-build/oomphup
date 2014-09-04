@@ -438,7 +438,7 @@ public class AssembleScripts
 
       try
       {
-        File target = new File(releng, "buildLib.ant");
+        File target = new File(helpcenter, "buildLib.ant");
         System.out.println("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
