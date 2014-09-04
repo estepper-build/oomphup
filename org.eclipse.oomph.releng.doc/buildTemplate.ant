@@ -288,7 +288,7 @@
   </target>
 
   <target name="build" depends="build.java, build.schema, build.article">
-    <fixcrlf srcdir="${project.path}" includes="**/*.html" />
+    <fixcrlf srcdir="${project.path}" includes="**/*.html **/*.css" />
   </target>
 
 </project>
