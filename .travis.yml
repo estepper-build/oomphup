@@ -1,4 +1,6 @@
-# Travis CI
-
 language: java
 script: mvn -DskipTests=true clean verify
+env:
+  global:
+    secure: fjsGzJ8dRAJEnrcyAvfH7QB93JsUmUdblDMDRnhjKYXSu7JSRonkplJgyOgWtIhNAT517ztxbs2AtYZCD3lROgI/ktndpSEMLrB6tOI8JQHlhVvhtLXfUFE0v3O4dMNIJ2TctWKWPxCX8Aq//Qr7kxuSKIrv0RZ2e03XyzEUUJA=
+after_success: ./org.eclipse.oomph.releng.doc/build/update-gh-pages.sh
