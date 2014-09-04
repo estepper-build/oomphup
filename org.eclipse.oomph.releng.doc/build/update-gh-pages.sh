@@ -4,6 +4,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
 
   #copy data we're interested in to other place
+  rm -rf $HOME/updates/*
   cp -R org.eclipse.oomph.releng.doc/build/site/target/repository $HOME/updates
 
   #go to home and setup git
