@@ -82,8 +82,9 @@
     <property name="warningsfile"
               location="${helpcenter.project}/debug/${PROJECT-NAME}.warnings" />
 
-    <javadoc destdir="${javadoc.destdir}"
-             encoding="ISO-8859-1"
+    <javadoc locale="en"
+             destdir="${javadoc.destdir}"
+             encoding="UTF-8"
              classpathref="javadoc.classpath"
              maxmemory="1024m"
              source="1.5"
@@ -262,7 +263,8 @@
           verbose="true"
           failonerror="false" />
 
-    <javadoc encoding="ISO-8859-1"
+    <javadoc locale="en"
+             encoding="UTF-8"
              classpathref="javadoc.classpath"
              maxmemory="1024m"
              source="1.5"
@@ -276,6 +278,7 @@
         <param name="-basefolder" value="${plugins.dir}/.." />
         <param name="-project" value="${PROJECT-NAME}" />
         <param name="-externals" value="${jdk.link};${platform.link};${emf.link}" />
+      	
       </doclet>
 
       <fileset dir="${plugins.dir}">

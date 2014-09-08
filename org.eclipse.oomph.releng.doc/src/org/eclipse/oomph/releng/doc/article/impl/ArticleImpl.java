@@ -10,14 +10,14 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.Article;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.ClassDoc;
 
@@ -98,7 +98,9 @@ public class ArticleImpl extends ChapterImpl implements Article
     }
     catch (IOException ex)
     {
-      throw new IOException("Problem while generating " + outputFile, ex);
+      IOException ioException = new IOException("Problem while generating " + outputFile);
+      ioException.initCause(ex);
+      throw ioException;
     }
     catch (RuntimeException ex)
     {
