@@ -10,6 +10,11 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.BodyElement;
+import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
+import org.eclipse.oomph.releng.doc.article.StructuralElement;
+
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -17,11 +22,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.BodyElement;
-import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
-import org.eclipse.oomph.releng.doc.article.StructuralElement;
 
 import com.sun.javadoc.Tag;
 

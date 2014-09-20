@@ -10,13 +10,13 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
@@ -138,7 +138,9 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (classFile: ");

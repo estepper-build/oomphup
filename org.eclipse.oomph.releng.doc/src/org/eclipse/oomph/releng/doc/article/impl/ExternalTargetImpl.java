@@ -10,12 +10,12 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Context;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.ClassDoc;
 
@@ -26,7 +26,7 @@ import java.io.PrintWriter;
  * -->
  * <p>
  * </p>
- * 
+ *
  * @generated
  */
 public class ExternalTargetImpl extends LinkTargetImpl implements ExternalTarget
@@ -124,7 +124,9 @@ public class ExternalTargetImpl extends LinkTargetImpl implements ExternalTarget
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (url: ");

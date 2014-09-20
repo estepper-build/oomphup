@@ -10,12 +10,12 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.ClassDoc;
 
@@ -30,7 +30,7 @@ import java.io.IOException;
  * <li>{@link org.eclipse.oomph.releng.doc.article.impl.ExternalArticleImpl#getUrl <em>Url</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class ExternalArticleImpl extends ArticleImpl implements ExternalArticle
@@ -125,7 +125,9 @@ public class ExternalArticleImpl extends ArticleImpl implements ExternalArticle
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (url: ");

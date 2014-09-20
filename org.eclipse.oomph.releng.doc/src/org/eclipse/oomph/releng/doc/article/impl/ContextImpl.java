@@ -10,6 +10,13 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Documentation;
+import org.eclipse.oomph.releng.doc.article.StructuralElement;
+import org.eclipse.oomph.releng.doc.article.util.ArticleException;
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -17,13 +24,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.Context;
-import org.eclipse.oomph.releng.doc.article.Documentation;
-import org.eclipse.oomph.releng.doc.article.StructuralElement;
-import org.eclipse.oomph.releng.doc.article.util.ArticleException;
-import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import com.sun.javadoc.RootDoc;
 
@@ -96,7 +96,7 @@ public class ContextImpl extends EObjectImpl implements Context
   /**
    * The cached value of the '{@link #getDocumentations() <em>Documentations</em>}' containment reference list. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @see #getDocumentations()
    * @generated
    * @ordered
@@ -106,7 +106,7 @@ public class ContextImpl extends EObjectImpl implements Context
   /**
    * The default value of the '{@link #getRoot() <em>Root</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @see #getRoot()
    * @generated
    * @ordered
@@ -218,7 +218,7 @@ public class ContextImpl extends EObjectImpl implements Context
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @generated NOT
    */
   public RootDoc getRoot()
@@ -341,7 +341,9 @@ public class ContextImpl extends EObjectImpl implements Context
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (baseFolder: ");

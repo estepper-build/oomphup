@@ -10,15 +10,6 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
 import org.eclipse.oomph.releng.doc.article.Callout;
@@ -30,6 +21,15 @@ import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.SeeTag;
@@ -203,9 +203,13 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     {
       ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ArticlePackage.SNIPPET__FORMATTER, oldFormatter, newFormatter);
       if (msgs == null)
+      {
         msgs = notification;
+      }
       else
+      {
         msgs.add(notification);
+      }
     }
     return msgs;
   }
@@ -220,15 +224,23 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     {
       NotificationChain msgs = null;
       if (formatter != null)
+      {
         msgs = ((InternalEObject)formatter).eInverseRemove(this, ArticlePackage.FORMATTER__SNIPPET, Formatter.class, msgs);
+      }
       if (newFormatter != null)
+      {
         msgs = ((InternalEObject)newFormatter).eInverseAdd(this, ArticlePackage.FORMATTER__SNIPPET, Formatter.class, msgs);
+      }
       msgs = basicSetFormatter(newFormatter, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.SNIPPET__FORMATTER, newFormatter, newFormatter));
+    }
   }
 
   /**
@@ -245,7 +257,9 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         return ((InternalEList<InternalEObject>)(InternalEList<?>)getCallouts()).basicAdd(otherEnd, msgs);
       case ArticlePackage.SNIPPET__FORMATTER:
         if (formatter != null)
+        {
           msgs = ((InternalEObject)formatter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ArticlePackage.SNIPPET__FORMATTER, null, msgs);
+        }
         return basicSetFormatter((Formatter)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);

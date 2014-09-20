@@ -10,6 +10,10 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.Snippet;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -17,10 +21,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.Formatter;
-import org.eclipse.oomph.releng.doc.article.Snippet;
 
 import com.sun.javadoc.Doc;
 
@@ -63,7 +63,9 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
   public Snippet getSnippet()
   {
     if (eContainerFeatureID() != ArticlePackage.FORMATTER__SNIPPET)
+    {
       return null;
+    }
     return (Snippet)eInternalContainer();
   }
 
@@ -94,21 +96,31 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
    */
   public void setSnippet(Snippet newSnippet)
   {
-    if (newSnippet != eInternalContainer() || (eContainerFeatureID() != ArticlePackage.FORMATTER__SNIPPET && newSnippet != null))
+    if (newSnippet != eInternalContainer() || eContainerFeatureID() != ArticlePackage.FORMATTER__SNIPPET && newSnippet != null)
     {
       if (EcoreUtil.isAncestor(this, newSnippet))
+      {
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+      }
       NotificationChain msgs = null;
       if (eInternalContainer() != null)
+      {
         msgs = eBasicRemoveFromContainer(msgs);
+      }
       if (newSnippet != null)
+      {
         msgs = ((InternalEObject)newSnippet).eInverseAdd(this, ArticlePackage.SNIPPET__FORMATTER, Snippet.class, msgs);
+      }
       msgs = basicSetSnippet(newSnippet, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.FORMATTER__SNIPPET, newSnippet, newSnippet));
+    }
   }
 
   /**
@@ -122,7 +134,9 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
     {
       case ArticlePackage.FORMATTER__SNIPPET:
         if (eInternalContainer() != null)
+        {
           msgs = eBasicRemoveFromContainer(msgs);
+        }
         return basicSetSnippet((Snippet)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);

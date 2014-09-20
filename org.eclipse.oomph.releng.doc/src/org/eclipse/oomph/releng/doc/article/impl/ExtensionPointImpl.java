@@ -10,6 +10,10 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
+import org.eclipse.oomph.releng.doc.article.Plugin;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -17,10 +21,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
-import org.eclipse.oomph.releng.doc.article.Plugin;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Extension Point</b></em>'. <!-- end-user-doc
@@ -32,7 +32,7 @@ import org.eclipse.oomph.releng.doc.article.Plugin;
  * <li>{@link org.eclipse.oomph.releng.doc.article.impl.ExtensionPointImpl#getPlugin <em>Plugin</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
@@ -40,7 +40,7 @@ public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @see #getName()
    * @generated
    * @ordered
@@ -93,7 +93,9 @@ public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.EXTENSION_POINT__NAME, oldName, name));
+    }
   }
 
   /**
@@ -103,7 +105,9 @@ public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
   public Plugin getPlugin()
   {
     if (eContainerFeatureID() != ArticlePackage.EXTENSION_POINT__PLUGIN)
+    {
       return null;
+    }
     return (Plugin)eInternalContainer();
   }
 
@@ -123,21 +127,31 @@ public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
    */
   public void setPlugin(Plugin newPlugin)
   {
-    if (newPlugin != eInternalContainer() || (eContainerFeatureID() != ArticlePackage.EXTENSION_POINT__PLUGIN && newPlugin != null))
+    if (newPlugin != eInternalContainer() || eContainerFeatureID() != ArticlePackage.EXTENSION_POINT__PLUGIN && newPlugin != null)
     {
       if (EcoreUtil.isAncestor(this, newPlugin))
+      {
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+      }
       NotificationChain msgs = null;
       if (eInternalContainer() != null)
+      {
         msgs = eBasicRemoveFromContainer(msgs);
+      }
       if (newPlugin != null)
+      {
         msgs = ((InternalEObject)newPlugin).eInverseAdd(this, ArticlePackage.PLUGIN__EXTENSION_POINTS, Plugin.class, msgs);
+      }
       msgs = basicSetPlugin(newPlugin, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.EXTENSION_POINT__PLUGIN, newPlugin, newPlugin));
+    }
   }
 
   /**
@@ -151,7 +165,9 @@ public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
     {
       case ArticlePackage.EXTENSION_POINT__PLUGIN:
         if (eInternalContainer() != null)
+        {
           msgs = eBasicRemoveFromContainer(msgs);
+        }
         return basicSetPlugin((Plugin)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -267,7 +283,9 @@ public class ExtensionPointImpl extends EObjectImpl implements ExtensionPoint
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");

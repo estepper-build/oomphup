@@ -10,6 +10,11 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
+import org.eclipse.oomph.releng.doc.article.JavaPackage;
+import org.eclipse.oomph.releng.doc.article.Plugin;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -19,11 +24,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
-import org.eclipse.oomph.releng.doc.article.JavaPackage;
-import org.eclipse.oomph.releng.doc.article.Plugin;
 
 import java.util.Collection;
 
@@ -46,7 +46,7 @@ public class PluginImpl extends EObjectImpl implements Plugin
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @see #getName()
    * @generated
    * @ordered
@@ -75,7 +75,7 @@ public class PluginImpl extends EObjectImpl implements Plugin
   /**
    * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @see #getLabel()
    * @generated
    * @ordered
@@ -85,7 +85,7 @@ public class PluginImpl extends EObjectImpl implements Plugin
   /**
    * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @see #getLabel()
    * @generated
    * @ordered
@@ -95,7 +95,7 @@ public class PluginImpl extends EObjectImpl implements Plugin
   /**
    * The cached value of the '{@link #getExtensionPoints() <em>Extension Points</em>}' containment reference list. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @see #getExtensionPoints()
    * @generated
    * @ordered
@@ -139,7 +139,9 @@ public class PluginImpl extends EObjectImpl implements Plugin
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.PLUGIN__NAME, oldName, name));
+    }
   }
 
   /**
@@ -174,7 +176,9 @@ public class PluginImpl extends EObjectImpl implements Plugin
     String oldLabel = label;
     label = newLabel;
     if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.PLUGIN__LABEL, oldLabel, label));
+    }
   }
 
   /**
@@ -329,7 +333,9 @@ public class PluginImpl extends EObjectImpl implements Plugin
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");

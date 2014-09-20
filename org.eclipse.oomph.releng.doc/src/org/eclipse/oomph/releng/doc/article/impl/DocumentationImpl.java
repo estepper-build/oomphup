@@ -10,6 +10,19 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.AssembleScripts;
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Category;
+import org.eclipse.oomph.releng.doc.article.Chapter;
+import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Documentation;
+import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
+import org.eclipse.oomph.releng.doc.article.Javadoc;
+import org.eclipse.oomph.releng.doc.article.Plugin;
+import org.eclipse.oomph.releng.doc.article.Schemadoc;
+import org.eclipse.oomph.releng.doc.article.StructuralElement;
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -23,19 +36,6 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.eclipse.oomph.releng.doc.AssembleScripts;
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.Category;
-import org.eclipse.oomph.releng.doc.article.Chapter;
-import org.eclipse.oomph.releng.doc.article.Context;
-import org.eclipse.oomph.releng.doc.article.Documentation;
-import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
-import org.eclipse.oomph.releng.doc.article.Javadoc;
-import org.eclipse.oomph.releng.doc.article.Plugin;
-import org.eclipse.oomph.releng.doc.article.Schemadoc;
-import org.eclipse.oomph.releng.doc.article.StructuralElement;
-import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
@@ -383,7 +383,9 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
   public Context getContext()
   {
     if (eContainerFeatureID() != ArticlePackage.DOCUMENTATION__CONTEXT)
+    {
       return null;
+    }
     return (Context)eInternalContainer();
   }
 
@@ -403,21 +405,31 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
    */
   public void setContext(Context newContext)
   {
-    if (newContext != eInternalContainer() || (eContainerFeatureID() != ArticlePackage.DOCUMENTATION__CONTEXT && newContext != null))
+    if (newContext != eInternalContainer() || eContainerFeatureID() != ArticlePackage.DOCUMENTATION__CONTEXT && newContext != null)
     {
       if (EcoreUtil.isAncestor(this, newContext))
+      {
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+      }
       NotificationChain msgs = null;
       if (eInternalContainer() != null)
+      {
         msgs = eBasicRemoveFromContainer(msgs);
+      }
       if (newContext != null)
+      {
         msgs = ((InternalEObject)newContext).eInverseAdd(this, ArticlePackage.CONTEXT__DOCUMENTATIONS, Context.class, msgs);
+      }
       msgs = basicSetContext(newContext, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.DOCUMENTATION__CONTEXT, newContext, newContext));
+    }
   }
 
   /**
@@ -481,7 +493,9 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
     {
       case ArticlePackage.DOCUMENTATION__CONTEXT:
         if (eInternalContainer() != null)
+        {
           msgs = eBasicRemoveFromContainer(msgs);
+        }
         return basicSetContext((Context)otherEnd, msgs);
       case ArticlePackage.DOCUMENTATION__EMBEDDABLE_ELEMENTS:
         return ((InternalEList<InternalEObject>)(InternalEList<?>)getEmbeddableElements()).basicAdd(otherEnd, msgs);
@@ -624,7 +638,9 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (project: ");

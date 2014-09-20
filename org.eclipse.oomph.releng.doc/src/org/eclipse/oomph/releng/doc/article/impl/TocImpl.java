@@ -10,8 +10,6 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.Article;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
@@ -19,6 +17,8 @@ import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.Toc;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.Tag;
 
@@ -135,7 +135,9 @@ public class TocImpl extends BodyElementImpl implements Toc
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (levels: ");

@@ -10,12 +10,12 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.XmlFormatter;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import com.sun.javadoc.SeeTag;
 
@@ -105,7 +105,9 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     File oldFile = file;
     file = newFile;
     if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.XML_FORMATTER__FILE, oldFile, file));
+    }
   }
 
   /**
@@ -178,7 +180,9 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
   public String toString()
   {
     if (eIsProxy())
+    {
       return super.toString();
+    }
 
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (file: ");

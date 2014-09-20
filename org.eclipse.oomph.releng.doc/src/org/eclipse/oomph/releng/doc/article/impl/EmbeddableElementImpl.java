@@ -10,6 +10,10 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Documentation;
+import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -17,10 +21,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.Documentation;
-import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
 
 import com.sun.javadoc.Doc;
 
@@ -105,7 +105,9 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
   public Documentation getDocumentation()
   {
     if (eContainerFeatureID() != ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION)
+    {
       return null;
+    }
     return (Documentation)eInternalContainer();
   }
 
@@ -125,21 +127,31 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
    */
   public void setDocumentation(Documentation newDocumentation)
   {
-    if (newDocumentation != eInternalContainer() || (eContainerFeatureID() != ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION && newDocumentation != null))
+    if (newDocumentation != eInternalContainer() || eContainerFeatureID() != ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION && newDocumentation != null)
     {
       if (EcoreUtil.isAncestor(this, newDocumentation))
+      {
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+      }
       NotificationChain msgs = null;
       if (eInternalContainer() != null)
+      {
         msgs = eBasicRemoveFromContainer(msgs);
+      }
       if (newDocumentation != null)
+      {
         msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, ArticlePackage.DOCUMENTATION__EMBEDDABLE_ELEMENTS, Documentation.class, msgs);
+      }
       msgs = basicSetDocumentation(newDocumentation, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION, newDocumentation, newDocumentation));
+    }
   }
 
   /**
@@ -163,7 +175,9 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
     {
       case ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION:
         if (eInternalContainer() != null)
+        {
           msgs = eBasicRemoveFromContainer(msgs);
+        }
         return basicSetDocumentation((Documentation)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);

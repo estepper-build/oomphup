@@ -10,6 +10,10 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.BodyElement;
+import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -17,10 +21,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.BodyElement;
-import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
 
 import com.sun.javadoc.Tag;
 
@@ -82,7 +82,9 @@ public abstract class BodyElementImpl extends EObjectImpl implements BodyElement
   public BodyElementContainer getContainer()
   {
     if (eContainerFeatureID() != ArticlePackage.BODY_ELEMENT__CONTAINER)
+    {
       return null;
+    }
     return (BodyElementContainer)eInternalContainer();
   }
 
@@ -102,21 +104,31 @@ public abstract class BodyElementImpl extends EObjectImpl implements BodyElement
    */
   public void setContainer(BodyElementContainer newContainer)
   {
-    if (newContainer != eInternalContainer() || (eContainerFeatureID() != ArticlePackage.BODY_ELEMENT__CONTAINER && newContainer != null))
+    if (newContainer != eInternalContainer() || eContainerFeatureID() != ArticlePackage.BODY_ELEMENT__CONTAINER && newContainer != null)
     {
       if (EcoreUtil.isAncestor(this, newContainer))
+      {
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+      }
       NotificationChain msgs = null;
       if (eInternalContainer() != null)
+      {
         msgs = eBasicRemoveFromContainer(msgs);
+      }
       if (newContainer != null)
+      {
         msgs = ((InternalEObject)newContainer).eInverseAdd(this, ArticlePackage.BODY_ELEMENT_CONTAINER__ELEMENTS, BodyElementContainer.class, msgs);
+      }
       msgs = basicSetContainer(newContainer, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.BODY_ELEMENT__CONTAINER, newContainer, newContainer));
+    }
   }
 
   /**
@@ -140,7 +152,9 @@ public abstract class BodyElementImpl extends EObjectImpl implements BodyElement
     {
       case ArticlePackage.BODY_ELEMENT__CONTAINER:
         if (eInternalContainer() != null)
+        {
           msgs = eBasicRemoveFromContainer(msgs);
+        }
         return basicSetContainer((BodyElementContainer)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
