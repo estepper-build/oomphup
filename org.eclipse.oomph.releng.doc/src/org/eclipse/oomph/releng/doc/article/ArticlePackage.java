@@ -79,7 +79,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Identifiable</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -121,7 +121,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Link Target</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -329,7 +329,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Documentation</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -388,12 +388,12 @@ public interface ArticlePackage extends EPackage
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.BodyImpl <em>Body</em>}' class. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @see org.eclipse.oomph.releng.doc.article.impl.BodyImpl
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getBody()
    * @generated
    */
-  int BODY = 15;
+  int BODY = 16;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -684,12 +684,21 @@ public interface ArticlePackage extends EPackage
   int CHAPTER__ARTICLE = BODY_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Sections</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CHAPTER__SECTIONS = BODY_FEATURE_COUNT + 1;
+
+  /**
    * The number of structural features of the '<em>Chapter</em>' class.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int CHAPTER_FEATURE_COUNT = BODY_FEATURE_COUNT + 1;
+  int CHAPTER_FEATURE_COUNT = BODY_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.ArticleImpl <em>Article</em>}' class.
@@ -791,6 +800,15 @@ public interface ArticlePackage extends EPackage
   int ARTICLE__ARTICLE = CHAPTER__ARTICLE;
 
   /**
+   * The feature id for the '<em><b>Sections</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARTICLE__SECTIONS = CHAPTER__SECTIONS;
+
+  /**
    * The number of structural features of the '<em>Article</em>' class.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
@@ -887,7 +905,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The feature id for the '<em><b>Formatter</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -908,12 +926,12 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getBodyElement()
    * @generated
    */
-  int BODY_ELEMENT = 17;
+  int BODY_ELEMENT = 18;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -930,7 +948,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Body Element</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -948,7 +966,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1056,7 +1074,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Java Element</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1069,7 +1087,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getBodyElementContainer()
    * @generated
    */
-  int BODY_ELEMENT_CONTAINER = 16;
+  int BODY_ELEMENT_CONTAINER = 17;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -1174,19 +1192,83 @@ public interface ArticlePackage extends EPackage
   int EXTERNAL_TARGET_FEATURE_COUNT = LINK_TARGET_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.SectionImpl <em>Section</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.SectionImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getSection()
+   * @generated
+   */
+  int SECTION = 15;
+
+  /**
+   * The feature id for the '<em><b>Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SECTION__ID = LINK_TARGET__ID;
+
+  /**
+   * The feature id for the '<em><b>Default Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SECTION__DEFAULT_LABEL = LINK_TARGET__DEFAULT_LABEL;
+
+  /**
+   * The feature id for the '<em><b>Tooltip</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SECTION__TOOLTIP = LINK_TARGET__TOOLTIP;
+
+  /**
+   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SECTION__ELEMENTS = LINK_TARGET_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Chapter</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SECTION__CHAPTER = LINK_TARGET_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Section</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SECTION_FEATURE_COUNT = LINK_TARGET_FEATURE_COUNT + 2;
+
+  /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.TextImpl <em>Text</em>}' class. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @see org.eclipse.oomph.releng.doc.article.impl.TextImpl
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getText()
    * @generated
    */
-  int TEXT = 18;
+  int TEXT = 19;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1211,17 +1293,17 @@ public interface ArticlePackage extends EPackage
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.LinkImpl <em>Link</em>}' class. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @see org.eclipse.oomph.releng.doc.article.impl.LinkImpl
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getLink()
    * @generated
    */
-  int LINK = 19;
+  int LINK = 20;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1258,12 +1340,12 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getEmbedding()
    * @generated
    */
-  int EMBEDDING = 20;
+  int EMBEDDING = 21;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1300,7 +1382,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getSourceCode()
    * @generated
    */
-  int SOURCE_CODE = 21;
+  int SOURCE_CODE = 22;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1337,7 +1419,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Source Code</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1350,7 +1432,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getPlugin()
    * @generated
    */
-  int PLUGIN = 22;
+  int PLUGIN = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1401,7 +1483,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getJavaPackage()
    * @generated
    */
-  int JAVA_PACKAGE = 23;
+  int JAVA_PACKAGE = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1422,7 +1504,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Java Package</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1435,7 +1517,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getJavadoc()
    * @generated
    */
-  int JAVADOC = 24;
+  int JAVADOC = 25;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1534,7 +1616,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getExternalArticle()
    * @generated
    */
-  int EXTERNAL_ARTICLE = 25;
+  int EXTERNAL_ARTICLE = 26;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1627,6 +1709,15 @@ public interface ArticlePackage extends EPackage
   int EXTERNAL_ARTICLE__ARTICLE = ARTICLE__ARTICLE;
 
   /**
+   * The feature id for the '<em><b>Sections</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXTERNAL_ARTICLE__SECTIONS = ARTICLE__SECTIONS;
+
+  /**
    * The feature id for the '<em><b>Url</b></em>' attribute.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
@@ -1650,7 +1741,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getSchemadoc()
    * @generated
    */
-  int SCHEMADOC = 26;
+  int SCHEMADOC = 27;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1749,7 +1840,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getExtensionPoint()
    * @generated
    */
-  int EXTENSION_POINT = 27;
+  int EXTENSION_POINT = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1779,17 +1870,17 @@ public interface ArticlePackage extends EPackage
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.TocImpl <em>Toc</em>}' class. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @see org.eclipse.oomph.releng.doc.article.impl.TocImpl
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getToc()
    * @generated
    */
-  int TOC = 28;
+  int TOC = 29;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1826,7 +1917,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getPluginResource()
    * @generated
    */
-  int PLUGIN_RESOURCE = 29;
+  int PLUGIN_RESOURCE = 30;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1919,6 +2010,15 @@ public interface ArticlePackage extends EPackage
   int PLUGIN_RESOURCE__ARTICLE = EXTERNAL_ARTICLE__ARTICLE;
 
   /**
+   * The feature id for the '<em><b>Sections</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PLUGIN_RESOURCE__SECTIONS = EXTERNAL_ARTICLE__SECTIONS;
+
+  /**
    * The feature id for the '<em><b>Url</b></em>' attribute.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
@@ -1942,12 +2042,12 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getExcel()
    * @generated
    */
-  int EXCEL = 30;
+  int EXCEL = 31;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -1976,7 +2076,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFormatter()
    * @generated
    */
-  int FORMATTER = 31;
+  int FORMATTER = 32;
 
   /**
    * The feature id for the '<em><b>Snippet</b></em>' container reference.
@@ -2001,7 +2101,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getJavaFormatter()
    * @generated
    */
-  int JAVA_FORMATTER = 32;
+  int JAVA_FORMATTER = 33;
 
   /**
    * The feature id for the '<em><b>Snippet</b></em>' container reference.
@@ -2014,7 +2114,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Java Formatter</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -2027,7 +2127,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getXmlFormatter()
    * @generated
    */
-  int XML_FORMATTER = 33;
+  int XML_FORMATTER = 34;
 
   /**
    * The feature id for the '<em><b>Snippet</b></em>' container reference.
@@ -2048,7 +2148,7 @@ public interface ArticlePackage extends EPackage
   /**
    * The number of structural features of the '<em>Xml Formatter</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -2061,12 +2161,12 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getImage()
    * @generated
    */
-  int IMAGE = 34;
+  int IMAGE = 35;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @generated
    * @ordered
    */
@@ -2103,7 +2203,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 35;
+  int ROOT_DOC = 36;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2112,7 +2212,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 36;
+  int FILE = 37;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2121,7 +2221,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 37;
+  int DOC = 38;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2130,7 +2230,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 38;
+  int TAG = 39;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -2166,7 +2266,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the reference list '
    * {@link org.eclipse.oomph.releng.doc.article.Documentation#getDependencies <em>Dependencies</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the reference list '<em>Dependencies</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Documentation#getDependencies()
    * @see #getDocumentation()
@@ -2198,7 +2298,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Context <em>Context</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Context</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Context
    * @generated
@@ -2229,7 +2329,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the containment reference list '
    * {@link org.eclipse.oomph.releng.doc.article.Context#getDocumentations <em>Documentations</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the containment reference list '<em>Documentations</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Context#getDocumentations()
    * @see #getContext()
@@ -2250,7 +2350,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Category <em>Category</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Category</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Category
    * @generated
@@ -2260,7 +2360,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Article <em>Article</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Article</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Article
    * @generated
@@ -2270,7 +2370,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Chapter <em>Chapter</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Chapter</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Chapter
    * @generated
@@ -2288,9 +2388,20 @@ public interface ArticlePackage extends EPackage
   EReference getChapter_Article();
 
   /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.oomph.releng.doc.article.Chapter#getSections <em>Sections</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Sections</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Chapter#getSections()
+   * @see #getChapter()
+   * @generated
+   */
+  EReference getChapter_Sections();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Snippet <em>Snippet</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Snippet</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Snippet
    * @generated
@@ -2322,7 +2433,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Diagram <em>Diagram</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Diagram</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Diagram
    * @generated
@@ -2332,7 +2443,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Factory <em>Factory</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Factory</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Factory
    * @generated
@@ -2371,7 +2482,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the containment reference list '
    * {@link org.eclipse.oomph.releng.doc.article.StructuralElement#getChildren <em>Children</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the containment reference list '<em>Children</em>'.
    * @see org.eclipse.oomph.releng.doc.article.StructuralElement#getChildren()
    * @see #getStructuralElement()
@@ -2405,7 +2516,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the reference '
    * {@link org.eclipse.oomph.releng.doc.article.StructuralElement#getDocumentation <em>Documentation</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the reference '<em>Documentation</em>'.
    * @see org.eclipse.oomph.releng.doc.article.StructuralElement#getDocumentation()
    * @see #getStructuralElement()
@@ -2436,7 +2547,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the attribute '
    * {@link org.eclipse.oomph.releng.doc.article.LinkTarget#getDefaultLabel <em>Default Label</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the attribute '<em>Default Label</em>'.
    * @see org.eclipse.oomph.releng.doc.article.LinkTarget#getDefaultLabel()
    * @see #getLinkTarget()
@@ -2457,7 +2568,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Callout <em>Callout</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Callout</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Callout
    * @generated
@@ -2488,7 +2599,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the container reference '
    * {@link org.eclipse.oomph.releng.doc.article.EmbeddableElement#getDocumentation <em>Documentation</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the container reference '<em>Documentation</em>'.
    * @see org.eclipse.oomph.releng.doc.article.EmbeddableElement#getDocumentation()
    * @see #getEmbeddableElement()
@@ -2545,9 +2656,30 @@ public interface ArticlePackage extends EPackage
   EAttribute getIdentifiable_Id();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Section <em>Section</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Section</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Section
+   * @generated
+   */
+  EClass getSection();
+
+  /**
+   * Returns the meta object for the container reference '{@link org.eclipse.oomph.releng.doc.article.Section#getChapter <em>Chapter</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the container reference '<em>Chapter</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Section#getChapter()
+   * @see #getSection()
+   * @generated
+   */
+  EReference getSection_Chapter();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Body <em>Body</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Body</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Body
    * @generated
@@ -2577,7 +2709,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the containment reference list '
    * {@link org.eclipse.oomph.releng.doc.article.BodyElementContainer#getElements <em>Elements</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the containment reference list '<em>Elements</em>'.
    * @see org.eclipse.oomph.releng.doc.article.BodyElementContainer#getElements()
    * @see #getBodyElementContainer()
@@ -2618,7 +2750,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Text <em>Text</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Text</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Text
    * @generated
@@ -2628,7 +2760,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Link <em>Link</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Link</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Link
    * @generated
@@ -2676,7 +2808,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Plugin <em>Plugin</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Plugin</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Plugin
    * @generated
@@ -2718,7 +2850,7 @@ public interface ArticlePackage extends EPackage
    * Returns the meta object for the containment reference list '
    * {@link org.eclipse.oomph.releng.doc.article.Plugin#getExtensionPoints <em>Extension Points</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for the containment reference list '<em>Extension Points</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Plugin#getExtensionPoints()
    * @see #getPlugin()
@@ -2759,7 +2891,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Javadoc <em>Javadoc</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Javadoc</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Javadoc
    * @generated
@@ -2827,7 +2959,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Toc <em>Toc</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Toc</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Toc
    * @generated
@@ -2856,7 +2988,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Excel <em>Excel</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Excel</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Excel
    * @generated
@@ -2914,7 +3046,7 @@ public interface ArticlePackage extends EPackage
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Image <em>Image</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
-   * 
+   *
    * @return the meta object for class '<em>Image</em>'.
    * @see org.eclipse.oomph.releng.doc.article.Image
    * @generated
@@ -3016,7 +3148,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Embeddable Elements</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference DOCUMENTATION__EMBEDDABLE_ELEMENTS = eINSTANCE.getDocumentation_EmbeddableElements();
@@ -3073,7 +3205,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Documentations</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference CONTEXT__DOCUMENTATIONS = eINSTANCE.getContext_Documentations();
@@ -3122,6 +3254,14 @@ public interface ArticlePackage extends EPackage
     EReference CHAPTER__ARTICLE = eINSTANCE.getChapter_Article();
 
     /**
+     * The meta object literal for the '<em><b>Sections</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CHAPTER__SECTIONS = eINSTANCE.getChapter_Sections();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl <em>Snippet</em>}' class.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @see org.eclipse.oomph.releng.doc.article.impl.SnippetImpl
@@ -3133,7 +3273,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Callouts</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference SNIPPET__CALLOUTS = eINSTANCE.getSnippet_Callouts();
@@ -3193,7 +3333,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Children</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference STRUCTURAL_ELEMENT__CHILDREN = eINSTANCE.getStructuralElement_Children();
@@ -3326,10 +3466,28 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Id</b></em>' attribute feature. <!-- begin-user-doc --> <!-- end-user-doc
      * -->
-     * 
+     *
      * @generated
      */
     EAttribute IDENTIFIABLE__ID = eINSTANCE.getIdentifiable_Id();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.SectionImpl <em>Section</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.SectionImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getSection()
+     * @generated
+     */
+    EClass SECTION = eINSTANCE.getSection();
+
+    /**
+     * The meta object literal for the '<em><b>Chapter</b></em>' container reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference SECTION__CHAPTER = eINSTANCE.getSection_Chapter();
 
     /**
      * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.BodyImpl <em>Body</em>}' class.
@@ -3360,7 +3518,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference BODY_ELEMENT_CONTAINER__ELEMENTS = eINSTANCE.getBodyElementContainer_Elements();
@@ -3462,7 +3620,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Packages</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference PLUGIN__PACKAGES = eINSTANCE.getPlugin_Packages();
@@ -3478,7 +3636,7 @@ public interface ArticlePackage extends EPackage
     /**
      * The meta object literal for the '<em><b>Extension Points</b></em>' containment reference list feature. <!--
      * begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     EReference PLUGIN__EXTENSION_POINTS = eINSTANCE.getPlugin_ExtensionPoints();

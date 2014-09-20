@@ -35,6 +35,7 @@ import org.eclipse.oomph.releng.doc.article.Link;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.Text;
@@ -119,6 +120,8 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createCallout();
       case ArticlePackage.EXTERNAL_TARGET:
         return createExternalTarget();
+      case ArticlePackage.SECTION:
+        return createSection();
       case ArticlePackage.TEXT:
         return createText();
       case ArticlePackage.LINK:
@@ -296,6 +299,17 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     ExternalTargetImpl externalTarget = new ExternalTargetImpl();
     return externalTarget;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Section createSection()
+  {
+    SectionImpl section = new SectionImpl();
+    return section;
   }
 
   /**

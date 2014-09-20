@@ -41,6 +41,7 @@ import org.eclipse.oomph.releng.doc.article.LinkTarget;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
@@ -157,6 +158,13 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * @generated
    */
   private EClass identifiableEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass sectionEClass = null;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -501,6 +509,16 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getChapter_Sections()
+  {
+    return (EReference)chapterEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -723,6 +741,26 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   public EAttribute getIdentifiable_Id()
   {
     return (EAttribute)identifiableEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSection()
+  {
+    return sectionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getSection_Chapter()
+  {
+    return (EReference)sectionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1161,6 +1199,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
 
     chapterEClass = createEClass(CHAPTER);
     createEReference(chapterEClass, CHAPTER__ARTICLE);
+    createEReference(chapterEClass, CHAPTER__SECTIONS);
 
     snippetEClass = createEClass(SNIPPET);
     createEReference(snippetEClass, SNIPPET__CALLOUTS);
@@ -1196,6 +1235,9 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
 
     identifiableEClass = createEClass(IDENTIFIABLE);
     createEAttribute(identifiableEClass, IDENTIFIABLE__ID);
+
+    sectionEClass = createEClass(SECTION);
+    createEReference(sectionEClass, SECTION__CHAPTER);
 
     bodyEClass = createEClass(BODY);
     createEReference(bodyEClass, BODY__CATEGORY);
@@ -1306,6 +1348,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     calloutEClass.getESuperTypes().add(getBodyElementContainer());
     embeddableElementEClass.getESuperTypes().add(getIdentifiable());
     externalTargetEClass.getESuperTypes().add(getLinkTarget());
+    sectionEClass.getESuperTypes().add(getLinkTarget());
+    sectionEClass.getESuperTypes().add(getBodyElementContainer());
     bodyEClass.getESuperTypes().add(getStructuralElement());
     bodyEClass.getESuperTypes().add(getBodyElementContainer());
     textEClass.getESuperTypes().add(getBodyElement());
@@ -1352,6 +1396,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEClass(chapterEClass, Chapter.class, "Chapter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getChapter_Article(), getArticle(), null, "article", null, 1, 1, Chapter.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE,
         !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+    initEReference(getChapter_Sections(), getSection(), getSection_Chapter(), "sections", null, 0, -1, Chapter.class, !IS_TRANSIENT, !IS_VOLATILE,
+        IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(snippetEClass, Snippet.class, "Snippet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getSnippet_Callouts(), getCallout(), getCallout_Snippet(), "callouts", null, 0, -1, Snippet.class, !IS_TRANSIENT, !IS_VOLATILE,
@@ -1406,6 +1452,10 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEClass(identifiableEClass, Identifiable.class, "Identifiable", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getIdentifiable_Id(), ecorePackage.getEJavaObject(), "id", null, 1, 1, Identifiable.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+
+    initEClass(sectionEClass, Section.class, "Section", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getSection_Chapter(), getChapter(), getChapter_Sections(), "chapter", null, 1, 1, Section.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+        !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(bodyEClass, Body.class, "Body", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getBody_Category(), getCategory(), null, "category", null, 0, 1, Body.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE,

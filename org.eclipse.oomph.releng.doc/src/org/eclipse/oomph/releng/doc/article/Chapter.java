@@ -10,6 +10,8 @@
  */
 package org.eclipse.oomph.releng.doc.article;
 
+import org.eclipse.emf.common.util.EList;
+
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Chapter</b></em>'. <!-- end-user-doc -->
  *
@@ -17,6 +19,7 @@ package org.eclipse.oomph.releng.doc.article;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.Chapter#getArticle <em>Article</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.Chapter#getSections <em>Sections</em>}</li>
  * </ul>
  * </p>
  *
@@ -41,6 +44,24 @@ public interface Chapter extends Body
    * @generated
    */
   Article getArticle();
+
+  /**
+   * Returns the value of the '<em><b>Sections</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.oomph.releng.doc.article.Section}.
+   * It is bidirectional and its opposite is '{@link org.eclipse.oomph.releng.doc.article.Section#getChapter <em>Chapter</em>}'.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Sections</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Sections</em>' containment reference list.
+   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getChapter_Sections()
+   * @see org.eclipse.oomph.releng.doc.article.Section#getChapter
+   * @model opposite="chapter" containment="true"
+   * @generated
+   */
+  EList<Section> getSections();
 
   public String getName();
 } // Chapter

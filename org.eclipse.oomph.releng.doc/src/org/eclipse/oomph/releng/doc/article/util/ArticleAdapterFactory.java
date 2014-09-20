@@ -41,6 +41,7 @@ import org.eclipse.oomph.releng.doc.article.LinkTarget;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
@@ -198,6 +199,12 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseIdentifiable(Identifiable object)
     {
       return createIdentifiableAdapter();
+    }
+
+    @Override
+    public Adapter caseSection(Section object)
+    {
+      return createSectionAdapter();
     }
 
     @Override
@@ -533,6 +540,21 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createIdentifiableAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.Section <em>Section</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.Section
+   * @generated
+   */
+  public Adapter createSectionAdapter()
   {
     return null;
   }

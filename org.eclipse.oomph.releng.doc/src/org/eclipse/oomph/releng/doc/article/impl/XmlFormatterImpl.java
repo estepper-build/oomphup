@@ -211,13 +211,10 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
       parser.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
       parser.parse(file, handler);
     }
-    catch (RuntimeException ex)
-    {
-      throw ex;
-    }
     catch (Exception ex)
     {
-      throw new RuntimeException(ex);
+      ex.printStackTrace();
+      return "<b><font color=\"#FF0000\">" + ex.getMessage() + "</font></b>";
     }
 
     return handler.getHtml();

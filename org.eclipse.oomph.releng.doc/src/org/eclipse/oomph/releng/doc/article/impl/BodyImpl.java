@@ -81,6 +81,11 @@ public abstract class BodyImpl extends StructuralElementImpl implements Body
       titleMissing();
     }
 
+    parseSeeTags(elements, doc);
+  }
+
+  public static void parseSeeTags(EList<BodyElement> elements, Doc doc)
+  {
     Tag[] seeTags = doc.tags("@see");
     if (seeTags.length > 0)
     {

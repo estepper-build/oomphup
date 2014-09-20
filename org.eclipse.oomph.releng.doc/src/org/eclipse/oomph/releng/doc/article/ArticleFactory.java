@@ -116,6 +116,15 @@ public interface ArticleFactory extends EFactory
   ExternalTarget createExternalTarget();
 
   /**
+   * Returns a new object of class '<em>Section</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Section</em>'.
+   * @generated
+   */
+  Section createSection();
+
+  /**
    * Returns a new object of class '<em>Text</em>'.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return a new object of class '<em>Text</em>'.

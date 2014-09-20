@@ -41,6 +41,7 @@ import org.eclipse.oomph.releng.doc.article.LinkTarget;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
@@ -399,6 +400,28 @@ public class ArticleSwitch<T>
       {
         Identifiable identifiable = (Identifiable)theEObject;
         T result = caseIdentifiable(identifiable);
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
+      case ArticlePackage.SECTION:
+      {
+        Section section = (Section)theEObject;
+        T result = caseSection(section);
+        if (result == null)
+        {
+          result = caseLinkTarget(section);
+        }
+        if (result == null)
+        {
+          result = caseBodyElementContainer(section);
+        }
+        if (result == null)
+        {
+          result = caseIdentifiable(section);
+        }
         if (result == null)
         {
           result = defaultCase(theEObject);
@@ -984,6 +1007,22 @@ public class ArticleSwitch<T>
    * @generated
    */
   public T caseIdentifiable(Identifiable object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Section</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Section</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSection(Section object)
   {
     return null;
   }

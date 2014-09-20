@@ -10,19 +10,27 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.Article;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Chapter;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
 
+import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.FieldDoc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,6 +39,7 @@ import java.util.List;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.ChapterImpl#getArticle <em>Article</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.ChapterImpl#getSections <em>Sections</em>}</li>
  * </ul>
  * </p>
  *
@@ -38,6 +47,16 @@ import java.util.List;
  */
 public class ChapterImpl extends BodyImpl implements Chapter
 {
+  /**
+   * The cached value of the '{@link #getSections() <em>Sections</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSections()
+   * @generated
+   * @ordered
+   */
+  protected EList<Section> sections;
+
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
@@ -51,11 +70,21 @@ public class ChapterImpl extends BodyImpl implements Chapter
   {
     super(parent, makePath(classDoc), classDoc);
     ((ArticleImpl)getArticle()).registerChapter(this);
+    createSections(classDoc.fields());
   }
 
   private static String makePath(ClassDoc classDoc)
   {
     return classDoc.simpleTypeName() + (classDoc.containingClass() == null ? ".html" : "");
+  }
+
+  private void createSections(FieldDoc[] fieldDocs)
+  {
+    EList<Section> sections = getSections();
+    for (FieldDoc fieldDoc : fieldDocs)
+    {
+      Section section = new SectionImpl(this, fieldDoc);
+    }
   }
 
   /**
@@ -84,6 +113,53 @@ public class ChapterImpl extends BodyImpl implements Chapter
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<Section> getSections()
+  {
+    if (sections == null)
+    {
+      sections = new EObjectContainmentWithInverseEList<Section>(Section.class, this, ArticlePackage.CHAPTER__SECTIONS, ArticlePackage.SECTION__CHAPTER);
+    }
+    return sections;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case ArticlePackage.CHAPTER__SECTIONS:
+        return ((InternalEList<InternalEObject>)(InternalEList<?>)getSections()).basicAdd(otherEnd, msgs);
+    }
+    return super.eInverseAdd(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case ArticlePackage.CHAPTER__SECTIONS:
+        return ((InternalEList<?>)getSections()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -94,8 +170,46 @@ public class ChapterImpl extends BodyImpl implements Chapter
     {
       case ArticlePackage.CHAPTER__ARTICLE:
         return getArticle();
+      case ArticlePackage.CHAPTER__SECTIONS:
+        return getSections();
     }
     return super.eGet(featureID, resolve, coreType);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public void eSet(int featureID, Object newValue)
+  {
+    switch (featureID)
+    {
+      case ArticlePackage.CHAPTER__SECTIONS:
+        getSections().clear();
+        getSections().addAll((Collection<? extends Section>)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void eUnset(int featureID)
+  {
+    switch (featureID)
+    {
+      case ArticlePackage.CHAPTER__SECTIONS:
+        getSections().clear();
+        return;
+    }
+    super.eUnset(featureID);
   }
 
   /**
@@ -109,6 +223,8 @@ public class ChapterImpl extends BodyImpl implements Chapter
     {
       case ArticlePackage.CHAPTER__ARTICLE:
         return getArticle() != null;
+      case ArticlePackage.CHAPTER__SECTIONS:
+        return sections != null && !sections.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -151,7 +267,7 @@ public class ChapterImpl extends BodyImpl implements Chapter
     if (this instanceof Article)
     {
       generateHeader(out);
-      super.generate(out);
+      generateWithSections(out);
       generateFooter(out);
     }
     else
@@ -163,7 +279,17 @@ public class ChapterImpl extends BodyImpl implements Chapter
       out.write(anchor + getTitleWithNumber());
       out.write("</h" + level + ">" + NL);
 
-      super.generate(out);
+      generateWithSections(out);
+    }
+  }
+
+  private void generateWithSections(PrintWriter out) throws IOException
+  {
+    super.generate(out);
+
+    for (Section section : getSections())
+    {
+      section.generate(out);
     }
   }
 
