@@ -359,7 +359,7 @@ public class SectionImpl extends LinkTargetImpl implements Section
   public void generate(PrintWriter out) throws IOException
   {
     Chapter chapter = getChapter();
-    out.write("<p><a name=\"" + chapter.getName() + getAnchorSuffix() + "\">");
+    out.write("<a name=\"" + chapter.getName() + getAnchorSuffix() + "\">");
     out.write(NL);
 
     EList<BodyElement> elements = getElements();
