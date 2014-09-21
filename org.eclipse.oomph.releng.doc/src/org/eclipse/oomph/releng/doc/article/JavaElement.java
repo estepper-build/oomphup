@@ -19,6 +19,7 @@ import java.io.File;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.JavaElement#getClassFile <em>Class File</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.JavaElement#getMember <em>Member</em>}</li>
  * </ul>
  * </p>
  *
@@ -43,4 +44,30 @@ public interface JavaElement extends LinkTarget
    * @generated
    */
   File getClassFile();
+
+  /**
+   * Returns the value of the '<em><b>Member</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Member</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Member</em>' attribute.
+   * @see #setMember(String)
+   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getJavaElement_Member()
+   * @model
+   * @generated
+   */
+  String getMember();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.releng.doc.article.JavaElement#getMember <em>Member</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Member</em>' attribute.
+   * @see #getMember()
+   * @generated
+   */
+  void setMember(String value);
 } // JavaElement

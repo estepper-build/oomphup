@@ -267,7 +267,7 @@ public class ChapterImpl extends BodyImpl implements Chapter
     if (this instanceof Article)
     {
       generateHeader(out);
-      generateWithSections(out);
+      super.generate(out);
       generateFooter(out);
     }
     else
@@ -279,14 +279,13 @@ public class ChapterImpl extends BodyImpl implements Chapter
       out.write(anchor + getTitleWithNumber());
       out.write("</h" + level + ">" + NL);
 
-      generateWithSections(out);
+      super.generate(out);
     }
   }
 
-  private void generateWithSections(PrintWriter out) throws IOException
+  @Override
+  protected void generateSections(PrintWriter out) throws IOException
   {
-    super.generate(out);
-
     for (Section section : getSections())
     {
       section.generate(out);

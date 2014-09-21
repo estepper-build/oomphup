@@ -16,7 +16,9 @@ import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
@@ -32,6 +34,7 @@ import java.io.PrintWriter;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.JavaElementImpl#getClassFile <em>Class File</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.JavaElementImpl#getMember <em>Member</em>}</li>
  * </ul>
  * </p>
  *
@@ -58,6 +61,26 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
    * @ordered
    */
   protected File classFile = CLASS_FILE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMember() <em>Member</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMember()
+   * @generated
+   * @ordered
+   */
+  protected static final String MEMBER_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getMember() <em>Member</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMember()
+   * @generated
+   * @ordered
+   */
+  protected String member = MEMBER_EDEFAULT;
 
   private Documentation documentation;
 
@@ -101,6 +124,31 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getMember()
+  {
+    return member;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMember(String newMember)
+  {
+    String oldMember = member;
+    member = newMember;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.JAVA_ELEMENT__MEMBER, oldMember, member));
+    }
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -111,8 +159,44 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
     {
       case ArticlePackage.JAVA_ELEMENT__CLASS_FILE:
         return getClassFile();
+      case ArticlePackage.JAVA_ELEMENT__MEMBER:
+        return getMember();
     }
     return super.eGet(featureID, resolve, coreType);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void eSet(int featureID, Object newValue)
+  {
+    switch (featureID)
+    {
+      case ArticlePackage.JAVA_ELEMENT__MEMBER:
+        setMember((String)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void eUnset(int featureID)
+  {
+    switch (featureID)
+    {
+      case ArticlePackage.JAVA_ELEMENT__MEMBER:
+        setMember(MEMBER_EDEFAULT);
+        return;
+    }
+    super.eUnset(featureID);
   }
 
   /**
@@ -126,6 +210,8 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
     {
       case ArticlePackage.JAVA_ELEMENT__CLASS_FILE:
         return CLASS_FILE_EDEFAULT == null ? classFile != null : !CLASS_FILE_EDEFAULT.equals(classFile);
+      case ArticlePackage.JAVA_ELEMENT__MEMBER:
+        return MEMBER_EDEFAULT == null ? member != null : !MEMBER_EDEFAULT.equals(member);
     }
     return super.eIsSet(featureID);
   }
@@ -145,6 +231,8 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (classFile: ");
     result.append(classFile);
+    result.append(", member: ");
+    result.append(member);
     result.append(')');
     return result.toString();
   }
@@ -152,7 +240,14 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
   @Override
   public String linkFrom(StructuralElement source)
   {
-    return ArticleUtil.createLink(source.getOutputFile(), classFile);
+    String link = ArticleUtil.createLink(source.getOutputFile(), classFile);
+
+    if (member != null)
+    {
+      link += "#" + member;
+    }
+
+    return link;
   }
 
   @Override

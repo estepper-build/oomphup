@@ -10,8 +10,6 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.Context;
@@ -21,7 +19,10 @@ import org.eclipse.oomph.releng.doc.article.LinkTarget;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
+import org.eclipse.emf.common.util.EList;
+
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.MemberDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
@@ -130,7 +131,22 @@ public class UnresolvedBodyElement extends BodyElementImpl
       File classFile = new File(packageFolder, classDoc.typeName() + ".html");
       if (classFile.isFile())
       {
-        return new JavaElementImpl(documentation, classDoc, classFile);
+        JavaElementImpl javaElement = new JavaElementImpl(documentation, classDoc, classFile);
+
+        if (memberDoc != null)
+        {
+          if (memberDoc instanceof ExecutableMemberDoc)
+          {
+            ExecutableMemberDoc executableMemberDoc = (ExecutableMemberDoc)memberDoc;
+            javaElement.setMember(executableMemberDoc.signature());
+          }
+          else
+          {
+            javaElement.setMember(memberDoc.name());
+          }
+        }
+
+        return javaElement;
       }
     }
 

@@ -566,10 +566,17 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
   public void generate(PrintWriter out) throws IOException
   {
     checkAnalyzed();
+    generateSections(out);
+
     for (StructuralElement child : getSortedChildren())
     {
       child.generate(out);
     }
+  }
+
+  protected void generateSections(PrintWriter out) throws IOException
+  {
+    // Do nothing.
   }
 
   protected void generate(File file) throws IOException
