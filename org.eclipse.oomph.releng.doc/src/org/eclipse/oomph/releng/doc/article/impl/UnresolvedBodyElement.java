@@ -150,15 +150,11 @@ public class UnresolvedBodyElement extends BodyElementImpl
 
       if (memberDoc != null)
       {
-        url += "#";
+        url += "#" + memberDoc.name();
         if (memberDoc instanceof ExecutableMemberDoc)
         {
           ExecutableMemberDoc executableMemberDoc = (ExecutableMemberDoc)memberDoc;
           url += executableMemberDoc.signature();
-        }
-        else
-        {
-          url += memberDoc.name();
         }
       }
 

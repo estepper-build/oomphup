@@ -244,13 +244,14 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
   {
     String link = ArticleUtil.createLink(source.getOutputFile(), classFile);
 
-    if (programElementDoc instanceof ExecutableMemberDoc)
-    {
-      link += "#" + ((ExecutableMemberDoc)programElementDoc).signature();
-    }
-    else if (programElementDoc instanceof MemberDoc)
+    if (programElementDoc instanceof MemberDoc)
     {
       link += "#" + ((MemberDoc)programElementDoc).name();
+
+      if (programElementDoc instanceof ExecutableMemberDoc)
+      {
+        link += ((ExecutableMemberDoc)programElementDoc).signature();
+      }
     }
 
     return link;
