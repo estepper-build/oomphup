@@ -582,16 +582,6 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getJavaElement_Member()
-  {
-    return (EAttribute)javaElementEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -1221,7 +1211,6 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
 
     javaElementEClass = createEClass(JAVA_ELEMENT);
     createEAttribute(javaElementEClass, JAVA_ELEMENT__CLASS_FILE);
-    createEAttribute(javaElementEClass, JAVA_ELEMENT__MEMBER);
 
     structuralElementEClass = createEClass(STRUCTURAL_ELEMENT);
     createEReference(structuralElementEClass, STRUCTURAL_ELEMENT__CHILDREN);
@@ -1422,8 +1411,6 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
 
     initEClass(javaElementEClass, JavaElement.class, "JavaElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getJavaElement_ClassFile(), getFile(), "classFile", null, 0, 1, JavaElement.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
-        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getJavaElement_Member(), ecorePackage.getEString(), "member", null, 0, 1, JavaElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(structuralElementEClass, StructuralElement.class, "StructuralElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -1072,22 +1072,13 @@ public interface ArticlePackage extends EPackage
   int JAVA_ELEMENT__CLASS_FILE = LINK_TARGET_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Member</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int JAVA_ELEMENT__MEMBER = LINK_TARGET_FEATURE_COUNT + 1;
-
-  /**
    * The number of structural features of the '<em>Java Element</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
    *
    * @generated
    * @ordered
    */
-  int JAVA_ELEMENT_FEATURE_COUNT = LINK_TARGET_FEATURE_COUNT + 2;
+  int JAVA_ELEMENT_FEATURE_COUNT = LINK_TARGET_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.BodyElementContainerImpl <em>Body Element Container</em>}' class.
@@ -2479,17 +2470,6 @@ public interface ArticlePackage extends EPackage
   EAttribute getJavaElement_ClassFile();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.JavaElement#getMember <em>Member</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Member</em>'.
-   * @see org.eclipse.oomph.releng.doc.article.JavaElement#getMember()
-   * @see #getJavaElement()
-   * @generated
-   */
-  EAttribute getJavaElement_Member();
-
-  /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.StructuralElement <em>Structural Element</em>}'.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return the meta object for class '<em>Structural Element</em>'.
@@ -3340,14 +3320,6 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EAttribute JAVA_ELEMENT__CLASS_FILE = eINSTANCE.getJavaElement_ClassFile();
-
-    /**
-     * The meta object literal for the '<em><b>Member</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute JAVA_ELEMENT__MEMBER = eINSTANCE.getJavaElement_Member();
 
     /**
      * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.StructuralElementImpl <em>Structural Element</em>}' class.
