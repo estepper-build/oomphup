@@ -24,6 +24,7 @@ import org.eclipse.emf.common.util.EList;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 
@@ -96,6 +97,11 @@ public class UnresolvedBodyElement extends BodyElementImpl
     if (referencedMember != null)
     {
       Object target = context.lookup(referencedMember);
+      if (target == null)
+      {
+        target = resolveJavaElement(context, referencedMember.containingClass(), referencedMember);
+      }
+
       if (target != null)
       {
         return createBodyElements(context, tag, target);
@@ -123,6 +129,8 @@ public class UnresolvedBodyElement extends BodyElementImpl
   private Object resolveJavaElement(Context context, ClassDoc classDoc, MemberDoc memberDoc)
   {
     String packageName = classDoc.containingPackage().name();
+    ProgramElementDoc programElementDoc = memberDoc != null ? memberDoc : classDoc;
+
     for (Documentation documentation : context.getDocumentations())
     {
       File projectFolder = documentation.getProjectFolder();
@@ -131,22 +139,7 @@ public class UnresolvedBodyElement extends BodyElementImpl
       File classFile = new File(packageFolder, classDoc.typeName() + ".html");
       if (classFile.isFile())
       {
-        JavaElementImpl javaElement = new JavaElementImpl(documentation, classDoc, classFile);
-
-        if (memberDoc != null)
-        {
-          if (memberDoc instanceof ExecutableMemberDoc)
-          {
-            ExecutableMemberDoc executableMemberDoc = (ExecutableMemberDoc)memberDoc;
-            javaElement.setMember(executableMemberDoc.signature());
-          }
-          else
-          {
-            javaElement.setMember(memberDoc.name());
-          }
-        }
-
-        return javaElement;
+        return new JavaElementImpl(documentation, programElementDoc, classFile);
       }
     }
 
@@ -154,7 +147,22 @@ public class UnresolvedBodyElement extends BodyElementImpl
     if (externalLink != null)
     {
       String url = externalLink + "/" + classDoc.typeName() + ".html";
-      return new ExternalTargetImpl(context, classDoc, url);
+
+      if (memberDoc != null)
+      {
+        url += "#";
+        if (memberDoc instanceof ExecutableMemberDoc)
+        {
+          ExecutableMemberDoc executableMemberDoc = (ExecutableMemberDoc)memberDoc;
+          url += executableMemberDoc.signature();
+        }
+        else
+        {
+          url += memberDoc.name();
+        }
+      }
+
+      return new ExternalTargetImpl(context, programElementDoc, url);
     }
 
     return null;

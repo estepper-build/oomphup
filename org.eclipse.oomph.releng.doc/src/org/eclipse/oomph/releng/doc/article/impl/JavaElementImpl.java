@@ -22,6 +22,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.MemberDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 
@@ -84,7 +86,7 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
 
   private Documentation documentation;
 
-  private ClassDoc classDoc;
+  private ProgramElementDoc programElementDoc;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -95,10 +97,10 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
     super();
   }
 
-  JavaElementImpl(Documentation documentation, ClassDoc classDoc, File classFile)
+  JavaElementImpl(Documentation documentation, ProgramElementDoc programElementDoc, File classFile)
   {
     this.documentation = documentation;
-    this.classDoc = classDoc;
+    this.programElementDoc = programElementDoc;
     this.classFile = classFile;
 
     this.documentation.getContext().register(getId(), this);
@@ -242,9 +244,13 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
   {
     String link = ArticleUtil.createLink(source.getOutputFile(), classFile);
 
-    if (member != null)
+    if (programElementDoc instanceof ExecutableMemberDoc)
     {
-      link += "#" + member;
+      link += "#" + ((ExecutableMemberDoc)programElementDoc).signature();
+    }
+    else if (programElementDoc instanceof MemberDoc)
+    {
+      link += "#" + ((MemberDoc)programElementDoc).name();
     }
 
     return link;
@@ -253,13 +259,13 @@ public class JavaElementImpl extends LinkTargetImpl implements JavaElement
   @Override
   public Object getId()
   {
-    return classDoc;
+    return programElementDoc;
   }
 
   @Override
   public String getTooltip()
   {
-    return getTooltip(classDoc);
+    return getTooltip(programElementDoc);
   }
 
   @Override

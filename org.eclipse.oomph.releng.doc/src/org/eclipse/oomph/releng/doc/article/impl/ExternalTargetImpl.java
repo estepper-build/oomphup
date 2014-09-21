@@ -17,7 +17,7 @@ import org.eclipse.oomph.releng.doc.article.StructuralElement;
 
 import org.eclipse.emf.ecore.EClass;
 
-import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
 
 import java.io.PrintWriter;
 
@@ -49,7 +49,7 @@ public class ExternalTargetImpl extends LinkTargetImpl implements ExternalTarget
    */
   protected String url = URL_EDEFAULT;
 
-  private ClassDoc classDoc;
+  private Doc doc;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -60,9 +60,9 @@ public class ExternalTargetImpl extends LinkTargetImpl implements ExternalTarget
     super();
   }
 
-  ExternalTargetImpl(Context context, ClassDoc classDoc, String url)
+  ExternalTargetImpl(Context context, Doc doc, String url)
   {
-    this.classDoc = classDoc;
+    this.doc = doc;
     this.url = url;
     context.register(getId(), this);
   }
@@ -144,13 +144,13 @@ public class ExternalTargetImpl extends LinkTargetImpl implements ExternalTarget
   @Override
   public Object getId()
   {
-    return classDoc;
+    return doc;
   }
 
   @Override
   public String getTooltip()
   {
-    return JavaElementImpl.getTooltip(classDoc);
+    return JavaElementImpl.getTooltip(doc);
   }
 
   @Override
