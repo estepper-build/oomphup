@@ -117,8 +117,7 @@ public class TextImpl extends BodyElementImpl implements Text
     copyFile.getParentFile().mkdirs();
     ArticleUtil.copyFile(targetFile, copyFile);
 
-    File source = linkSource.getDoc().position().file().getParentFile();
-    return ArticleUtil.createLink(source, copyFile);
+    return linkSource.getImagePath() + "/" + copiesFolder.getName() + src;
   }
 
 } // TextImpl
