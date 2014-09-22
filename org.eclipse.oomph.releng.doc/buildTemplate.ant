@@ -67,12 +67,6 @@
       </fileset>
     </delete>
 
-    <delete includeemptydirs="true" failonerror="false">
-      <fileset dir="${javadoc.destdir}" defaultexcludes="true">
-        <include name="**/*" />
-      </fileset>
-    </delete>
-
     <copy todir="${helpcenter.project}/debug" verbose="true" failonerror="false" overwrite="true">
       <fileset dir="${releng.project}/html/debug" defaultexcludes="true">
         <include name="**/*" />
@@ -251,8 +245,13 @@
         <include name="**/*" />
       </fileset>
     </delete>
-
     <mkdir dir="${article.destdir}" />
+
+    <delete includeemptydirs="true" failonerror="false">
+      <fileset dir="${project.path}/images" defaultexcludes="true">
+        <include name="copies" />
+      </fileset>
+    </delete>
     <copy todir="${project.path}/images" verbose="true" failonerror="false">
       <fileset dir="${releng.project}/html/images" defaultexcludes="true">
         <include name="**/*" />
@@ -278,7 +277,7 @@
         <param name="-basefolder" value="${plugins.dir}/.." />
         <param name="-project" value="${PROJECT-NAME}" />
         <param name="-externals" value="${jdk.link};${platform.link};${emf.link}" />
-      	
+
       </doclet>
 
       <fileset dir="${plugins.dir}">
