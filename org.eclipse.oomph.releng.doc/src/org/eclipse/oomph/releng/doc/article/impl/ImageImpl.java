@@ -10,13 +10,13 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.Tag;
 
@@ -58,7 +58,7 @@ public class ImageImpl extends BodyElementImpl implements Image
     super();
   }
 
-  public ImageImpl(Tag tag, File file)
+  ImageImpl(Tag tag, File file)
   {
     super(tag);
     this.file = file;

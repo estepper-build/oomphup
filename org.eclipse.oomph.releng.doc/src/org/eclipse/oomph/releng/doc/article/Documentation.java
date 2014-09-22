@@ -44,7 +44,7 @@ public interface Documentation extends StructuralElement
    * description here...
    * </p>
    * <!-- end-user-doc -->
-   * 
+   *
    * @return the value of the '<em>Context</em>' container reference.
    * @see #setContext(Context)
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getDocumentation_Context()
@@ -73,7 +73,7 @@ public interface Documentation extends StructuralElement
    * more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * 
+   *
    * @return the value of the '<em>Embeddable Elements</em>' containment reference list.
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getDocumentation_EmbeddableElements()
    * @see org.eclipse.oomph.releng.doc.article.EmbeddableElement#getDocumentation
@@ -133,6 +133,8 @@ public interface Documentation extends StructuralElement
 
   File getProjectFolder();
 
+  File getProjectImagesFolder();
+
   StructuralElement getDefaultElement();
 
   void setDefaultElement(StructuralElement defaultElement);
@@ -140,4 +142,5 @@ public interface Documentation extends StructuralElement
   List<StructuralElement> getNavElements();
 
   void registerElement(StructuralElement element);
+
 } // Documentation

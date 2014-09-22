@@ -518,7 +518,7 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
   public String getImagePath()
   {
     File source = getOutputFile();
-    File target = new File(getDocumentation().getProjectFolder(), "images");
+    File target = getDocumentation().getProjectImagesFolder();
     return ArticleUtil.createLink(source, target);
   }
 

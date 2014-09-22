@@ -10,12 +10,12 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.Excel;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.Tag;
 
@@ -61,7 +61,7 @@ public class ExcelImpl extends BodyElementImpl implements Excel
     super();
   }
 
-  public ExcelImpl(Tag tag)
+  ExcelImpl(Tag tag)
   {
     super(tag);
   }
