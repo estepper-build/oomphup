@@ -25,6 +25,7 @@
 
   <modules>
     <module>org.eclipse.oomph.releng.doc</module>
+    <module>org.eclipse.oomph.releng.doc.preprocess</module>
     <module>org.eclipse.oomph.releng.doc/build/site</module>
     <module>org.eclipse.oomph.releng.doc/build/tp</module>
   </modules>
