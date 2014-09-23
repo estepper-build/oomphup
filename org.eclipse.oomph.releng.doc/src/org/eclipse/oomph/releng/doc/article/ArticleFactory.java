@@ -253,6 +253,24 @@ public interface ArticleFactory extends EFactory
   Image createImage();
 
   /**
+   * Returns a new object of class '<em>Tree Node</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Tree Node</em>'.
+   * @generated
+   */
+  TreeNode createTreeNode();
+
+  /**
+   * Returns a new object of class '<em>Tree Node Property</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Tree Node Property</em>'.
+   * @generated
+   */
+  TreeNodeProperty createTreeNodeProperty();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return the package supported by this factory.

@@ -40,6 +40,8 @@ import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeNode;
+import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import org.eclipse.emf.ecore.EClass;
@@ -154,6 +156,10 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createXmlFormatter();
       case ArticlePackage.IMAGE:
         return createImage();
+      case ArticlePackage.TREE_NODE:
+        return createTreeNode();
+      case ArticlePackage.TREE_NODE_PROPERTY:
+        return createTreeNodeProperty();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -470,6 +476,28 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     ImageImpl image = new ImageImpl();
     return image;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TreeNode createTreeNode()
+  {
+    TreeNodeImpl treeNode = new TreeNodeImpl();
+    return treeNode;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TreeNodeProperty createTreeNodeProperty()
+  {
+    TreeNodePropertyImpl treeNodeProperty = new TreeNodePropertyImpl();
+    return treeNodeProperty;
   }
 
   /**

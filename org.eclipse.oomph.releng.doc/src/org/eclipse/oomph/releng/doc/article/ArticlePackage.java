@@ -2197,13 +2197,132 @@ public interface ArticlePackage extends EPackage
   int IMAGE_FEATURE_COUNT = BODY_ELEMENT_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl <em>Tree Node</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeNode()
+   * @generated
+   */
+  int TREE_NODE = 36;
+
+  /**
+   * The feature id for the '<em><b>Image</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE__IMAGE = 0;
+
+  /**
+   * The feature id for the '<em><b>Label</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE__LABEL = 1;
+
+  /**
+   * The feature id for the '<em><b>Children</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE__CHILDREN = 2;
+
+  /**
+   * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE__PROPERTIES = 3;
+
+  /**
+   * The number of structural features of the '<em>Tree Node</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_FEATURE_COUNT = 4;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl <em>Tree Node Property</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeNodeProperty()
+   * @generated
+   */
+  int TREE_NODE_PROPERTY = 37;
+
+  /**
+   * The feature id for the '<em><b>Key Image</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_PROPERTY__KEY_IMAGE = 0;
+
+  /**
+   * The feature id for the '<em><b>Key</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_PROPERTY__KEY = 1;
+
+  /**
+   * The feature id for the '<em><b>Value Image</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_PROPERTY__VALUE_IMAGE = 2;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_PROPERTY__VALUE = 3;
+
+  /**
+   * The feature id for the '<em><b>Properties</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_PROPERTY__PROPERTIES = 4;
+
+  /**
+   * The number of structural features of the '<em>Tree Node Property</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_NODE_PROPERTY_FEATURE_COUNT = 5;
+
+  /**
    * The meta object id for the '<em>Root Doc</em>' data type.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see com.sun.javadoc.RootDoc
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 36;
+  int ROOT_DOC = 38;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2212,7 +2331,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 37;
+  int FILE = 39;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2221,7 +2340,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 38;
+  int DOC = 40;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2230,7 +2349,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 39;
+  int TAG = 41;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -3064,6 +3183,125 @@ public interface ArticlePackage extends EPackage
   EAttribute getImage_File();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.TreeNode <em>Tree Node</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Tree Node</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode
+   * @generated
+   */
+  EClass getTreeNode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getImage <em>Image</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Image</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode#getImage()
+   * @see #getTreeNode()
+   * @generated
+   */
+  EAttribute getTreeNode_Image();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getLabel <em>Label</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Label</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode#getLabel()
+   * @see #getTreeNode()
+   * @generated
+   */
+  EAttribute getTreeNode_Label();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getChildren <em>Children</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Children</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode#getChildren()
+   * @see #getTreeNode()
+   * @generated
+   */
+  EReference getTreeNode_Children();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getProperties <em>Properties</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Properties</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode#getProperties()
+   * @see #getTreeNode()
+   * @generated
+   */
+  EReference getTreeNode_Properties();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty <em>Tree Node Property</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Tree Node Property</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty
+   * @generated
+   */
+  EClass getTreeNodeProperty();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKeyImage <em>Key Image</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Key Image</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKeyImage()
+   * @see #getTreeNodeProperty()
+   * @generated
+   */
+  EAttribute getTreeNodeProperty_KeyImage();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKey <em>Key</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Key</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKey()
+   * @see #getTreeNodeProperty()
+   * @generated
+   */
+  EAttribute getTreeNodeProperty_Key();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getValueImage <em>Value Image</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value Image</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getValueImage()
+   * @see #getTreeNodeProperty()
+   * @generated
+   */
+  EAttribute getTreeNodeProperty_ValueImage();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getValue()
+   * @see #getTreeNodeProperty()
+   * @generated
+   */
+  EAttribute getTreeNodeProperty_Value();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getProperties <em>Properties</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Properties</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getProperties()
+   * @see #getTreeNodeProperty()
+   * @generated
+   */
+  EReference getTreeNodeProperty_Properties();
+
+  /**
    * Returns the meta object for data type '{@link com.sun.javadoc.RootDoc <em>Root Doc</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3820,6 +4058,98 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EAttribute IMAGE__FILE = eINSTANCE.getImage_File();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl <em>Tree Node</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeNode()
+     * @generated
+     */
+    EClass TREE_NODE = eINSTANCE.getTreeNode();
+
+    /**
+     * The meta object literal for the '<em><b>Image</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_NODE__IMAGE = eINSTANCE.getTreeNode_Image();
+
+    /**
+     * The meta object literal for the '<em><b>Label</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_NODE__LABEL = eINSTANCE.getTreeNode_Label();
+
+    /**
+     * The meta object literal for the '<em><b>Children</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference TREE_NODE__CHILDREN = eINSTANCE.getTreeNode_Children();
+
+    /**
+     * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference TREE_NODE__PROPERTIES = eINSTANCE.getTreeNode_Properties();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl <em>Tree Node Property</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeNodeProperty()
+     * @generated
+     */
+    EClass TREE_NODE_PROPERTY = eINSTANCE.getTreeNodeProperty();
+
+    /**
+     * The meta object literal for the '<em><b>Key Image</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_NODE_PROPERTY__KEY_IMAGE = eINSTANCE.getTreeNodeProperty_KeyImage();
+
+    /**
+     * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_NODE_PROPERTY__KEY = eINSTANCE.getTreeNodeProperty_Key();
+
+    /**
+     * The meta object literal for the '<em><b>Value Image</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_NODE_PROPERTY__VALUE_IMAGE = eINSTANCE.getTreeNodeProperty_ValueImage();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_NODE_PROPERTY__VALUE = eINSTANCE.getTreeNodeProperty_Value();
+
+    /**
+     * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference TREE_NODE_PROPERTY__PROPERTIES = eINSTANCE.getTreeNodeProperty_Properties();
 
     /**
      * The meta object literal for the '<em>Root Doc</em>' data type.

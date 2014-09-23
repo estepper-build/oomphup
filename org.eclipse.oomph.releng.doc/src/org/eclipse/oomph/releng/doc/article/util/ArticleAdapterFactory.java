@@ -47,6 +47,8 @@ import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeNode;
+import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -325,6 +327,18 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseImage(Image object)
     {
       return createImageAdapter();
+    }
+
+    @Override
+    public Adapter caseTreeNode(TreeNode object)
+    {
+      return createTreeNodeAdapter();
+    }
+
+    @Override
+    public Adapter caseTreeNodeProperty(TreeNodeProperty object)
+    {
+      return createTreeNodePropertyAdapter();
     }
 
     @Override
@@ -816,6 +830,36 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createImageAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.TreeNode <em>Tree Node</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode
+   * @generated
+   */
+  public Adapter createTreeNodeAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty <em>Tree Node Property</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty
+   * @generated
+   */
+  public Adapter createTreeNodePropertyAdapter()
   {
     return null;
   }

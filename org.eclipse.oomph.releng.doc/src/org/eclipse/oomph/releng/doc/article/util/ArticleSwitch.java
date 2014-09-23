@@ -47,6 +47,8 @@ import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeNode;
+import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import org.eclipse.emf.ecore.EClass;
@@ -796,6 +798,26 @@ public class ArticleSwitch<T>
         }
         return result;
       }
+      case ArticlePackage.TREE_NODE:
+      {
+        TreeNode treeNode = (TreeNode)theEObject;
+        T result = caseTreeNode(treeNode);
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
+      case ArticlePackage.TREE_NODE_PROPERTY:
+      {
+        TreeNodeProperty treeNodeProperty = (TreeNodeProperty)theEObject;
+        T result = caseTreeNodeProperty(treeNodeProperty);
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
       default:
         return defaultCase(theEObject);
     }
@@ -1305,6 +1327,38 @@ public class ArticleSwitch<T>
    * @generated
    */
   public T caseImage(Image object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Tree Node</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Tree Node</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTreeNode(TreeNode object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Tree Node Property</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Tree Node Property</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTreeNodeProperty(TreeNodeProperty object)
   {
     return null;
   }
