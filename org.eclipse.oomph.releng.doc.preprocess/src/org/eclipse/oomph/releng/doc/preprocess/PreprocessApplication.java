@@ -1,6 +1,7 @@
 package org.eclipse.oomph.releng.doc.preprocess;
 
 import org.eclipse.oomph.releng.doc.article.ArticleFactory;
+import org.eclipse.oomph.releng.doc.article.ArticlePlugin;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 
@@ -16,6 +17,7 @@ import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 
 import org.eclipse.equinox.app.IApplication;
@@ -32,13 +34,18 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("restriction")
 public class PreprocessApplication implements IApplication
 {
+  private static final Object BLANK = ArticlePlugin.INSTANCE.getImage("full/obj16/Blank");
+
   private ResourceSet resourceSet = createResourceSet();
+
+  protected Map<Object, String> imageURLs = new HashMap<Object, String>();
 
   private AdapterFactoryItemDelegator itemDelegator = new AdapterFactoryItemDelegator(new ComposedAdapterFactory(
       ComposedAdapterFactory.Descriptor.Registry.INSTANCE));
@@ -64,10 +71,12 @@ public class PreprocessApplication implements IApplication
             treeNodes.add(createTreeNode(eObject));
           }
 
-          // {@model ../../tree/foo.tree ../../foo.setup}
-          Resource result = resourceSet.getResourceFactoryRegistry().getFactory(URI.createURI("*.setup")).createResource(URI.createURI("*.setup"));
+          // {@snippet tree <tree-file-path> ((<model-uri>)+ (categorized)? (advanced)?)?}
+          // {@model ../../tree/foo.tree ../../foo.setup#/dsfasdfas categorized advanced}
+          Resource result = resourceSet.getResourceFactoryRegistry().getFactory(URI.createURI("*.setup"))
+              .createResource(URI.createURI("file:/D:/stuff/tmp/" + resource.getURI().trimFileExtension().lastSegment() + ".tree"));
           result.getContents().addAll(treeNodes);
-          result.save(System.err, null);
+          result.save(null);
         }
       }
     }
@@ -80,28 +89,25 @@ public class PreprocessApplication implements IApplication
     TreeNode treeNode = ArticleFactory.eINSTANCE.createTreeNode();
 
     Object image = itemDelegator.getImage(object);
-    String text = itemDelegator.getText(object);
-
     treeNode.setImage(getImageURL(image));
+
+    String text = itemDelegator.getText(object);
     treeNode.setLabel(text);
 
+    Map<String, List<TreeNodeProperty>> categories = new LinkedHashMap<String, List<TreeNodeProperty>>();
     EList<TreeNodeProperty> properties = treeNode.getProperties();
-    for (IItemPropertyDescriptor itemPropertyDescriptor : itemDelegator.getPropertyDescriptors(object))
+    createTreePropertyNodes(categories, properties, object);
+    if (!categories.isEmpty() && (categories.size() != 1 || !categories.keySet().contains(null)))
     {
-      TreeNodeProperty treeNodeProperty = ArticleFactory.eINSTANCE.createTreeNodeProperty();
-
-      String key = itemPropertyDescriptor.getDisplayName(object);
-      treeNodeProperty.setKey(key);
-
-      Object propertyValue = itemPropertyDescriptor.getPropertyValue(object);
-      IItemLabelProvider labelProvider = itemPropertyDescriptor.getLabelProvider(object);
-      Object propertyValueImage = labelProvider.getImage(propertyValue);
-      String propertyValueText = labelProvider.getText(propertyValue);
-
-      treeNodeProperty.setValue(getImageURL(propertyValueImage));
-      treeNodeProperty.setValue(propertyValueText);
-
-      properties.add(treeNodeProperty);
+      for (Map.Entry<String, List<TreeNodeProperty>> entry : categories.entrySet())
+      {
+        String category = entry.getKey();
+        TreeNodeProperty treeNodeProperty = ArticleFactory.eINSTANCE.createTreeNodeProperty();
+        treeNodeProperty.setKey(category == null ? "Other" : category);
+        treeNodeProperty.setValueImage(getImageURL(BLANK));
+        treeNodeProperty.getProperties().addAll(entry.getValue());
+        properties.add(treeNodeProperty);
+      }
     }
 
     EList<TreeNode> children = treeNode.getChildren();
@@ -113,9 +119,54 @@ public class PreprocessApplication implements IApplication
     return treeNode;
   }
 
-  int counter = 0;
+  private void createTreePropertyNodes(Map<String, List<TreeNodeProperty>> categories, List<TreeNodeProperty> properties, Object object)
+  {
+    for (IItemPropertyDescriptor itemPropertyDescriptor : itemDelegator.getPropertyDescriptors(object))
+    {
+      TreeNodeProperty treeNodeProperty = ArticleFactory.eINSTANCE.createTreeNodeProperty();
 
-  Map<Object, String> imageURLs = new HashMap<Object, String>();
+      String key = itemPropertyDescriptor.getDisplayName(object);
+      treeNodeProperty.setKey(key);
+
+      IItemLabelProvider labelProvider = itemPropertyDescriptor.getLabelProvider(object);
+      Object propertyValue = itemPropertyDescriptor.getPropertyValue(object);
+      Object propertyValueImage = labelProvider.getImage(propertyValue);
+      if (propertyValueImage == null)
+      {
+        propertyValueImage = BLANK;
+      }
+
+      String propertyValueText;
+      if (propertyValue instanceof IItemPropertySource)
+      {
+        IItemPropertySource itemPropertySource = (IItemPropertySource)propertyValue;
+        propertyValueText = labelProvider.getText(itemPropertySource.getEditableValue(itemPropertySource));
+        createTreePropertyNodes(null, treeNodeProperty.getProperties(), itemPropertySource);
+      }
+      else
+      {
+        propertyValueText = labelProvider.getText(propertyValue);
+      }
+
+      treeNodeProperty.setValueImage(getImageURL(propertyValueImage));
+      treeNodeProperty.setValue(propertyValueText);
+
+      properties.add(treeNodeProperty);
+
+      if (categories != null)
+      {
+        String category = itemPropertyDescriptor.getCategory(object);
+        List<TreeNodeProperty> categoryProperties = categories.get(category);
+        if (categoryProperties == null)
+        {
+          categoryProperties = new ArrayList<TreeNodeProperty>();
+          categories.put(category, categoryProperties);
+        }
+
+        categoryProperties.add(treeNodeProperty);
+      }
+    }
+  }
 
   private String getImageURL(Object image)
   {
@@ -127,25 +178,28 @@ public class PreprocessApplication implements IApplication
     String result = imageURLs.get(image);
     if (result == null)
     {
-      Image image2 = ExtendedImageRegistry.INSTANCE.getImage(image);
-      ImageData imageData = image2.getImageData();
+      Image swtImage = ExtendedImageRegistry.INSTANCE.getImage(image);
+      ImageData imageData = swtImage.getImageData();
       ImageLoader imageLoader = new ImageLoader();
       imageLoader.data = new ImageData[] { imageData };
 
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      imageLoader.save(out, SWT.IMAGE_PNG);
-
       try
       {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        imageLoader.save(out, SWT.IMAGE_PNG);
         out.close();
+
         MessageDigest digest = MessageDigest.getInstance("SHA-1");
         byte[] bytes = out.toByteArray();
-        byte[] digest2 = digest.digest(bytes);
-        String file = XMLTypeFactory.eINSTANCE.convertBase64Binary(digest2).replace('/', '_');
+        byte[] sha = digest.digest(bytes);
+
+        String file = XMLTypeFactory.eINSTANCE.convertBase64Binary(sha).replace('/', '_');
         String path = "D:/stuff/tmp/" + file + ".png";
+
         FileOutputStream fileOutputStream = new FileOutputStream(path);
         fileOutputStream.write(bytes);
         fileOutputStream.close();
+
         result = "file:/" + path;
         imageURLs.put(image, result);
       }
@@ -185,6 +239,10 @@ public class PreprocessApplication implements IApplication
     {
       URI uri = URI.createFileURI(file.getPath());
       if ("setup".equals(uri.fileExtension()))
+      {
+        resourceSet.getResource(uri, true);
+      }
+      if ("genmodel".equals(uri.fileExtension()))
       {
         resourceSet.getResource(uri, true);
       }
