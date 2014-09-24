@@ -41,6 +41,8 @@
         eType="#//Callout" containment="true" resolveProxies="false" eOpposite="#//Callout/snippet"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="formatter" lowerBound="1"
         eType="#//Formatter" containment="true" eOpposite="#//Formatter/snippet"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="titleImage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Diagram" eSuperTypes="#//BodyElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="Factory" eSuperTypes="#//EmbeddableElement"/>
@@ -159,6 +161,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="XmlFormatter" eSuperTypes="#//Formatter">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="#//File"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TreeFormatter" eSuperTypes="#//Formatter">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="#//File"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Image" eSuperTypes="#//BodyElement">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" lowerBound="1" eType="#//File"
         changeable="false" volatile="true" transient="true"/>
@@ -172,7 +177,6 @@
         eType="#//TreeNodeProperty" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TreeNodeProperty">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyImage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueImage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

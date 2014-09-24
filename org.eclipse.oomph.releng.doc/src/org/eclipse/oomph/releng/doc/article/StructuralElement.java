@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Structural Element</b></em>'. <!-- end-user-doc
@@ -31,7 +32,7 @@ import java.util.List;
  * <li>{@link org.eclipse.oomph.releng.doc.article.StructuralElement#getDocumentation <em>Documentation</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getStructuralElement()
  * @model abstract="true"
  * @generated
@@ -66,7 +67,7 @@ public interface StructuralElement extends LinkTarget
    * description here...
    * </p>
    * <!-- end-user-doc -->
-   * 
+   *
    * @return the value of the '<em>Parent</em>' container reference.
    * @see #setParent(StructuralElement)
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getStructuralElement_Parent()
@@ -151,5 +152,7 @@ public interface StructuralElement extends LinkTarget
   void generate(PrintWriter out) throws IOException;
 
   String getImagePath();
+
+  void addHeaders(Set<String> headers);
 
 } // StructuralElement

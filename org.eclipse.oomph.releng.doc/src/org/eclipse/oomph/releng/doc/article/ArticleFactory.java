@@ -245,6 +245,15 @@ public interface ArticleFactory extends EFactory
   XmlFormatter createXmlFormatter();
 
   /**
+   * Returns a new object of class '<em>Tree Formatter</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Tree Formatter</em>'.
+   * @generated
+   */
+  TreeFormatter createTreeFormatter();
+
+  /**
    * Returns a new object of class '<em>Image</em>'.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return a new object of class '<em>Image</em>'.

@@ -10,17 +10,18 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Factory;
 
+import org.eclipse.emf.ecore.EClass;
+
 import com.sun.javadoc.MethodDoc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Factory</b></em>'. <!-- end-user-doc -->
@@ -57,6 +58,12 @@ public class FactoryImpl extends EmbeddableElementImpl implements Factory
   protected EClass eStaticClass()
   {
     return ArticlePackage.Literals.FACTORY;
+  }
+
+  public void addHeaders(Set<String> headers, Embedding embedder)
+  {
+    // TODO: implement FactoryImpl.addHeaders(headers, embedder)
+    throw new UnsupportedOperationException();
   }
 
   public void generate(PrintWriter out, Embedding embedder) throws IOException

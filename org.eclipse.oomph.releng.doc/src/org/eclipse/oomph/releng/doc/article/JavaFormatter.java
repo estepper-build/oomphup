@@ -20,4 +20,6 @@ package org.eclipse.oomph.releng.doc.article;
  */
 public interface JavaFormatter extends Formatter
 {
+  public static final String TYPE = "java";
+
 } // JavaFormatter

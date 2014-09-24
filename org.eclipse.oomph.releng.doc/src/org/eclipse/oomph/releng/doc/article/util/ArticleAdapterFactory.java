@@ -47,6 +47,7 @@ import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
@@ -321,6 +322,12 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseXmlFormatter(XmlFormatter object)
     {
       return createXmlFormatterAdapter();
+    }
+
+    @Override
+    public Adapter caseTreeFormatter(TreeFormatter object)
+    {
+      return createTreeFormatterAdapter();
     }
 
     @Override
@@ -817,6 +824,21 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createXmlFormatterAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.TreeFormatter <em>Tree Formatter</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.TreeFormatter
+   * @generated
+   */
+  public Adapter createTreeFormatterAdapter()
   {
     return null;
   }

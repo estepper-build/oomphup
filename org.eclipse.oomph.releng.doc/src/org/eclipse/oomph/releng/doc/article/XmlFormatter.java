@@ -29,6 +29,8 @@ import java.io.File;
 public interface XmlFormatter extends Formatter
 {
 
+  String TYPE = "xml";
+
   /**
    * Returns the value of the '<em><b>File</b></em>' attribute.
    * <!-- begin-user-doc -->

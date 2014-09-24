@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKeyImage <em>Key Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKey <em>Key</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getValueImage <em>Value Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getValue <em>Value</em>}</li>
@@ -27,32 +26,6 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface TreeNodeProperty extends EObject
 {
-  /**
-   * Returns the value of the '<em><b>Key Image</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Key Image</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Key Image</em>' attribute.
-   * @see #setKeyImage(String)
-   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getTreeNodeProperty_KeyImage()
-   * @model
-   * @generated
-   */
-  String getKeyImage();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKeyImage <em>Key Image</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Key Image</em>' attribute.
-   * @see #getKeyImage()
-   * @generated
-   */
-  void setKeyImage(String value);
-
   /**
    * Returns the value of the '<em><b>Key</b></em>' attribute.
    * <!-- begin-user-doc -->

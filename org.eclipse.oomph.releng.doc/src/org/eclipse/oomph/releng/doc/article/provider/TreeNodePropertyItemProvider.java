@@ -67,20 +67,6 @@ public class TreeNodePropertyItemProvider extends ItemProviderAdapter implements
   }
 
   /**
-   * This adds a property descriptor for the Key Image feature.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected void addKeyImagePropertyDescriptor(Object object)
-  {
-    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-        getString("_UI_TreeNodeProperty_keyImage_feature"),
-        getString("_UI_PropertyDescriptor_description", "_UI_TreeNodeProperty_keyImage_feature", "_UI_TreeNodeProperty_type"),
-        ArticlePackage.Literals.TREE_NODE_PROPERTY__KEY_IMAGE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-  }
-
-  /**
    * This adds a property descriptor for the Key feature.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -187,7 +173,7 @@ public class TreeNodePropertyItemProvider extends ItemProviderAdapter implements
   @Override
   public String getText(Object object)
   {
-    String label = ((TreeNodeProperty)object).getKeyImage();
+    String label = ((TreeNodeProperty)object).getKey();
     return label == null || label.length() == 0 ? getString("_UI_TreeNodeProperty_type") : getString("_UI_TreeNodeProperty_type") + " " + label;
   }
 
@@ -205,7 +191,6 @@ public class TreeNodePropertyItemProvider extends ItemProviderAdapter implements
 
     switch (notification.getFeatureID(TreeNodeProperty.class))
     {
-      case ArticlePackage.TREE_NODE_PROPERTY__KEY_IMAGE:
       case ArticlePackage.TREE_NODE_PROPERTY__KEY:
       case ArticlePackage.TREE_NODE_PROPERTY__VALUE_IMAGE:
       case ArticlePackage.TREE_NODE_PROPERTY__VALUE:

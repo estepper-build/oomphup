@@ -47,6 +47,7 @@ import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
@@ -784,6 +785,20 @@ public class ArticleSwitch<T>
         }
         return result;
       }
+      case ArticlePackage.TREE_FORMATTER:
+      {
+        TreeFormatter treeFormatter = (TreeFormatter)theEObject;
+        T result = caseTreeFormatter(treeFormatter);
+        if (result == null)
+        {
+          result = caseFormatter(treeFormatter);
+        }
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
       case ArticlePackage.IMAGE:
       {
         Image image = (Image)theEObject;
@@ -1313,6 +1328,22 @@ public class ArticleSwitch<T>
    * @generated
    */
   public T caseXmlFormatter(XmlFormatter object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Tree Formatter</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Tree Formatter</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTreeFormatter(TreeFormatter object)
   {
     return null;
   }

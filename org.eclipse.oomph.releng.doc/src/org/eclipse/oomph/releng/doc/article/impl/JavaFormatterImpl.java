@@ -10,10 +10,11 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
@@ -76,12 +77,7 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
     return embedderTag.text() + ".java";
   }
 
-  public String getTopLeftEditorIcon(String imagePath)
-  {
-    return imagePath + "editor-top-left-java.png";
-  }
-
-  public String getSnippetHtml(PrintWriter out, String id, String title)
+  public String getSnippetHtml(PrintWriter out, Embedding embedder, String id, String title)
   {
     Map<String, Object> options = new HashMap<String, Object>();
     options.put("id", id);
@@ -110,6 +106,12 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
   public String getCalloutMarker()
   {
     return "<font color=\"#3f7f5f\">/*&nbsp;callout&nbsp;*/</font>";
+  }
+
+  @Override
+  protected String getFormatterType()
+  {
+    return TYPE;
   }
 
 } // JavaFormatterImpl

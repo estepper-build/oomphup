@@ -20,6 +20,8 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getCallouts <em>Callouts</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getFormatter <em>Formatter</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitle <em>Title</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitleImage <em>Title Image</em>}</li>
  * </ul>
  * </p>
  *
@@ -73,5 +75,57 @@ public interface Snippet extends EmbeddableElement
    * @generated
    */
   void setFormatter(Formatter value);
+
+  /**
+   * Returns the value of the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Title</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Title</em>' attribute.
+   * @see #setTitle(String)
+   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getSnippet_Title()
+   * @model
+   * @generated
+   */
+  String getTitle();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitle <em>Title</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Title</em>' attribute.
+   * @see #getTitle()
+   * @generated
+   */
+  void setTitle(String value);
+
+  /**
+   * Returns the value of the '<em><b>Title Image</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Title Image</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Title Image</em>' attribute.
+   * @see #setTitleImage(String)
+   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getSnippet_TitleImage()
+   * @model
+   * @generated
+   */
+  String getTitleImage();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitleImage <em>Title Image</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Title Image</em>' attribute.
+   * @see #getTitleImage()
+   * @generated
+   */
+  void setTitleImage(String value);
 
 } // Snippet

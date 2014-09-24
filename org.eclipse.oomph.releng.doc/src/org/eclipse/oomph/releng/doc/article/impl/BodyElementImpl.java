@@ -11,8 +11,11 @@
 package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
+import org.eclipse.oomph.releng.doc.article.Section;
+import org.eclipse.oomph.releng.doc.article.StructuralElement;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -23,6 +26,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.sun.javadoc.Tag;
+
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Body Element</b></em>'. <!-- end-user-doc -->
@@ -254,6 +259,27 @@ public abstract class BodyElementImpl extends EObjectImpl implements BodyElement
         return TAG_EDEFAULT == null ? getTag() != null : !TAG_EDEFAULT.equals(getTag());
     }
     return super.eIsSet(featureID);
+  }
+
+  public Body getBody()
+  {
+    BodyElementContainer container = getContainer();
+    if (container instanceof Body)
+    {
+      return (Body)container;
+    }
+
+    if (container instanceof Section)
+    {
+      return ((Section)container).getChapter();
+    }
+
+    return null;
+  }
+
+  public void addHeaders(Set<String> headers, StructuralElement linkSource)
+  {
+    // Do nothing by default.
   }
 
 } // BodyElementImpl

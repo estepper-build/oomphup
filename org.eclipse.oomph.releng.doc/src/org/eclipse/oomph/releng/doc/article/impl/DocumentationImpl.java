@@ -860,28 +860,6 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
         return idPrefix + ++id;
       }
 
-      public void writeHref(String label, String href) throws IOException
-      {
-        label = label.replaceAll(" ", "&nbsp;");
-        if (level == 0)
-        {
-          label = "<b>" + label + "</b>";
-        }
-
-        URI uri = URI.createURI(href);
-        if (uri.isRelative())
-        {
-          href = project.getName() + "/" + href;
-        }
-
-        write("<a href=\"" + href + "\" target=\"content\">" + label + "</a>");
-      }
-
-      public void writeImage(String name) throws IOException
-      {
-        write("<img src=\"" + name + "\">");
-      }
-
       @Override
       public void writeSingle(String label, String href, String icon) throws IOException
       {
@@ -927,6 +905,28 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
         --level;
         writePrefix();
         write("</div>" + NL);
+      }
+
+      private void writeImage(String name) throws IOException
+      {
+        write("<img src=\"" + name + "\">");
+      }
+
+      private void writeHref(String label, String href) throws IOException
+      {
+        label = label.replaceAll(" ", "&nbsp;");
+        if (level == 0)
+        {
+          label = "<b>" + label + "</b>";
+        }
+
+        URI uri = URI.createURI(href);
+        if (uri.isRelative())
+        {
+          href = project.getName() + "/" + href;
+        }
+
+        write("<a href=\"" + href + "\" target=\"content\">" + label + "</a>");
       }
     }
 

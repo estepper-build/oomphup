@@ -11,6 +11,7 @@
 package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 
@@ -23,6 +24,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.sun.javadoc.Doc;
+
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Formatter</b></em>'. <!-- end-user-doc -->
@@ -233,5 +236,17 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
     }
     return super.eIsSet(featureID);
   }
+
+  public void addHeaders(Set<String> headers, Embedding embedder, Snippet snippet)
+  {
+    // Do nothing by default.
+  }
+
+  public String getTopLeftEditorIcon(String imagePath)
+  {
+    return imagePath + "formatter-" + getFormatterType() + ".gif";
+  }
+
+  protected abstract String getFormatterType();
 
 } // FormatterImpl

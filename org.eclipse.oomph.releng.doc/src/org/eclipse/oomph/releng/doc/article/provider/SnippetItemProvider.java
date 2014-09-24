@@ -9,7 +9,9 @@ import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import java.util.Collection;
@@ -47,8 +49,36 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
     {
       super.getPropertyDescriptors(object);
 
+      addTitlePropertyDescriptor(object);
+      addTitleImagePropertyDescriptor(object);
     }
     return itemPropertyDescriptors;
+  }
+
+  /**
+   * This adds a property descriptor for the Title feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected void addTitlePropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_Snippet_title_feature"), getString("_UI_PropertyDescriptor_description", "_UI_Snippet_title_feature", "_UI_Snippet_type"),
+        ArticlePackage.Literals.SNIPPET__TITLE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+  }
+
+  /**
+   * This adds a property descriptor for the Title Image feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected void addTitleImagePropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_Snippet_titleImage_feature"), getString("_UI_PropertyDescriptor_description", "_UI_Snippet_titleImage_feature", "_UI_Snippet_type"),
+        ArticlePackage.Literals.SNIPPET__TITLE_IMAGE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
   }
 
   /**
@@ -136,6 +166,10 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
 
     switch (notification.getFeatureID(Snippet.class))
     {
+      case ArticlePackage.SNIPPET__TITLE:
+      case ArticlePackage.SNIPPET__TITLE_IMAGE:
+        fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+        return;
       case ArticlePackage.SNIPPET__CALLOUTS:
       case ArticlePackage.SNIPPET__FORMATTER:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
@@ -161,6 +195,8 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createJavaFormatter()));
 
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createXmlFormatter()));
+
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createTreeFormatter()));
   }
 
 }

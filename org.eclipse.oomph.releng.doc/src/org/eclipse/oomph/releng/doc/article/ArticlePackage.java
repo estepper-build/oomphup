@@ -912,12 +912,30 @@ public interface ArticlePackage extends EPackage
   int SNIPPET__FORMATTER = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SNIPPET__TITLE = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Title Image</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SNIPPET__TITLE_IMAGE = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 3;
+
+  /**
    * The number of structural features of the '<em>Snippet</em>' class.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SNIPPET_FEATURE_COUNT = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 2;
+  int SNIPPET_FEATURE_COUNT = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.BodyElementImpl <em>Body Element</em>}' class.
@@ -2155,13 +2173,50 @@ public interface ArticlePackage extends EPackage
   int XML_FORMATTER_FEATURE_COUNT = FORMATTER_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl <em>Tree Formatter</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeFormatter()
+   * @generated
+   */
+  int TREE_FORMATTER = 35;
+
+  /**
+   * The feature id for the '<em><b>Snippet</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_FORMATTER__SNIPPET = FORMATTER__SNIPPET;
+
+  /**
+   * The feature id for the '<em><b>File</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_FORMATTER__FILE = FORMATTER_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Tree Formatter</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TREE_FORMATTER_FEATURE_COUNT = FORMATTER_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.ImageImpl <em>Image</em>}' class.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see org.eclipse.oomph.releng.doc.article.impl.ImageImpl
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getImage()
    * @generated
    */
-  int IMAGE = 35;
+  int IMAGE = 36;
 
   /**
    * The feature id for the '<em><b>Container</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -2204,7 +2259,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeNode()
    * @generated
    */
-  int TREE_NODE = 36;
+  int TREE_NODE = 37;
 
   /**
    * The feature id for the '<em><b>Image</b></em>' attribute.
@@ -2259,16 +2314,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeNodeProperty()
    * @generated
    */
-  int TREE_NODE_PROPERTY = 37;
-
-  /**
-   * The feature id for the '<em><b>Key Image</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TREE_NODE_PROPERTY__KEY_IMAGE = 0;
+  int TREE_NODE_PROPERTY = 38;
 
   /**
    * The feature id for the '<em><b>Key</b></em>' attribute.
@@ -2277,7 +2323,7 @@ public interface ArticlePackage extends EPackage
    * @generated
    * @ordered
    */
-  int TREE_NODE_PROPERTY__KEY = 1;
+  int TREE_NODE_PROPERTY__KEY = 0;
 
   /**
    * The feature id for the '<em><b>Value Image</b></em>' attribute.
@@ -2286,7 +2332,7 @@ public interface ArticlePackage extends EPackage
    * @generated
    * @ordered
    */
-  int TREE_NODE_PROPERTY__VALUE_IMAGE = 2;
+  int TREE_NODE_PROPERTY__VALUE_IMAGE = 1;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -2295,7 +2341,7 @@ public interface ArticlePackage extends EPackage
    * @generated
    * @ordered
    */
-  int TREE_NODE_PROPERTY__VALUE = 3;
+  int TREE_NODE_PROPERTY__VALUE = 2;
 
   /**
    * The feature id for the '<em><b>Properties</b></em>' containment reference list.
@@ -2304,7 +2350,7 @@ public interface ArticlePackage extends EPackage
    * @generated
    * @ordered
    */
-  int TREE_NODE_PROPERTY__PROPERTIES = 4;
+  int TREE_NODE_PROPERTY__PROPERTIES = 3;
 
   /**
    * The number of structural features of the '<em>Tree Node Property</em>' class.
@@ -2313,7 +2359,7 @@ public interface ArticlePackage extends EPackage
    * @generated
    * @ordered
    */
-  int TREE_NODE_PROPERTY_FEATURE_COUNT = 5;
+  int TREE_NODE_PROPERTY_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '<em>Root Doc</em>' data type.
@@ -2322,7 +2368,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 38;
+  int ROOT_DOC = 39;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2331,7 +2377,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 39;
+  int FILE = 40;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2340,7 +2386,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 40;
+  int DOC = 41;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2349,7 +2395,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 41;
+  int TAG = 42;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -2548,6 +2594,28 @@ public interface ArticlePackage extends EPackage
    * @generated
    */
   EReference getSnippet_Formatter();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitle <em>Title</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Title</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Snippet#getTitle()
+   * @see #getSnippet()
+   * @generated
+   */
+  EAttribute getSnippet_Title();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitleImage <em>Title Image</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Title Image</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Snippet#getTitleImage()
+   * @see #getSnippet()
+   * @generated
+   */
+  EAttribute getSnippet_TitleImage();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Diagram <em>Diagram</em>}'. <!--
@@ -3163,6 +3231,27 @@ public interface ArticlePackage extends EPackage
   EAttribute getXmlFormatter_File();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.TreeFormatter <em>Tree Formatter</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Tree Formatter</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeFormatter
+   * @generated
+   */
+  EClass getTreeFormatter();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeFormatter#getFile <em>File</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeFormatter#getFile()
+   * @see #getTreeFormatter()
+   * @generated
+   */
+  EAttribute getTreeFormatter_File();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Image <em>Image</em>}'. <!--
    * begin-user-doc --> <!-- end-user-doc -->
    *
@@ -3245,17 +3334,6 @@ public interface ArticlePackage extends EPackage
    * @generated
    */
   EClass getTreeNodeProperty();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKeyImage <em>Key Image</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Key Image</em>'.
-   * @see org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKeyImage()
-   * @see #getTreeNodeProperty()
-   * @generated
-   */
-  EAttribute getTreeNodeProperty_KeyImage();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNodeProperty#getKey <em>Key</em>}'.
@@ -3523,6 +3601,22 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EReference SNIPPET__FORMATTER = eINSTANCE.getSnippet_Formatter();
+
+    /**
+     * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SNIPPET__TITLE = eINSTANCE.getSnippet_Title();
+
+    /**
+     * The meta object literal for the '<em><b>Title Image</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SNIPPET__TITLE_IMAGE = eINSTANCE.getSnippet_TitleImage();
 
     /**
      * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.DiagramImpl <em>Diagram</em>}' class.
@@ -4043,6 +4137,24 @@ public interface ArticlePackage extends EPackage
     EAttribute XML_FORMATTER__FILE = eINSTANCE.getXmlFormatter_File();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl <em>Tree Formatter</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTreeFormatter()
+     * @generated
+     */
+    EClass TREE_FORMATTER = eINSTANCE.getTreeFormatter();
+
+    /**
+     * The meta object literal for the '<em><b>File</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TREE_FORMATTER__FILE = eINSTANCE.getTreeFormatter_File();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.ImageImpl <em>Image</em>}' class.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @see org.eclipse.oomph.releng.doc.article.impl.ImageImpl
@@ -4110,14 +4222,6 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EClass TREE_NODE_PROPERTY = eINSTANCE.getTreeNodeProperty();
-
-    /**
-     * The meta object literal for the '<em><b>Key Image</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute TREE_NODE_PROPERTY__KEY_IMAGE = eINSTANCE.getTreeNodeProperty_KeyImage();
 
     /**
      * The meta object literal for the '<em><b>Key</b></em>' attribute feature.

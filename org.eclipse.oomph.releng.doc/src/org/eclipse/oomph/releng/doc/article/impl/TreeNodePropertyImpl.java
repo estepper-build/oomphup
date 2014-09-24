@@ -24,7 +24,6 @@ import java.util.Collection;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl#getKeyImage <em>Key Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl#getKey <em>Key</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl#getValueImage <em>Value Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodePropertyImpl#getValue <em>Value</em>}</li>
@@ -36,26 +35,6 @@ import java.util.Collection;
  */
 public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodeProperty
 {
-  /**
-   * The default value of the '{@link #getKeyImage() <em>Key Image</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getKeyImage()
-   * @generated
-   * @ordered
-   */
-  protected static final String KEY_IMAGE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getKeyImage() <em>Key Image</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getKeyImage()
-   * @generated
-   * @ordered
-   */
-  protected String keyImage = KEY_IMAGE_EDEFAULT;
-
   /**
    * The default value of the '{@link #getKey() <em>Key</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -145,31 +124,6 @@ public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodePropert
   protected EClass eStaticClass()
   {
     return ArticlePackage.Literals.TREE_NODE_PROPERTY;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getKeyImage()
-  {
-    return keyImage;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setKeyImage(String newKeyImage)
-  {
-    String oldKeyImage = keyImage;
-    keyImage = newKeyImage;
-    if (eNotificationRequired())
-    {
-      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.TREE_NODE_PROPERTY__KEY_IMAGE, oldKeyImage, keyImage));
-    }
   }
 
   /**
@@ -287,8 +241,6 @@ public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodePropert
   {
     switch (featureID)
     {
-      case ArticlePackage.TREE_NODE_PROPERTY__KEY_IMAGE:
-        return getKeyImage();
       case ArticlePackage.TREE_NODE_PROPERTY__KEY:
         return getKey();
       case ArticlePackage.TREE_NODE_PROPERTY__VALUE_IMAGE:
@@ -312,9 +264,6 @@ public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodePropert
   {
     switch (featureID)
     {
-      case ArticlePackage.TREE_NODE_PROPERTY__KEY_IMAGE:
-        setKeyImage((String)newValue);
-        return;
       case ArticlePackage.TREE_NODE_PROPERTY__KEY:
         setKey((String)newValue);
         return;
@@ -342,9 +291,6 @@ public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodePropert
   {
     switch (featureID)
     {
-      case ArticlePackage.TREE_NODE_PROPERTY__KEY_IMAGE:
-        setKeyImage(KEY_IMAGE_EDEFAULT);
-        return;
       case ArticlePackage.TREE_NODE_PROPERTY__KEY:
         setKey(KEY_EDEFAULT);
         return;
@@ -371,8 +317,6 @@ public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodePropert
   {
     switch (featureID)
     {
-      case ArticlePackage.TREE_NODE_PROPERTY__KEY_IMAGE:
-        return KEY_IMAGE_EDEFAULT == null ? keyImage != null : !KEY_IMAGE_EDEFAULT.equals(keyImage);
       case ArticlePackage.TREE_NODE_PROPERTY__KEY:
         return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
       case ArticlePackage.TREE_NODE_PROPERTY__VALUE_IMAGE:
@@ -399,9 +343,7 @@ public class TreeNodePropertyImpl extends EObjectImpl implements TreeNodePropert
     }
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (keyImage: ");
-    result.append(keyImage);
-    result.append(", key: ");
+    result.append(" (key: ");
     result.append(key);
     result.append(", valueImage: ");
     result.append(valueImage);

@@ -14,6 +14,7 @@ import com.sun.javadoc.Doc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Embeddable Element</b></em>'. <!-- end-user-doc
@@ -24,7 +25,7 @@ import java.io.PrintWriter;
  * <li>{@link org.eclipse.oomph.releng.doc.article.EmbeddableElement#getDocumentation <em>Documentation</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getEmbeddableElement()
  * @model abstract="true"
  * @generated
@@ -72,5 +73,10 @@ public interface EmbeddableElement extends Identifiable
    */
   Doc getDoc();
 
+  String rewritePath(String path, Embedding embedder);
+
+  void addHeaders(Set<String> headers, Embedding embedder);
+
   void generate(PrintWriter out, Embedding embedder) throws IOException;
+
 } // EmbeddableElement

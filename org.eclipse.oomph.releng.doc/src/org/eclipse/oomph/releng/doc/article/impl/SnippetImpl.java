@@ -16,8 +16,10 @@ import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
@@ -39,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -48,6 +51,8 @@ import java.util.regex.Pattern;
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getCallouts <em>Callouts</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getFormatter <em>Formatter</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getTitle <em>Title</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getTitleImage <em>Title Image</em>}</li>
  * </ul>
  * </p>
  *
@@ -78,6 +83,46 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
   protected Formatter formatter;
 
   /**
+   * The default value of the '{@link #getTitle() <em>Title</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTitle()
+   * @generated
+   * @ordered
+   */
+  protected static final String TITLE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTitle() <em>Title</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTitle()
+   * @generated
+   * @ordered
+   */
+  protected String title = TITLE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTitleImage() <em>Title Image</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTitleImage()
+   * @generated
+   * @ordered
+   */
+  protected static final String TITLE_IMAGE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTitleImage() <em>Title Image</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTitleImage()
+   * @generated
+   * @ordered
+   */
+  protected String titleImage = TITLE_IMAGE_EDEFAULT;
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -91,6 +136,36 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     super(documentation, doc);
     initFormatter(doc);
     initCallouts(doc);
+
+    Tag[] titleTags = doc.tags("@title");
+    if (titleTags.length > 1)
+    {
+      throw new ArticleException("More than one @title tag not allowed: " + ArticleUtil.makeConsoleLink(doc));
+    }
+
+    if (titleTags.length == 1)
+    {
+      String text = titleTags[0].text();
+      if (text.length() != 0)
+      {
+        setTitle(text);
+      }
+    }
+
+    Tag[] imageTags = doc.tags("@image");
+    if (imageTags.length > 1)
+    {
+      throw new ArticleException("More than one @image tag not allowed: " + ArticleUtil.makeConsoleLink(doc));
+    }
+
+    if (imageTags.length == 1)
+    {
+      String text = imageTags[0].text();
+      if (text.length() != 0)
+      {
+        setTitleImage(text);
+      }
+    }
   }
 
   private void initFormatter(Doc doc)
@@ -98,7 +173,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     Tag[] tags = doc.tags("@snippet");
     if (tags.length > 1)
     {
-      throw new ArticleException("More than one format not allowed: " + ArticleUtil.makeConsoleLink(doc));
+      throw new ArticleException("More than one @snippet tag not allowed: " + ArticleUtil.makeConsoleLink(doc));
     }
 
     if (tags.length == 1)
@@ -124,22 +199,22 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         format = format.trim().toLowerCase();
         args = args.trim();
 
-        if (format.equals("xml"))
+        try
         {
-          try
+          if (format.equals(XmlFormatter.TYPE))
           {
-            File folder = doc.position().file().getParentFile();
-            File file = new File(folder, args).getCanonicalFile();
-
-            XmlFormatter formatter = new XmlFormatterImpl();
-            formatter.setFile(file);
-
-            setFormatter(formatter);
+            File file = getFileArg(doc, args);
+            setFormatter(new XmlFormatterImpl(file));
           }
-          catch (IOException ex)
+          else if (format.equals(TreeFormatter.TYPE))
           {
-            ex.printStackTrace();
+            File file = getFileArg(doc, args);
+            setFormatter(new TreeFormatterImpl(file));
           }
+        }
+        catch (IOException ex)
+        {
+          ex.printStackTrace();
         }
       }
     }
@@ -244,6 +319,56 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getTitle()
+  {
+    return title;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTitle(String newTitle)
+  {
+    String oldTitle = title;
+    title = newTitle;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.SNIPPET__TITLE, oldTitle, title));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getTitleImage()
+  {
+    return titleImage;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTitleImage(String newTitleImage)
+  {
+    String oldTitleImage = titleImage;
+    titleImage = newTitleImage;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.SNIPPET__TITLE_IMAGE, oldTitleImage, titleImage));
+    }
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -295,6 +420,10 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         return getCallouts();
       case ArticlePackage.SNIPPET__FORMATTER:
         return getFormatter();
+      case ArticlePackage.SNIPPET__TITLE:
+        return getTitle();
+      case ArticlePackage.SNIPPET__TITLE_IMAGE:
+        return getTitleImage();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -316,6 +445,12 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       case ArticlePackage.SNIPPET__FORMATTER:
         setFormatter((Formatter)newValue);
         return;
+      case ArticlePackage.SNIPPET__TITLE:
+        setTitle((String)newValue);
+        return;
+      case ArticlePackage.SNIPPET__TITLE_IMAGE:
+        setTitleImage((String)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -335,6 +470,12 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       case ArticlePackage.SNIPPET__FORMATTER:
         setFormatter((Formatter)null);
         return;
+      case ArticlePackage.SNIPPET__TITLE:
+        setTitle(TITLE_EDEFAULT);
+        return;
+      case ArticlePackage.SNIPPET__TITLE_IMAGE:
+        setTitleImage(TITLE_IMAGE_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -352,8 +493,40 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         return callouts != null && !callouts.isEmpty();
       case ArticlePackage.SNIPPET__FORMATTER:
         return formatter != null;
+      case ArticlePackage.SNIPPET__TITLE:
+        return TITLE_EDEFAULT == null ? title != null : !TITLE_EDEFAULT.equals(title);
+      case ArticlePackage.SNIPPET__TITLE_IMAGE:
+        return TITLE_IMAGE_EDEFAULT == null ? titleImage != null : !TITLE_IMAGE_EDEFAULT.equals(titleImage);
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy())
+    {
+      return super.toString();
+    }
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (title: ");
+    result.append(title);
+    result.append(", titleImage: ");
+    result.append(titleImage);
+    result.append(')');
+    return result.toString();
+  }
+
+  public void addHeaders(Set<String> headers, Embedding embedder)
+  {
+    Formatter formatter = getFormatter();
+    formatter.addHeaders(headers, embedder, this);
   }
 
   public void generate(PrintWriter out, Embedding embedder) throws IOException
@@ -367,27 +540,63 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       id = id.substring(lastDot + 1);
     }
 
-    StructuralElement structuralElement = getStructuralElement(embedder);
-    String imagePath = structuralElement.getImagePath() + "/";
-
     SeeTag embedderTag = (SeeTag)embedder.getTag();
     String title = embedderTag.label();
+    if (title == null || title.length() == 0)
+    {
+      title = getTitle();
+    }
+
     if (title == null || title.length() == 0)
     {
       title = formatter.getDefaultTitle(embedderTag);
     }
 
+    StructuralElement structuralElement = getStructuralElement(embedder);
+    String imagePath = structuralElement.getImagePath() + "/";
+
+    String editorIcon = getTitleImage();
+    if (editorIcon == null || editorIcon.length() == 0)
+    {
+      int dot = title.lastIndexOf('.');
+      if (dot != -1)
+      {
+        String icon = title.substring(dot + 1);
+        if (icon.length() != 0)
+        {
+          icon += ".gif";
+          String iconPath = imagePath + "editors/" + icon;
+
+          File iconFile = new File(structuralElement.getOutputFile().getParentFile(), iconPath);
+          if (iconFile.isFile())
+          {
+            editorIcon = iconPath;
+          }
+        }
+      }
+
+      if (editorIcon == null || editorIcon.length() == 0)
+      {
+        editorIcon = formatter.getTopLeftEditorIcon(imagePath);
+      }
+    }
+    else
+    {
+      editorIcon = rewritePath(editorIcon, embedder);
+    }
+
     out.write(NL);
     out.write(NL);
 
-    String html = formatter.getSnippetHtml(out, id, title);
+    String html = formatter.getSnippetHtml(out, embedder, id, title);
     html = processCallouts(id, html, imagePath);
 
     out.write("<div class=\"snippet\" style=\"margin-left:24px;\" align=\"left\">" + NL);
     out.write("  <a name=\"snippet_" + id + "\"></a>" + NL);
     out.write("  <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">" + NL);
     out.write("    <tr>" + NL);
-    out.write("      <td><img src=\"" + formatter.getTopLeftEditorIcon(imagePath) + "\"></td>" + NL);
+    out.write("      <td><div style=\"position:relative;\"><img src=\"" + imagePath
+        + "editor-top-left.png\"><img style=\"position:absolute; top:5px; left:5px;\" src=\"" + editorIcon + "\"></div></td>" + NL);
     out.write("      <td style=\"background-image:url(" + imagePath
         + "editor-top1.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
     out.write("      <td width=\"1px\"><img src=\"" + imagePath + "editor-close.png\"></td>" + NL);
@@ -441,17 +650,6 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     out.write("<p>" + NL);
   }
 
-  private StructuralElement getStructuralElement(Embedding embedder)
-  {
-    BodyElementContainer container = embedder.getContainer();
-    if (container instanceof StructuralElement)
-    {
-      return (StructuralElement)container;
-    }
-
-    throw new ArticleException(ArticleUtil.makeConsoleLink("Nested embedding in ", embedder.getTag().position()));
-  }
-
   private String processCallouts(String id, String html, String imagePath)
   {
     EList<Callout> callouts = getCallouts();
@@ -459,58 +657,60 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     int callout = 0;
 
     String calloutMarker = getFormatter().getCalloutMarker();
-
-    for (;;)
+    if (calloutMarker != null)
     {
-      int pos = html.indexOf(calloutMarker);
-      if (pos == -1)
+      for (;;)
       {
-        break;
-      }
-
-      ++callout;
-
-      String start = html.substring(0, pos);
-      String rest = html.substring(pos + calloutMarker.length());
-      if (!rest.startsWith("&nbsp;"))
-      {
-        rest = "&nbsp;" + rest;
-      }
-
-      String alt = "";
-      int index = callout - 1;
-      if (index < size)
-      {
-        Tag tag = callouts.get(index).getTag();
-        for (Tag inlineTag : tag.inlineTags())
+        int pos = html.indexOf(calloutMarker);
+        if (pos == -1)
         {
-          alt += inlineTag.text();
+          break;
         }
+
+        ++callout;
+
+        String start = html.substring(0, pos);
+        String rest = html.substring(pos + calloutMarker.length());
+        if (!rest.startsWith("&nbsp;"))
+        {
+          rest = "&nbsp;" + rest;
+        }
+
+        String alt = "";
+        int index = callout - 1;
+        if (index < size)
+        {
+          Tag tag = callouts.get(index).getTag();
+          for (Tag inlineTag : tag.inlineTags())
+          {
+            alt += inlineTag.text();
+          }
+        }
+
+        String image = getCalloutImage(id, callout, true, alt, imagePath);
+        html = start + image + rest;
       }
 
-      String image = getCalloutImage(id, callout, true, alt, imagePath);
-      html = start + image + rest;
-    }
-
-    if (callout != size)
-    {
-      if (callout < size)
+      if (callout != size)
       {
-        Tag tag = callouts.get(size).getTag();
-        String link = ArticleUtil.makeConsoleLink(tag.holder(), tag.position());
-        System.err.println("Too many callout descriptions: " + link);
-      }
-      else
-      {
-        String link = ArticleUtil.makeConsoleLink(getDoc(), getDoc().position());
-        System.err.println("Callout descriptions missing: " + link);
+        if (callout < size)
+        {
+          Tag tag = callouts.get(size).getTag();
+          String link = ArticleUtil.makeConsoleLink(tag.holder(), tag.position());
+          System.err.println("Too many callout descriptions: " + link);
+        }
+        else
+        {
+          String link = ArticleUtil.makeConsoleLink(getDoc(), getDoc().position());
+          System.err.println("Callout descriptions missing: " + link);
+        }
       }
     }
 
     return html;
   }
 
-  private String getCalloutImage(String prefix, int number, boolean code, String alt, String imagePath)
+  private static String getCalloutImage(String prefix, int number, boolean code, String alt, String imagePath)
   {
     String name = "callout_" + prefix + "_" + number;
     String nameSuffix = code ? "_code" : "";
@@ -522,6 +722,34 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     alt = alt.replaceAll("\"", "&quot;");
 
     return "<a name=\"" + name + nameSuffix + "\" href=\"#" + name + hrefSuffix + "\" alt=\"" + alt + "\" title=\"" + alt + "\">" + image + "</a>";
+  }
+
+  private static StructuralElement getStructuralElement(Embedding embedder)
+  {
+    BodyElementContainer container = embedder.getContainer();
+    if (container instanceof StructuralElement)
+    {
+      return (StructuralElement)container;
+    }
+
+    if (container instanceof Section)
+    {
+      return ((Section)container).getChapter();
+    }
+
+    throw new ArticleException(ArticleUtil.makeConsoleLink("Nested embedding in ", embedder.getTag().position()));
+  }
+
+  private static File getFileArg(Doc doc, String args) throws IOException
+  {
+    int firstSpace = args.indexOf(' ');
+    if (firstSpace != -1)
+    {
+      args = args.substring(0, firstSpace);
+    }
+
+    File folder = doc.position().file().getParentFile();
+    return new File(folder, args).getCanonicalFile();
   }
 
 } // SnippetImpl

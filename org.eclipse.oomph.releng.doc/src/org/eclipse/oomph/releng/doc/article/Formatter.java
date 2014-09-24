@@ -16,6 +16,7 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.SeeTag;
 
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Formatter</b></em>'. <!-- end-user-doc -->
@@ -63,11 +64,13 @@ public interface Formatter extends EObject
 
   Doc getDoc();
 
+  void addHeaders(Set<String> headers, Embedding embedder, Snippet snippet);
+
   String getDefaultTitle(SeeTag embedderTag);
 
   String getTopLeftEditorIcon(String imagePath);
 
-  String getSnippetHtml(PrintWriter out, String id, String title);
+  String getSnippetHtml(PrintWriter out, Embedding embedder, String id, String title);
 
   String getCalloutMarker();
 

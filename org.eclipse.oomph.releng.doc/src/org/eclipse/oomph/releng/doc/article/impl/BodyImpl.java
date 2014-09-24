@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Body</b></em>'. <!-- end-user-doc -->
@@ -297,6 +298,14 @@ public abstract class BodyImpl extends StructuralElementImpl implements Body
   public Object getId()
   {
     return getDoc();
+  }
+
+  @Override
+  public void addHeaders(Set<String> headers)
+  {
+    EList<BodyElement> elements = getElements();
+    BodyElementContainerImpl.addHeaders(headers, this, elements);
+    super.addHeaders(headers);
   }
 
   @Override

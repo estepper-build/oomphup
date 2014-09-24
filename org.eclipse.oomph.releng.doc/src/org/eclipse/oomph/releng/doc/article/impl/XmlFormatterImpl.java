@@ -11,6 +11,7 @@
 package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -75,6 +76,11 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
   protected XmlFormatterImpl()
   {
     super();
+  }
+
+  XmlFormatterImpl(File file)
+  {
+    setFile(file);
   }
 
   /**
@@ -196,12 +202,13 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     return file.getName();
   }
 
-  public String getTopLeftEditorIcon(String imagePath)
+  @Override
+  protected String getFormatterType()
   {
-    return imagePath + "editor-top-left-xml.png";
+    return XmlFormatter.TYPE;
   }
 
-  public String getSnippetHtml(PrintWriter out, String id, String title)
+  public String getSnippetHtml(PrintWriter out, Embedding embedder, String id, String title)
   {
     XmlHandler handler = new XmlHandler();
 

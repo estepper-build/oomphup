@@ -32,7 +32,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Structural Element</b></em>'. <!-- end-user-doc
@@ -604,6 +606,7 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
       out.write("" + NL);
       out.write("<LINK REL=\"STYLESHEET\" HREF=\"" + css + "\" CHARSET=\"ISO-8859-1\" TYPE=\"text/css\">" + NL);
       out.write("" + NL);
+      out.write("<NOSCRIPT></NOSCRIPT>" + NL);
       out.write("<SCRIPT type=\"text/javascript\">" + NL);
       out.write("function windowTitle()" + NL);
       out.write("{" + NL);
@@ -612,7 +615,21 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
       out.write("    }" + NL);
       out.write("}" + NL);
       out.write("</SCRIPT>" + NL);
-      out.write("<NOSCRIPT></NOSCRIPT>" + NL);
+
+      Set<String> headers = new LinkedHashSet<String>();
+      addHeaders(headers);
+
+      for (String header : headers)
+      {
+        out.write("" + NL);
+        out.write(header);
+
+        if (!header.endsWith(NL))
+        {
+          out.write(NL);
+        }
+      }
+
       out.write("</HEAD>" + NL);
       out.write(NL);
       out.write("<BODY BGCOLOR=\"white\" onload=\"windowTitle();\">" + NL);
@@ -634,6 +651,14 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
     finally
     {
       ArticleUtil.close(out);
+    }
+  }
+
+  public void addHeaders(Set<String> headers)
+  {
+    for (StructuralElement child : getSortedChildren())
+    {
+      child.addHeaders(headers);
     }
   }
 

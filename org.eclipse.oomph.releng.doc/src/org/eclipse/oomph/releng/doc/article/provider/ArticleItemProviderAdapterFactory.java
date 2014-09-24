@@ -748,6 +748,31 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
   }
 
   /**
+   * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.TreeFormatter} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected TreeFormatterItemProvider treeFormatterItemProvider;
+
+  /**
+   * This creates an adapter for a {@link org.eclipse.oomph.releng.doc.article.TreeFormatter}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createTreeFormatterAdapter()
+  {
+    if (treeFormatterItemProvider == null)
+    {
+      treeFormatterItemProvider = new TreeFormatterItemProvider(this);
+    }
+
+    return treeFormatterItemProvider;
+  }
+
+  /**
    * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.Image} instances.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1040,6 +1065,10 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
     if (xmlFormatterItemProvider != null)
     {
       xmlFormatterItemProvider.dispose();
+    }
+    if (treeFormatterItemProvider != null)
+    {
+      treeFormatterItemProvider.dispose();
     }
     if (imageItemProvider != null)
     {

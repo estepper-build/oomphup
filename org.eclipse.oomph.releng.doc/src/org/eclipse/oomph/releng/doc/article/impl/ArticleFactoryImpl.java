@@ -40,6 +40,7 @@ import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
@@ -154,6 +155,8 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createJavaFormatter();
       case ArticlePackage.XML_FORMATTER:
         return createXmlFormatter();
+      case ArticlePackage.TREE_FORMATTER:
+        return createTreeFormatter();
       case ArticlePackage.IMAGE:
         return createImage();
       case ArticlePackage.TREE_NODE:
@@ -466,6 +469,17 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     XmlFormatterImpl xmlFormatter = new XmlFormatterImpl();
     return xmlFormatter;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TreeFormatter createTreeFormatter()
+  {
+    TreeFormatterImpl treeFormatter = new TreeFormatterImpl();
+    return treeFormatter;
   }
 
   /**

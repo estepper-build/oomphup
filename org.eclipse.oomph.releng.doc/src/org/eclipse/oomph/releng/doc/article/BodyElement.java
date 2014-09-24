@@ -16,6 +16,7 @@ import com.sun.javadoc.Tag;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Body Element</b></em>'. <!-- end-user-doc -->
@@ -43,7 +44,7 @@ public interface BodyElement extends EObject
    * description here...
    * </p>
    * <!-- end-user-doc -->
-   * 
+   *
    * @return the value of the '<em>Container</em>' container reference.
    * @see #setContainer(BodyElementContainer)
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getBodyElement_Container()
@@ -75,6 +76,10 @@ public interface BodyElement extends EObject
    * @generated
    */
   Tag getTag();
+
+  Body getBody();
+
+  void addHeaders(Set<String> headers, StructuralElement linkSource);
 
   void generate(PrintWriter out, StructuralElement linkSource) throws IOException;
 

@@ -13,6 +13,8 @@ package org.eclipse.oomph.releng.doc.article.impl;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
+import org.eclipse.oomph.releng.doc.article.Embedding;
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -23,6 +25,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.sun.javadoc.Doc;
+
+import java.io.File;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Embeddable Element</b></em>'. <!-- end-user-doc
@@ -281,6 +285,14 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
         return DOC_EDEFAULT == null ? getDoc() != null : !DOC_EDEFAULT.equals(getDoc());
     }
     return super.eIsSet(featureID);
+  }
+
+  public String rewritePath(String path, Embedding embedder)
+  {
+    File source = embedder.getBody().getDoc().position().file().getParentFile();
+    File target = new File(getDoc().position().file().getParentFile(), path).getAbsoluteFile();
+
+    return ArticleUtil.createLink(source, target);
   }
 
 } // EmbeddableElementImpl

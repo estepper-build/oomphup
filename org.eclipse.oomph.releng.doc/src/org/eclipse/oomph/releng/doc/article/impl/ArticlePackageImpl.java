@@ -47,6 +47,7 @@ import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.Text;
 import org.eclipse.oomph.releng.doc.article.Toc;
+import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
@@ -281,6 +282,13 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * @generated
    */
   private EClass xmlFormatterEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass treeFormatterEClass = null;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -559,6 +567,26 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   public EReference getSnippet_Formatter()
   {
     return (EReference)snippetEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSnippet_Title()
+  {
+    return (EAttribute)snippetEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSnippet_TitleImage()
+  {
+    return (EAttribute)snippetEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1113,6 +1141,26 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTreeFormatter()
+  {
+    return treeFormatterEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTreeFormatter_File()
+  {
+    return (EAttribute)treeFormatterEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -1195,7 +1243,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNodeProperty_KeyImage()
+  public EAttribute getTreeNodeProperty_Key()
   {
     return (EAttribute)treeNodePropertyEClass.getEStructuralFeatures().get(0);
   }
@@ -1205,7 +1253,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNodeProperty_Key()
+  public EAttribute getTreeNodeProperty_ValueImage()
   {
     return (EAttribute)treeNodePropertyEClass.getEStructuralFeatures().get(1);
   }
@@ -1215,7 +1263,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNodeProperty_ValueImage()
+  public EAttribute getTreeNodeProperty_Value()
   {
     return (EAttribute)treeNodePropertyEClass.getEStructuralFeatures().get(2);
   }
@@ -1225,19 +1273,9 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNodeProperty_Value()
-  {
-    return (EAttribute)treeNodePropertyEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getTreeNodeProperty_Properties()
   {
-    return (EReference)treeNodePropertyEClass.getEStructuralFeatures().get(4);
+    return (EReference)treeNodePropertyEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1330,6 +1368,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     snippetEClass = createEClass(SNIPPET);
     createEReference(snippetEClass, SNIPPET__CALLOUTS);
     createEReference(snippetEClass, SNIPPET__FORMATTER);
+    createEAttribute(snippetEClass, SNIPPET__TITLE);
+    createEAttribute(snippetEClass, SNIPPET__TITLE_IMAGE);
 
     diagramEClass = createEClass(DIAGRAM);
 
@@ -1421,6 +1461,9 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     xmlFormatterEClass = createEClass(XML_FORMATTER);
     createEAttribute(xmlFormatterEClass, XML_FORMATTER__FILE);
 
+    treeFormatterEClass = createEClass(TREE_FORMATTER);
+    createEAttribute(treeFormatterEClass, TREE_FORMATTER__FILE);
+
     imageEClass = createEClass(IMAGE);
     createEAttribute(imageEClass, IMAGE__FILE);
 
@@ -1431,7 +1474,6 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     createEReference(treeNodeEClass, TREE_NODE__PROPERTIES);
 
     treeNodePropertyEClass = createEClass(TREE_NODE_PROPERTY);
-    createEAttribute(treeNodePropertyEClass, TREE_NODE_PROPERTY__KEY_IMAGE);
     createEAttribute(treeNodePropertyEClass, TREE_NODE_PROPERTY__KEY);
     createEAttribute(treeNodePropertyEClass, TREE_NODE_PROPERTY__VALUE_IMAGE);
     createEAttribute(treeNodePropertyEClass, TREE_NODE_PROPERTY__VALUE);
@@ -1503,6 +1545,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     excelEClass.getESuperTypes().add(getBodyElement());
     javaFormatterEClass.getESuperTypes().add(getFormatter());
     xmlFormatterEClass.getESuperTypes().add(getFormatter());
+    treeFormatterEClass.getESuperTypes().add(getFormatter());
     imageEClass.getESuperTypes().add(getBodyElement());
 
     // Initialize classes and features; add operations and parameters
@@ -1543,6 +1586,10 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
         IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSnippet_Formatter(), getFormatter(), getFormatter_Snippet(), "formatter", null, 1, 1, Snippet.class, !IS_TRANSIENT, !IS_VOLATILE,
         IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSnippet_Title(), ecorePackage.getEString(), "title", null, 0, 1, Snippet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSnippet_TitleImage(), ecorePackage.getEString(), "titleImage", null, 0, 1, Snippet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(diagramEClass, Diagram.class, "Diagram", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1670,6 +1717,10 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEAttribute(getXmlFormatter_File(), getFile(), "file", null, 0, 1, XmlFormatter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
         !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(treeFormatterEClass, TreeFormatter.class, "TreeFormatter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTreeFormatter_File(), getFile(), "file", null, 0, 1, TreeFormatter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+        !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(imageEClass, Image.class, "Image", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImage_File(), getFile(), "file", null, 1, 1, Image.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
@@ -1685,8 +1736,6 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
         IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(treeNodePropertyEClass, TreeNodeProperty.class, "TreeNodeProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTreeNodeProperty_KeyImage(), ecorePackage.getEString(), "keyImage", null, 0, 1, TreeNodeProperty.class, !IS_TRANSIENT, !IS_VOLATILE,
-        IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTreeNodeProperty_Key(), ecorePackage.getEString(), "key", null, 0, 1, TreeNodeProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTreeNodeProperty_ValueImage(), ecorePackage.getEString(), "valueImage", null, 0, 1, TreeNodeProperty.class, !IS_TRANSIENT, !IS_VOLATILE,

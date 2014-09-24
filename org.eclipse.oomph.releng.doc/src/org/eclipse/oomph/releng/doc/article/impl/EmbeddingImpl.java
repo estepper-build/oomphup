@@ -10,18 +10,19 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 
+import org.eclipse.emf.ecore.EClass;
+
 import com.sun.javadoc.SeeTag;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Embedding</b></em>'. <!-- end-user-doc -->
@@ -119,6 +120,12 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
   public BodyElement copy()
   {
     return new EmbeddingImpl(getTag(), element);
+  }
+
+  @Override
+  public void addHeaders(Set<String> headers, StructuralElement linkSource)
+  {
+    element.addHeaders(headers, this);
   }
 
   public void generate(PrintWriter out, StructuralElement linkSource) throws IOException

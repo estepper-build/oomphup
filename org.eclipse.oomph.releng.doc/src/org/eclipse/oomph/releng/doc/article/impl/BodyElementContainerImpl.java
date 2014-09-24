@@ -28,6 +28,7 @@ import com.sun.javadoc.Tag;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Body Element Container</b></em>'. <!--
@@ -262,6 +263,16 @@ public abstract class BodyElementContainerImpl extends EObjectImpl implements Bo
     }
 
     return result == Integer.MAX_VALUE ? -1 : result;
+  }
+
+  public static void addHeaders(Set<String> headers, StructuralElement linkSource, EList<BodyElement> elements)
+  {
+    UnresolvedBodyElement.resolve(linkSource.getDocumentation().getContext(), elements);
+
+    for (BodyElement element : elements)
+    {
+      element.addHeaders(headers, linkSource);
+    }
   }
 
   public static void generate(PrintWriter out, StructuralElement linkSource, EList<BodyElement> elements) throws IOException
