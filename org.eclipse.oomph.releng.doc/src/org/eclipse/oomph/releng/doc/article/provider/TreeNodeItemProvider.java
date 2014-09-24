@@ -12,7 +12,10 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -138,7 +141,7 @@ public class TreeNodeItemProvider extends ItemProviderAdapter implements IEditin
   {
     TreeNode treeNode = (TreeNode)object;
     String image = treeNode.getImage();
-    return overlayImage(object, image != null ? URI.createURI(image) : getResourceLocator().getImage("full/obj16/TreeNode"));
+    return overlayImage(object, image != null ? getImageURI(treeNode, URI.createURI(image)) : getResourceLocator().getImage("full/obj16/TreeNode"));
   }
 
   /**
@@ -280,7 +283,7 @@ public class TreeNodeItemProvider extends ItemProviderAdapter implements IEditin
         public Object getImage(Object object)
         {
           String valueImage = treeNodeProperty.getValueImage();
-          return valueImage == null ? null : URI.createURI(valueImage);
+          return valueImage == null ? null : getImageURI(treeNodeProperty, URI.createURI(valueImage));
         }
       };
     }
@@ -329,5 +332,29 @@ public class TreeNodeItemProvider extends ItemProviderAdapter implements IEditin
     {
       return false;
     }
+  }
+
+  public static URI getImageURI(EObject eObject, URI uri)
+  {
+    if (uri.isRelative())
+    {
+      Resource resource = eObject.eResource();
+      if (resource != null)
+      {
+        if (uri.hasRelativePath())
+        {
+          URI baseURI = resource.getURI();
+          return uri.resolve(baseURI);
+        }
+
+        ResourceSet resourceSet = resource.getResourceSet();
+        if (resourceSet != null)
+        {
+          return resourceSet.getURIConverter().normalize(uri);
+        }
+      }
+    }
+
+    return uri;
   }
 }
