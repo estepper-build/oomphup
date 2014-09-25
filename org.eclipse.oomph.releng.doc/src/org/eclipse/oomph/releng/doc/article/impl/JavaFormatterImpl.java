@@ -20,7 +20,6 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.SeeTag;
 
-import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -77,7 +76,7 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
     return embedderTag.text() + ".java";
   }
 
-  public String getSnippetHtml(PrintWriter out, Embedding embedder, String id, String title)
+  public String[] getSnippetHtml(Embedding embedder, String id, String title)
   {
     Map<String, Object> options = new HashMap<String, Object>();
     options.put("id", id);
@@ -87,7 +86,7 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
     try
     {
       Object instance = snippet.newInstance(getDoc(), options);
-      return (String)getHtml.invoke(instance);
+      return new String[] { (String)getHtml.invoke(instance) };
     }
     catch (Error ex)
     {

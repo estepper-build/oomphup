@@ -654,6 +654,11 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
     return projectFolder;
   }
 
+  public File getProjectHtmlFolder()
+  {
+    return new File(projectFolder, "html");
+  }
+
   public File getProjectImagesFolder()
   {
     return new File(projectFolder, "images");

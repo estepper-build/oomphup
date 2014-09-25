@@ -133,6 +133,8 @@ public interface Documentation extends StructuralElement
 
   File getProjectFolder();
 
+  File getProjectHtmlFolder();
+
   File getProjectImagesFolder();
 
   StructuralElement getDefaultElement();

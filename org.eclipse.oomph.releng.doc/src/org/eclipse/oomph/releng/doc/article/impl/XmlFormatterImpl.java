@@ -29,7 +29,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import java.io.File;
-import java.io.PrintWriter;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Xml Formatter</b></em>'. <!-- end-user-doc -->
@@ -208,7 +207,7 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     return XmlFormatter.TYPE;
   }
 
-  public String getSnippetHtml(PrintWriter out, Embedding embedder, String id, String title)
+  public String[] getSnippetHtml(Embedding embedder, String id, String title)
   {
     XmlHandler handler = new XmlHandler();
 
@@ -221,10 +220,10 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     catch (Exception ex)
     {
       ex.printStackTrace();
-      return "<b><font color=\"#FF0000\">" + ex.getMessage() + "</font></b>";
+      return new String[] { "<b><font color=\"#FF0000\">" + ex.getMessage() + "</font></b>" };
     }
 
-    return handler.getHtml();
+    return new String[] { handler.getHtml() };
   }
 
   public String getCalloutMarker()

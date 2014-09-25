@@ -252,12 +252,19 @@
         <include name="copies/**/*" />
       </fileset>
     </delete>
+
     <copy todir="${project.path}/images" verbose="true" failonerror="false">
       <fileset dir="${releng.project}/html/images" defaultexcludes="true">
         <include name="**/*" />
       </fileset>
     </copy>
+
     <copy file="${releng.project}/html/book.css"
+          todir="${project.path}/html"
+          verbose="true"
+          failonerror="false" />
+
+    <copy file="${releng.project}/html/tree.css"
           todir="${project.path}/html"
           verbose="true"
           failonerror="false" />

@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.EObject;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.SeeTag;
 
-import java.io.PrintWriter;
 import java.util.Set;
 
 /**
@@ -70,7 +69,7 @@ public interface Formatter extends EObject
 
   String getTopLeftEditorIcon(String imagePath);
 
-  String getSnippetHtml(PrintWriter out, Embedding embedder, String id, String title);
+  String[] getSnippetHtml(Embedding embedder, String id, String title);
 
   String getCalloutMarker();
 

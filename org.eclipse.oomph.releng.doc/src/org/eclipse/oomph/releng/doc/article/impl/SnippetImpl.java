@@ -533,11 +533,11 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
   {
     Formatter formatter = getFormatter();
 
-    String id = getDoc().name();
-    int lastDot = id.lastIndexOf('.');
+    String snippetID = getDoc().name();
+    int lastDot = snippetID.lastIndexOf('.');
     if (lastDot != -1)
     {
-      id = id.substring(lastDot + 1);
+      snippetID = snippetID.substring(lastDot + 1);
     }
 
     SeeTag embedderTag = (SeeTag)embedder.getTag();
@@ -588,42 +588,17 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     out.write(NL);
     out.write(NL);
 
-    String html = formatter.getSnippetHtml(out, embedder, id, title);
-    html = processCallouts(id, html, imagePath);
-
-    out.write("<div class=\"snippet\" style=\"margin-left:24px;\" align=\"left\">" + NL);
-    out.write("  <a name=\"snippet_" + id + "\"></a>" + NL);
-    out.write("  <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">" + NL);
-    out.write("    <tr>" + NL);
-    out.write("      <td><div style=\"position:relative;\"><img src=\"" + imagePath
-        + "editor-top-left.png\"><img style=\"position:absolute; top:5px; left:5px;\" src=\"" + editorIcon + "\"></div></td>" + NL);
-    out.write("      <td style=\"background-image:url(" + imagePath
-        + "editor-top1.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
-    out.write("      <td width=\"1px\"><img src=\"" + imagePath + "editor-close.png\"></td>" + NL);
-    out.write("      <td style=\"background-image:url(" + imagePath + "editor-top2.png); background-repeat:repeat-x;\">&nbsp;</td>" + NL);
-    out.write("      <td><img src=\"" + imagePath + "editor-top-right.png\"></td>" + NL);
-    out.write("    </tr>" + NL);
-    out.write("    <tr>" + NL);
-    out.write("      <td style=\"background-image:url(" + imagePath + "editor-left.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
-    out.write("      <td colspan=\"3\" align=\"left\" valign=\"top\" nowrap>" + NL);
-    out.write("        <div style=\"margin:10px 0px 10px 0px;\">" + NL);
-    out.write("          <code>" + NL);
+    String[] snippets = formatter.getSnippetHtml(embedder, snippetID, title);
+    String html = snippets[0];
+    html = processCallouts(snippetID, html, imagePath);
+    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html);
 
     out.write(html);
-    out.write("" + NL);
-
-    out.write("          </code>" + NL);
-    out.write("        </div>" + NL);
-    out.write("      </td>" + NL);
-    out.write("      <td style=\"background-image:url(" + imagePath + "editor-right.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
-    out.write("    </tr>" + NL);
-    out.write("    <tr>" + NL);
-    out.write("      <td><img src=\"" + imagePath + "editor-bottom-left.png\"></td>" + NL);
-    out.write("      <td style=\"background-image:url(" + imagePath + "editor-bottom.png); background-repeat:repeat-x;\" colspan=\"3\">&nbsp;</td>" + NL);
-    out.write("      <td><img src=\"" + imagePath + "editor-bottom-right.png\"></td>" + NL);
-    out.write("    </tr>" + NL);
-    out.write("  </table>" + NL);
-    out.write("</div>" + NL);
+    for (int i = 1; i < snippets.length; i++)
+    {
+      String extraSnippet = snippets[i];
+      out.write(extraSnippet);
+    }
 
     EList<Callout> callouts = getCallouts();
     if (!callouts.isEmpty())
@@ -631,7 +606,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       out.write("<p>" + NL);
       for (Callout callout : callouts)
       {
-        String image = getCalloutImage(id, callout.getIndex(), false, "Jump to snippet...", imagePath);
+        String image = getCalloutImage(imagePath, snippetID, callout.getIndex(), false, "Jump to snippet...");
         out.write("<div style=\"margin-left:24px;\">" + image + "&nbsp;");
 
         try
@@ -650,7 +625,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     out.write("<p>" + NL);
   }
 
-  private String processCallouts(String id, String html, String imagePath)
+  private String processCallouts(String snippetID, String html, String imagePath)
   {
     EList<Callout> callouts = getCallouts();
     int size = callouts.size();
@@ -687,7 +662,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
           }
         }
 
-        String image = getCalloutImage(id, callout, true, alt, imagePath);
+        String image = getCalloutImage(imagePath, snippetID, callout, true, alt);
         html = start + image + rest;
       }
 
@@ -710,7 +685,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return html;
   }
 
-  private static String getCalloutImage(String prefix, int number, boolean code, String alt, String imagePath)
+  private static String getCalloutImage(String imagePath, String prefix, int number, boolean code, String alt)
   {
     String name = "callout_" + prefix + "_" + number;
     String nameSuffix = code ? "_code" : "";
@@ -750,6 +725,47 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
 
     File folder = doc.position().file().getParentFile();
     return new File(folder, args).getCanonicalFile();
+  }
+
+  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content)
+  {
+    StringBuilder builder = new StringBuilder();
+
+    builder.append("<div class=\"snippet\" style=\"margin-left:24px;\" align=\"left\">" + NL);
+    builder.append("  <a name=\"snippet_" + id + "\"></a>" + NL);
+    builder.append("  <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">" + NL);
+    builder.append("    <tr>" + NL);
+    builder.append("      <td><div style=\"position:relative;\"><img src=\"" + imagePath
+        + "editor-top-left.png\"><img style=\"position:absolute; top:5px; left:5px;\" src=\"" + editorIcon + "\"></div></td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath
+        + "editor-top1.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
+    builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-close.png\"></td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-top2.png); background-repeat:repeat-x;\">&nbsp;</td>" + NL);
+    builder.append("      <td><img src=\"" + imagePath + "editor-top-right.png\"></td>" + NL);
+    builder.append("    </tr>" + NL);
+    builder.append("    <tr>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-left.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
+    builder.append("      <td colspan=\"3\" align=\"left\" valign=\"top\" nowrap>" + NL);
+    builder.append("        <div style=\"margin:10px 0px 10px 0px;\">" + NL);
+    builder.append("          <code>" + NL);
+
+    builder.append(content);
+    builder.append("" + NL);
+
+    builder.append("          </code>" + NL);
+    builder.append("        </div>" + NL);
+    builder.append("      </td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-right.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
+    builder.append("    </tr>" + NL);
+    builder.append("    <tr>" + NL);
+    builder.append("      <td><img src=\"" + imagePath + "editor-bottom-left.png\"></td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-bottom.png); background-repeat:repeat-x;\" colspan=\"3\">&nbsp;</td>" + NL);
+    builder.append("      <td><img src=\"" + imagePath + "editor-bottom-right.png\"></td>" + NL);
+    builder.append("    </tr>" + NL);
+    builder.append("  </table>" + NL);
+    builder.append("</div>" + NL);
+
+    return builder.toString();
   }
 
 } // SnippetImpl

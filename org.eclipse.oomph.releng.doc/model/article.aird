@@ -1886,7 +1886,7 @@
           <foregroundColor xmi:type="viewpoint:RGBValues" xmi:id="_eG36VEPmEeSKRbMiuuasqQ" red="255" green="252" blue="216"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_17cYMEPlEeSKRbMiuuasqQ" name="title : EString" tooltipText="&#xA;ERROR : The required feature 'eAttributeType' of 'org.eclipse.emf.ecore.impl.EAttributeImpl@59db1cf2{platform:/resource/org.eclipse.oomph.releng.doc/model/article.ecore#//Snippet/newAttribute}' must be set&#xA;ERROR : The typed element must have a type">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_17cYMEPlEeSKRbMiuuasqQ" name="title : EString" tooltipText="">
           <target xmi:type="ecore:EAttribute" href="article.ecore#//Snippet/title"/>
           <semanticElements xmi:type="ecore:EAttribute" href="article.ecore#//Snippet/title"/>
           <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_c5tjoEPmEeSKRbMiuuasqQ" labelAlignment="LEFT">
@@ -1897,7 +1897,7 @@
           </ownedStyle>
           <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
         </ownedElements>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3PqZIEPlEeSKRbMiuuasqQ" name="titleImage : EString" tooltipText="&#xA;ERROR : The required feature 'eAttributeType' of 'org.eclipse.emf.ecore.impl.EAttributeImpl@1e5167ee{platform:/resource/org.eclipse.oomph.releng.doc/model/article.ecore#//Snippet/newAttribute}' must be set&#xA;ERROR : The typed element must have a type">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_3PqZIEPlEeSKRbMiuuasqQ" name="titleImage : EString" tooltipText="">
           <target xmi:type="ecore:EAttribute" href="article.ecore#//Snippet/titleImage"/>
           <semanticElements xmi:type="ecore:EAttribute" href="article.ecore#//Snippet/titleImage"/>
           <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_eHK1QEPmEeSKRbMiuuasqQ" labelAlignment="LEFT">
