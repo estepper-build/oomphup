@@ -338,9 +338,14 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
   private String generateTreeNode(Builder builder, Builder propertiesBuilder, int expandTo, TreeNode node)
   {
-    String icon = node.getImage();
-    String label = node.getLabel();
     String id;
+
+    String label = node.getLabel();
+    String icon = node.getImage();
+    if (icon != null)
+    {
+      icon = getSnippet().rewritePath(icon, builder.getEmbedder());
+    }
 
     EList<TreeNode> children = node.getChildren();
     if (children.isEmpty())
@@ -389,8 +394,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
   private void generateTreeNodeProperty(Builder propertiesBuilder, TreeNode node, TreeNodeProperty property)
   {
-    String icon = property.getValueImage();
     String label = property.getKey() + " = " + property.getValue();
+    String icon = property.getValueImage();
+    if (icon != null)
+    {
+      icon = getSnippet().rewritePath(icon, propertiesBuilder.getEmbedder());
+    }
 
     EList<TreeNodeProperty> children = property.getProperties();
     if (children.isEmpty())
@@ -440,6 +449,11 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       String path = body.getPath();
 
       idPrefix = path.endsWith(".html") ? "node" : path + (embeddingIndex != 0 ? "_" + embeddingIndex : "");
+    }
+
+    public Embedding getEmbedder()
+    {
+      return embedder;
     }
 
     public String getImagePath()
