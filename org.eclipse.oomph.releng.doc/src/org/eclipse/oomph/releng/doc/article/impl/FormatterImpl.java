@@ -40,6 +40,8 @@ import java.util.Set;
  */
 public abstract class FormatterImpl extends EObjectImpl implements Formatter
 {
+  protected static final String NL = LinkTargetImpl.NL;
+
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated

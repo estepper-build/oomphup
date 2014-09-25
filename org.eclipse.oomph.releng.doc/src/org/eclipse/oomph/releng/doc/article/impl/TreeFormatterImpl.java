@@ -47,8 +47,6 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 {
   private static final int DEFAULT_EXPAND_TO = 2;
 
-  private static final String NL = LinkTargetImpl.NL;
-
   /**
    * The default value of the '{@link #getFile() <em>File</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -266,21 +264,16 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     int embeddingIndex = getEmbeddingIndex(embedder);
     String selectionDiv = "selection_" + id + "_" + embeddingIndex;
 
-    Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
-
     Builder propertiesBuilder = new Builder(embedder, embeddingIndex, null);
-    propertiesBuilder.append("          </code>" + NL);
 
-    builder.append("          </code>" + NL);
+    Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
     builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\"></div>" + NL);
 
     TreeNode root = getRootNode(); // TODO What about multiple roots?
     generateTreeNode(builder, propertiesBuilder, DEFAULT_EXPAND_TO, root);
-    builder.append("          <code>" + NL);
 
-    propertiesBuilder.append("          <code>" + NL);
     String propertiesHtml = SnippetImpl.getEditorHtml(propertiesBuilder.getImagePath(), id + "_properties", "Properties", propertiesBuilder.getImagePath()
-        + "formatter-tree-properties.gif", propertiesBuilder.toString(), 0);
+        + "formatter-tree-properties.gif", propertiesBuilder.toString(), "0px -1px -1px -11px");
 
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
   }

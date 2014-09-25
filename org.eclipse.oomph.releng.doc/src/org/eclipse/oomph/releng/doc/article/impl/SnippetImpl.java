@@ -60,6 +60,8 @@ import java.util.regex.Pattern;
  */
 public class SnippetImpl extends EmbeddableElementImpl implements Snippet
 {
+  public static final String CONTENT_INDENT = "          ";
+
   private static final Pattern PATTERN = Pattern.compile("<[^>]+?>", Pattern.MULTILINE | Pattern.DOTALL);
 
   /**
@@ -591,7 +593,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     String[] snippets = formatter.getSnippetHtml(embedder, snippetID, title);
     String html = snippets[0];
     html = processCallouts(snippetID, html, imagePath);
-    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html, 24);
+    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html, "10px 18px 10px 0px");
 
     out.write(html);
     for (int i = 1; i < snippets.length; i++)
@@ -727,7 +729,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return new File(folder, args).getCanonicalFile();
   }
 
-  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, int marginLeft)
+  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, String contentMargin)
   {
     StringBuilder builder = new StringBuilder();
 
@@ -740,19 +742,18 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     builder.append("      <td style=\"background-image:url(" + imagePath
         + "editor-top1.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
     builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-close.png\"></td>" + NL);
-    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-top2.png); background-repeat:repeat-x;\">&nbsp;</td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-top2.png); background-repeat:repeat-x;\" align=\"right\"><img src=\""
+        + imagePath + "editor-top3.png\"></td>" + NL);
     builder.append("      <td><img src=\"" + imagePath + "editor-top-right.png\"></td>" + NL);
     builder.append("    </tr>" + NL);
     builder.append("    <tr>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-left.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
     builder.append("      <td colspan=\"3\" align=\"left\" valign=\"top\" nowrap>" + NL);
-    builder.append("        <div style=\"margin:10px 0px 10px 0px;\">" + NL);
-    builder.append("          <code>" + NL);
+    builder.append("        <div style=\"margin:" + contentMargin + ";\">" + NL);
 
     builder.append(content);
     builder.append("" + NL);
 
-    builder.append("          </code>" + NL);
     builder.append("        </div>" + NL);
     builder.append("      </td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-right.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);

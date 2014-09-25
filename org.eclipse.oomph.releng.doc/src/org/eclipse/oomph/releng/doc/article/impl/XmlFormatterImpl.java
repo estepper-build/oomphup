@@ -223,7 +223,7 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
       return new String[] { "<b><font color=\"#FF0000\">" + ex.getMessage() + "</font></b>" };
     }
 
-    return new String[] { handler.getHtml() };
+    return new String[] { SnippetImpl.CONTENT_INDENT + "<code>" + NL + handler.getHtml() + SnippetImpl.CONTENT_INDENT + "</code>" + NL };
   }
 
   public String getCalloutMarker()

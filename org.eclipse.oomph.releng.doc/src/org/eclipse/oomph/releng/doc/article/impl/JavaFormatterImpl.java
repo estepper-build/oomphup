@@ -86,7 +86,7 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
     try
     {
       Object instance = snippet.newInstance(getDoc(), options);
-      return new String[] { (String)getHtml.invoke(instance) };
+      return new String[] { SnippetImpl.CONTENT_INDENT + "<code>" + NL + (String)getHtml.invoke(instance) + SnippetImpl.CONTENT_INDENT + "</code>" + NL };
     }
     catch (Error ex)
     {
