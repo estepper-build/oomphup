@@ -280,7 +280,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
     propertiesBuilder.append("          <code>" + NL);
     String propertiesHtml = SnippetImpl.getEditorHtml(propertiesBuilder.getImagePath(), id + "_properties", "Properties", propertiesBuilder.getImagePath()
-        + "formatter-tree-properties.gif", propertiesBuilder.toString());
+        + "formatter-tree-properties.gif", propertiesBuilder.toString(), 0);
 
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
   }
@@ -462,7 +462,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       String id = getNextID();
 
       appendIndent();
-      append("<div class=\"te\"><span>");
+      append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\"><span>");
       appendImage(imagePath + "empty.gif");
       appendImage(icon);
       append(" ");
@@ -477,7 +477,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       String id = getNextID();
 
       appendIndent();
-      append("<div class=\"te\">");
+      append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\">");
       append("<span><a href=\"javascript:toggle('" + id + "')\">");
       append("<img src=\"" + imagePath + (expanded ? "minus" : "plus") + ".gif\" id=\"img_" + id + "\">");
       append("</a>");

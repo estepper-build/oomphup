@@ -591,7 +591,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     String[] snippets = formatter.getSnippetHtml(embedder, snippetID, title);
     String html = snippets[0];
     html = processCallouts(snippetID, html, imagePath);
-    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html);
+    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html, 24);
 
     out.write(html);
     for (int i = 1; i < snippets.length; i++)
@@ -727,7 +727,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return new File(folder, args).getCanonicalFile();
   }
 
-  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content)
+  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, int marginLeft)
   {
     StringBuilder builder = new StringBuilder();
 
