@@ -18,6 +18,7 @@ import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -289,10 +290,24 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
 
   public String rewritePath(String path, Embedding embedder)
   {
-    File source = embedder.getBody().getDoc().position().file().getParentFile();
-    File target = new File(getDoc().position().file().getParentFile(), path).getAbsoluteFile();
+    URI pathURI = URI.createFileURI(path);
+    if (!pathURI.isRelative())
+    {
+      return path;
+    }
+
+    File source = embedder.getBody().getOutputFile();
+    File target;
+    if (pathURI.hasRelativePath())
+    {
+      target = new File(pathURI.resolve(URI.createFileURI(getDoc().position().file().toString())).toFileString());
+    }
+    else
+    {
+      throw new UnsupportedOperationException();
+      // target = null;
+    }
 
     return ArticleUtil.createLink(source, target);
   }
-
 } // EmbeddableElementImpl
