@@ -13,16 +13,10 @@
 
 <plugin>
    <extension
-         id="application"
-         point="org.eclipse.core.runtime.applications">
-      <application
-            cardinality="singleton-global"
-            thread="main"
-            visible="true">
-         <run
-               class="org.eclipse.oomph.releng.doc.preprocess.PreprocessApplication">
-         </run>
-      </application>
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.oomph.releng.doc.preprocess.EarlyStartup">
+      </startup>
    </extension>
 
 </plugin>

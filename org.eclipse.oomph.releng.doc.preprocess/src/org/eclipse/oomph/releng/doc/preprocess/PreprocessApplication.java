@@ -6,9 +6,11 @@ import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 
 import org.eclipse.emf.common.CommonPlugin;
+import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -20,20 +22,45 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 
-import org.eclipse.equinox.app.IApplication;
-import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.eclipse.ui.part.FileEditorInput;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +71,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,17 +80,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("restriction")
-public class PreprocessApplication implements IApplication
+public class PreprocessApplication
 {
   // {
-  private static Pattern TREE_SNIPPET_PATTERN = Pattern.compile(
-      "\\{\\s*@\\s*snippet\\s+tree\\s+([^\\s]+)\\s+([^}]*?)(\\s+\\(categorized|advanced|categorized\\s+advanced|advanced\\s+categorized\\))?\\s*\\}",
-      Pattern.MULTILINE);
+  private static Pattern TREE_SNIPPET_PATTERN = Pattern
+      .compile(
+          "@[ \t]*snippet[ \t]+tree[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)([ \t]+\\(categorized|advanced|categorized[ \t]+advanced|advanced[ \t]+categorized\\))?[ \t]*[\r\n]",
+          Pattern.MULTILINE);
 
   private static final Object BLANK = ArticlePlugin.INSTANCE.getImage("full/obj16/Blank");
 
   private AdapterFactoryItemDelegator itemDelegator = new AdapterFactoryItemDelegator(new ComposedAdapterFactory(
       ComposedAdapterFactory.Descriptor.Registry.INSTANCE));
+
+  final IWorkspaceRoot workspaceRoot = EcorePlugin.getWorkspaceRoot();
+
+  final IWorkspace workspace = workspaceRoot.getWorkspace();
 
   private ResourceSet resourceSet = createResourceSet();
 
@@ -72,66 +105,19 @@ public class PreprocessApplication implements IApplication
 
   private URI targetURI;
 
+  private ILabelProvider labelProvider;
+
+  private ITreeContentProvider contentProvider;
+
   public PreprocessApplication()
   {
     computeTargetPlatform();
   }
 
-  public Object start(final IApplicationContext context) throws Exception
+  public void visitProject(File project)
   {
-    final Display display = PlatformUI.createDisplay();
-
-    display.asyncExec(new Runnable()
-    {
-      public void run()
-      {
-        final IWorkbench workbench = PlatformUI.getWorkbench();
-        if (workbench.getWorkbenchWindowCount() == 0)
-        {
-          display.timerExec(1000, this);
-        }
-        else
-        {
-          for (IWorkbenchWindow window : workbench.getWorkbenchWindows())
-          {
-            window.getShell().setMinimized(true);
-          }
-
-          String[] args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-          if (args != null)
-          {
-            for (String arg : args)
-            {
-              File file;
-              try
-              {
-                file = new File(arg).getCanonicalFile();
-                imageFolder = URI.createFileURI(file.getPath()).appendSegment("images").appendSegment("trees");
-                visit(file);
-              }
-              catch (IOException ex)
-              {
-                ex.printStackTrace();
-              }
-            }
-
-          }
-
-          System.exit(0);
-        }
-      }
-    });
-
-    PlatformUI.createAndRunWorkbench(display, new WorkbenchAdvisor()
-    {
-      @Override
-      public String getInitialWindowPerspectiveId()
-      {
-        return null;
-      }
-    });
-
-    return null;
+    imageFolder = URI.createFileURI(project.getPath()).appendSegment("images").appendSegment("trees");
+    visit(project);
   }
 
   private void visit(File file)
@@ -187,6 +173,42 @@ public class PreprocessApplication implements IApplication
               List<TreeNode> treeNodes = new ArrayList<TreeNode>();
               for (URI sourceURI : sourceURIs)
               {
+                if (sourceURI.isPlatformResource() && !sourceURI.isPlatformResource())
+                {
+                  IFile workspaceFile = workspaceRoot.getFile(new Path(sourceURI.toPlatformString(true)));
+                  if (workspaceFile.exists())
+                  {
+                    try
+                    {
+                      IWorkbench workbench = PlatformUI.getWorkbench();
+                      IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+                      IEditorPart editor = workbenchWindow.getActivePage().openEditor(new FileEditorInput(workspaceFile),
+                          workbench.getEditorRegistry().getDefaultEditor(workspaceFile.getFullPath().toString()).getId());
+                      if (editor instanceof IViewerProvider)
+                      {
+                        IViewerProvider viewerProvider = (IViewerProvider)editor;
+                        Viewer viewer = viewerProvider.getViewer();
+                        if (viewer instanceof TreeViewer)
+                        {
+                          TreeViewer treeViewer = (TreeViewer)viewer;
+                          labelProvider = (ILabelProvider)treeViewer.getLabelProvider();
+                          contentProvider = (ITreeContentProvider)treeViewer.getContentProvider();
+                          Object object = viewer.getInput();
+                          treeNodes.add(createTreeNode(object));
+                          labelProvider = null;
+                          contentProvider = null;
+                        }
+
+                        System.err.println("###" + viewer);
+                      }
+                    }
+                    catch (PartInitException ex)
+                    {
+                      ex.printStackTrace();
+                    }
+                  }
+                }
+
                 String fragment = sourceURI.fragment();
                 if (fragment != null)
                 {
@@ -282,10 +304,10 @@ public class PreprocessApplication implements IApplication
   {
     TreeNode treeNode = ArticleFactory.eINSTANCE.createTreeNode();
 
-    Object image = itemDelegator.getImage(object);
+    Object image = labelProvider == null ? itemDelegator.getImage(object) : labelProvider.getImage(object);
     treeNode.setImage(getImageURL(image));
 
-    String text = itemDelegator.getText(object);
+    String text = labelProvider == null ? itemDelegator.getText(object) : labelProvider.getText(object);
     treeNode.setLabel(text);
 
     Map<String, List<TreeNodeProperty>> categories = new LinkedHashMap<String, List<TreeNodeProperty>>();
@@ -304,10 +326,13 @@ public class PreprocessApplication implements IApplication
       }
     }
 
-    EList<TreeNode> children = treeNode.getChildren();
-    for (Object child : itemDelegator.getChildren(object))
+    if (!(object instanceof EObject) || !"user".equals(((EObject)object).eResource().getURI().scheme()))
     {
-      children.add(createTreeNode(child));
+      EList<TreeNode> children = treeNode.getChildren();
+      for (Object child : contentProvider == null ? itemDelegator.getChildren(object) : Arrays.asList(contentProvider.getChildren(object)))
+      {
+        children.add(createTreeNode(child));
+      }
     }
 
     return treeNode;
@@ -421,35 +446,139 @@ public class PreprocessApplication implements IApplication
 
   private void computeTargetPlatform()
   {
-    Map<URI, URI> uriMap = resourceSet.getURIConverter().getURIMap();
+    IWorkspaceDescription description = workspace.getDescription();
+    description.setAutoBuilding(false);
 
-    IPluginModelBase[] activeModels = PluginRegistry.getActiveModels(false);
-
-    // Determine the symbolic name, underlying resource, if any, and the install location.
-    for (IPluginModelBase activeModel : activeModels)
+    try
     {
-      BundleDescription bundleDescription = activeModel.getBundleDescription();
-      String symbolicName = bundleDescription.getSymbolicName();
-      String installLocation = activeModel.getInstallLocation();
-      if (installLocation != null)
-      {
-        URI locationURI = URI.createFileURI(installLocation);
-        File locationFile = new File(installLocation);
-        if (locationFile.isFile())
-        {
-          locationURI = URI.createURI("archive:" + locationURI + "!/");
-        }
-        else
-        {
-          locationURI = locationURI.appendSegment("");
-        }
+      workspace.setDescription(description);
 
-        uriMap.put(URI.createPlatformResourceURI(symbolicName, false).appendSegment(""), locationURI);
-      }
+      workspace.run(new IWorkspaceRunnable()
+      {
+        public void run(IProgressMonitor monitor) throws CoreException
+        {
+          Map<URI, URI> uriMap = resourceSet.getURIConverter().getURIMap();
+
+          IPluginModelBase[] activeModels = PluginRegistry.getActiveModels(false);
+
+          // Determine the symbolic name, underlying resource, if any, and the install location.
+          for (IPluginModelBase activeModel : activeModels)
+          {
+            BundleDescription bundleDescription = activeModel.getBundleDescription();
+            String symbolicName = bundleDescription.getSymbolicName();
+            String installLocation = activeModel.getInstallLocation();
+            if (installLocation != null)
+            {
+              URI locationURI = URI.createFileURI(installLocation);
+              File locationFile = new File(installLocation);
+              if (locationFile.isFile())
+              {
+                locationURI = URI.createURI("archive:" + locationURI + "!/");
+              }
+              else
+              {
+                URI projectURI = locationURI.appendSegment(".project");
+                locationURI = locationURI.appendSegment("");
+                if (resourceSet.getURIConverter().exists(projectURI, null))
+                {
+                  try
+                  {
+                    IProjectDescription projectDescription = workspace.loadProjectDescription(resourceSet.getURIConverter().createInputStream(projectURI));
+                    IProject project = workspaceRoot.getProject(projectDescription.getName());
+                    if (!project.exists())
+                    {
+                      projectDescription.setLocation(new Path(locationURI.toFileString()));
+                      project.create(projectDescription, null);
+                      project.open(null);
+                    }
+                  }
+                  catch (IOException ex)
+                  {
+                    ex.printStackTrace();
+                  }
+                  catch (CoreException ex)
+                  {
+                    ex.printStackTrace();
+                  }
+                }
+              }
+
+              uriMap.put(URI.createPlatformResourceURI(symbolicName, false).appendSegment(""), locationURI);
+            }
+          }
+        }
+      }, null);
+    }
+    catch (CoreException ex2)
+    {
+      ex2.printStackTrace();
     }
   }
 
-  public void stop()
+  public static class CaptureWidgetImageGC
   {
+    public static void main(String[] args)
+    {
+      final Display display = new Display();
+      final Shell shell = new Shell(display);
+      shell.setText("Widget");
+
+      final Table table = new Table(shell, SWT.MULTI);
+      table.setLinesVisible(true);
+      table.setBounds(10, 10, 100, 100);
+      for (int i = 0; i < 9; i++)
+      {
+        new TableItem(table, SWT.NONE).setText("item" + i);
+      }
+
+      Button button = new Button(shell, SWT.PUSH);
+      button.setText("Capture");
+      button.pack();
+      button.setLocation(10, 140);
+      button.addListener(SWT.Selection, new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          Point tableSize = table.getSize();
+          GC gc = new GC(table);
+          final Image image = new Image(display, tableSize.x, tableSize.y);
+          gc.copyArea(image, 0, 0);
+          gc.dispose();
+
+          Shell popup = new Shell(shell);
+          popup.setText("Image");
+          popup.addListener(SWT.Close, new Listener()
+          {
+            public void handleEvent(Event e)
+            {
+              image.dispose();
+            }
+          });
+
+          Canvas canvas = new Canvas(popup, SWT.NONE);
+          canvas.setBounds(10, 10, tableSize.x + 10, tableSize.y + 10);
+          canvas.addPaintListener(new PaintListener()
+          {
+            public void paintControl(PaintEvent e)
+            {
+              e.gc.drawImage(image, 0, 0);
+            }
+          });
+          popup.pack();
+          popup.open();
+        }
+      });
+      shell.pack();
+      shell.open();
+      while (!shell.isDisposed())
+      {
+        if (!display.readAndDispatch())
+        {
+          display.sleep();
+        }
+      }
+      display.dispose();
+    }
   }
+
 }
