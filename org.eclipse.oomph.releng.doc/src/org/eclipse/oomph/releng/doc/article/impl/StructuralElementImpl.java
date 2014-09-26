@@ -719,7 +719,7 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
       if (file.isFile())
       {
         String name = file.getName();
-        if (!name.endsWith(".java") && !name.equals("package-info.java"))
+        if (!name.endsWith(".java") && !name.equals("package-info.java") && !name.endsWith(".tree"))
         {
           File targetFile = new File(targetFolder, name);
           ArticleUtil.copyFile(file, targetFile);
