@@ -235,16 +235,16 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
         "    e = document.getElementById('href_' + s.textContent);" + NL + //
         "    e.className = 'nosel';" + NL + //
         "    e = document.getElementById('pk_' + s.textContent);" + NL + //
-        "    e.style.display = 'none';" + NL + //
+        "    if (e != null) e.style.display = 'none';" + NL + //
         "    e = document.getElementById('pv_' + s.textContent);" + NL + //
-        "    e.style.display = 'none';" + NL + //
+        "    if (e != null) e.style.display = 'none';" + NL + //
         "  }" + NL + //
         "  e = document.getElementById('href_' + id);" + NL + //
         "  e.className = 'sel';" + NL + //
         "  e = document.getElementById('pk_' + id);" + NL + //
-        "  e.style.display = '';" + NL + //
+        "  if (e != null) e.style.display = '';" + NL + //
         "  e = document.getElementById('pv_' + id);" + NL + //
-        "  e.style.display = '';" + NL + //
+        "  if (e != null) e.style.display = '';" + NL + //
         "  s.textContent = id;" + NL + //
         "}" + NL + //
         "</script>");

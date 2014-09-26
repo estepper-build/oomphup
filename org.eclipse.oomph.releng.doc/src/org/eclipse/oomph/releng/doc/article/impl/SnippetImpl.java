@@ -742,6 +742,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         "  if (e.className == 'max')" + NL + //
         "  {" + NL + //
         "    e.className = 'rst';" + NL + //
+        "    e.setAttribute('title', 'Restore');" + NL + //
         "    c1.setAttribute('style_orig', c1.getAttribute('style'));" + NL + //
         "    c1.setAttribute('style', 'border:2px solid #99b4d1; border-top:none;');" + NL + //
         "    c2.setAttribute('style', '');" + NL + //
@@ -754,6 +755,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         "  else" + NL + //
         "  {" + NL + //
         "    e.className = 'max';" + NL + //
+        "    e.setAttribute('title', 'Maximize');" + NL + //
         "    c1.setAttribute('style', c1.getAttribute('style_orig'));" + NL + //
         "    c1.setAttribute('style_orig', '');" + NL + //
         "    c2.setAttribute('style', 'overflow:scroll; width:100%; height:100%;');" + NL + //
@@ -785,7 +787,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-3.png\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"right\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"center\" width=\"16\">" //
-        + "<a href=\"javascript:maximize('" + id + "')\" id=\"max_" + id + "\" class=\"max\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
+        + "<a href=\"javascript:maximize('" + id + "')\" id=\"max_" + id + "\" class=\"max\" title=\"Maximize\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
     builder.append("      <td width=\"6px\"><img src=\"" + imagePath + "editor-5.png\"></td>" + NL);
     builder.append("    </tr>" + NL);
 
