@@ -7,7 +7,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -24,6 +29,44 @@ public class EarlyStartup implements IStartup
     if (projects != null)
     {
       final Display display = Display.getDefault();
+      final Listener displayListener = new Listener()
+      {
+        public void handleEvent(Event event)
+        {
+          if (event.widget instanceof Shell)
+          {
+            final Shell shell = (Shell)event.widget;
+            Object data = shell.getData();
+            if (data instanceof Dialog)
+            {
+              display.asyncExec(new Runnable()
+              {
+                public void run()
+                {
+                  shell.close();
+                }
+              });
+            }
+          }
+        }
+      };
+
+      display.asyncExec(new Runnable()
+      {
+        public void run()
+        {
+          for (Shell shell : display.getShells())
+          {
+            Object data = shell.getData();
+            if (data instanceof Dialog)
+            {
+              shell.close();
+            }
+          }
+          display.addListener(SWT.Skin, displayListener);
+        }
+      });
+
       display.asyncExec(new Runnable()
       {
         public void run()
@@ -69,6 +112,8 @@ public class EarlyStartup implements IStartup
                         }
                       }
                     }
+
+                    display.removeListener(SWT.Skin, displayListener);
 
                     return Status.OK_STATUS;
                   }
