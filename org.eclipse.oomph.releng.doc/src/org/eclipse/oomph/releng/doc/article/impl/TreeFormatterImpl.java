@@ -271,10 +271,9 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     Builder propertyValuesBuilder = new PropertyValuesBuilder(embedder, embeddingIndex, null);
 
     Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
-    builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\"></div>" + NL);
 
     TreeNode root = getRootNode(); // TODO What about multiple roots?
-    generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, DEFAULT_EXPAND_TO, root);
+    generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, DEFAULT_EXPAND_TO, true, root);
 
     String imagePath = builder.getImagePath();
     String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + propertyKeysBuilder + "</td><td id=\"max_pv_" + id
@@ -282,6 +281,8 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     String propertiesHtml = SnippetImpl.getEditorHtml(imagePath, id + "_properties", "Properties", imagePath + "formatter-tree-properties.gif", content, 600,
         100);
 
+    String selection = "";
+    builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\">" + selection + "</div>" + NL);
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
   }
 
@@ -336,7 +337,8 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     throw new ArticleException("Embedding not found: " + embedder.getTag().text());
   }
 
-  private String generateTreeNode(Builder builder, Builder propertyKeysBuilder, Builder propertyValuesBuilder, int expandTo, TreeNode node)
+  private String generateTreeNode(Builder builder, Builder propertyKeysBuilder, Builder propertyValuesBuilder, int expandTo, boolean propertiesVisible,
+      TreeNode node)
   {
     String id;
 
@@ -359,7 +361,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
       for (TreeNode child : children)
       {
-        generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, expandTo, child);
+        generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, expandTo, false, child);
       }
 
       builder.appendGroupEnd();
@@ -368,8 +370,8 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     EList<TreeNodeProperty> properties = node.getProperties();
     if (!properties.isEmpty())
     {
-      generateTreeNodeProperties(propertyKeysBuilder, node, id, false, properties, true, "pk", "keys");
-      generateTreeNodeProperties(propertyValuesBuilder, node, id, false, properties, false, "pv", "values");
+      generateTreeNodeProperties(propertyKeysBuilder, node, id, propertiesVisible, properties, true, "pk", "keys");
+      generateTreeNodeProperties(propertyValuesBuilder, node, id, propertiesVisible, properties, false, "pv", "values");
     }
 
     return id;
