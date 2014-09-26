@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  */
 public class SnippetImpl extends EmbeddableElementImpl implements Snippet
 {
-  public static final String CONTENT_INDENT = "          ";
+  public static final String CONTENT_INDENT = "            ";
 
   private static final Pattern PATTERN = Pattern.compile("<[^>]+?>", Pattern.MULTILINE | Pattern.DOTALL);
 
@@ -525,12 +525,6 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return result.toString();
   }
 
-  public void addHeaders(Set<String> headers, Embedding embedder)
-  {
-    Formatter formatter = getFormatter();
-    formatter.addHeaders(headers, embedder, this);
-  }
-
   public void generate(PrintWriter out, Embedding embedder) throws IOException
   {
     Formatter formatter = getFormatter();
@@ -593,7 +587,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     String[] snippets = formatter.getSnippetHtml(embedder, snippetID, title);
     String html = snippets[0];
     html = processCallouts(snippetID, html, imagePath);
-    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html, "10px 18px 10px 0px");
+    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html, 600, 300);
 
     out.write(html);
     for (int i = 1; i < snippets.length; i++)
@@ -729,7 +723,54 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return new File(folder, args).getCanonicalFile();
   }
 
-  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, String contentMargin)
+  public void addHeaders(Set<String> headers, Embedding embedder)
+  {
+    headers.add("<link rel=\"stylesheet\" href=\"" + embedder.getBody().getHtmlPath() + "editor.css\" charset=\"UTF-8\" type=\"text/css\">");
+    headers.add("<script src=\"http://code.jquery.com/jquery-1.11.1.min.js\"></script>");
+    headers.add("<script src=\"http://code.jquery.com/ui/1.11.0/jquery-ui.min.js\"></script>");
+    headers.add("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css\">");
+    headers.add("<script>" + NL + "$(function() {" + NL + "$( \".resizable\" ).resizable({ handles:\"s,e,se\", autoHide:true });" + NL + "});" + NL
+        + "</script>");
+
+    headers.add("<script type=\"text/javascript\">" + NL + //
+        "function maximize(id)" + NL + //
+        "{" + NL + //
+        "  e = document.getElementById('max_' + id);" + NL + //
+        "  c1 = document.getElementById('editor_content_1_' + id);" + NL + //
+        "  c2 = document.getElementById('editor_content_2_' + id);" + NL + //
+        "  pv = document.getElementById('max_pv_' + id);" + NL + //
+        "  if (e.className == 'max')" + NL + //
+        "  {" + NL + //
+        "    e.className = 'rst';" + NL + //
+        "    c1.setAttribute('style_orig', c1.getAttribute('style'));" + NL + //
+        "    c1.setAttribute('style', 'border:2px solid #99b4d1; border-top:none;');" + NL + //
+        "    c2.setAttribute('style', '');" + NL + //
+        "    if (pv != null)" + NL + //
+        "    {" + NL + //
+        "      pv.setAttribute('width_orig', pv.getAttribute('width'));" + NL + //
+        "      pv.setAttribute('width', '');" + NL + //
+        "    }" + NL + //
+        "  }" + NL + //
+        "  else" + NL + //
+        "  {" + NL + //
+        "    e.className = 'max';" + NL + //
+        "    c1.setAttribute('style', c1.getAttribute('style_orig'));" + NL + //
+        "    c1.setAttribute('style_orig', '');" + NL + //
+        "    c2.setAttribute('style', 'overflow:scroll; width:100%; height:100%;');" + NL + //
+        "    if (pv != null)" + NL + //
+        "    {" + NL + //
+        "      pv.setAttribute('width', pv.getAttribute('width_orig'));" + NL + //
+        "      pv.setAttribute('width_orig', '');" + NL + //
+        "    }" + NL + //
+        "  }" + NL + //
+        "}" + NL + //
+        "</script>");
+
+    Formatter formatter = getFormatter();
+    formatter.addHeaders(headers, embedder, this);
+  }
+
+  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, int contentWidth, int contentHeight)
   {
     StringBuilder builder = new StringBuilder();
 
@@ -737,36 +778,31 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     builder.append("  <a name=\"snippet_" + id + "\"></a>" + NL);
     builder.append("  <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">" + NL);
     builder.append("    <tr>" + NL);
-    builder.append("      <td><div style=\"position:relative;\"><img src=\"" + imagePath
-        + "editor-top-left.png\"><img style=\"position:absolute; top:5px; left:5px;\" src=\"" + editorIcon + "\"></div></td>" + NL);
+    builder.append("      <td width=\"25px\"><div style=\"position:relative;\"><img src=\"" + imagePath
+        + "editor-1.png\"><img style=\"position:absolute; top:5px; left:5px;\" src=\"" + editorIcon + "\"></div></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath
-        + "editor-top1.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
-    builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-close.png\"></td>" + NL);
-    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-top2.png); background-repeat:repeat-x;\" align=\"right\"><img src=\""
-        + imagePath + "editor-top3.png\"></td>" + NL);
-    builder.append("      <td><img src=\"" + imagePath + "editor-top-right.png\"></td>" + NL);
+        + "editor-2.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
+    builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-3.png\"></td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"right\"></td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"center\" width=\"16\">" //
+        + "<a href=\"javascript:maximize('" + id + "')\" id=\"max_" + id + "\" class=\"max\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
+    builder.append("      <td width=\"6px\"><img src=\"" + imagePath + "editor-5.png\"></td>" + NL);
     builder.append("    </tr>" + NL);
-    builder.append("    <tr>" + NL);
-    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-left.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
-    builder.append("      <td colspan=\"3\" align=\"left\" valign=\"top\" nowrap>" + NL);
-    builder.append("        <div style=\"margin:" + contentMargin + ";\">" + NL);
 
+    builder.append("    <tr>" + NL);
+    builder.append("      <td colspan=\"6\" align=\"left\" valign=\"top\" style=\"border:1px solid #a0a0a0; border-top:none;\" nowrap>" + NL);
+    builder.append("        <div id=\"editor_content_1_" + id + "\" class=\"ui-widget-content resizable\" style=\"width:" + contentWidth + "px; height:"
+        + contentHeight + "px; border:2px solid #99b4d1; border-top:none;\">" + NL);
+    builder.append("          <div id=\"editor_content_2_" + id + "\" style=\"overflow:scroll; width:100%; height:100%;\">" + NL);
     builder.append(content);
     builder.append("" + NL);
-
+    builder.append("          </div>" + NL);
     builder.append("        </div>" + NL);
     builder.append("      </td>" + NL);
-    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-right.png); background-repeat:repeat-y;\">&nbsp;</td>" + NL);
-    builder.append("    </tr>" + NL);
-    builder.append("    <tr>" + NL);
-    builder.append("      <td><img src=\"" + imagePath + "editor-bottom-left.png\"></td>" + NL);
-    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-bottom.png); background-repeat:repeat-x;\" colspan=\"3\">&nbsp;</td>" + NL);
-    builder.append("      <td><img src=\"" + imagePath + "editor-bottom-right.png\"></td>" + NL);
     builder.append("    </tr>" + NL);
     builder.append("  </table>" + NL);
     builder.append("</div>" + NL);
 
     return builder.toString();
   }
-
 } // SnippetImpl

@@ -214,7 +214,6 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
   public void addHeaders(Set<String> headers, Embedding embedder, Snippet snippet)
   {
     super.addHeaders(headers, embedder, snippet);
-
     String images = embedder.getBody().getImagePath();
 
     headers.add("<script type=\"text/javascript\">" + NL + //
@@ -233,14 +232,18 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
         "  s = document.getElementById(selectionDiv);" + NL + //
         "  if (s.textContent)" + NL + //
         "  {" + NL + //
-        "    h = document.getElementById('href_' + s.textContent);" + NL + //
-        "    h.className = 'nosel';" + NL + //
-        "    e = document.getElementById('prop_' + s.textContent);" + NL + //
+        "    e = document.getElementById('href_' + s.textContent);" + NL + //
+        "    e.className = 'nosel';" + NL + //
+        "    e = document.getElementById('pk_' + s.textContent);" + NL + //
+        "    e.style.display = 'none';" + NL + //
+        "    e = document.getElementById('pv_' + s.textContent);" + NL + //
         "    e.style.display = 'none';" + NL + //
         "  }" + NL + //
-        "  h = document.getElementById('href_' + id);" + NL + //
-        "  h.className = 'sel';" + NL + //
-        "  e = document.getElementById('prop_' + id);" + NL + //
+        "  e = document.getElementById('href_' + id);" + NL + //
+        "  e.className = 'sel';" + NL + //
+        "  e = document.getElementById('pk_' + id);" + NL + //
+        "  e.style.display = '';" + NL + //
+        "  e = document.getElementById('pv_' + id);" + NL + //
         "  e.style.display = '';" + NL + //
         "  s.textContent = id;" + NL + //
         "}" + NL + //
@@ -264,16 +267,20 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     int embeddingIndex = getEmbeddingIndex(embedder);
     String selectionDiv = "selection_" + id + "_" + embeddingIndex;
 
-    Builder propertiesBuilder = new Builder(embedder, embeddingIndex, null);
+    Builder propertyKeysBuilder = new PropertyKeysBuilder(embedder, embeddingIndex, null);
+    Builder propertyValuesBuilder = new PropertyValuesBuilder(embedder, embeddingIndex, null);
 
     Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
     builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\"></div>" + NL);
 
     TreeNode root = getRootNode(); // TODO What about multiple roots?
-    generateTreeNode(builder, propertiesBuilder, DEFAULT_EXPAND_TO, root);
+    generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, DEFAULT_EXPAND_TO, root);
 
-    String propertiesHtml = SnippetImpl.getEditorHtml(propertiesBuilder.getImagePath(), id + "_properties", "Properties", propertiesBuilder.getImagePath()
-        + "formatter-tree-properties.gif", propertiesBuilder.toString(), "0px -1px -1px -11px");
+    String imagePath = builder.getImagePath();
+    String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + propertyKeysBuilder + "</td><td id=\"max_pv_" + id
+        + "_properties\" width=\"100%\">" + propertyValuesBuilder + "</td></tr></table>";
+    String propertiesHtml = SnippetImpl.getEditorHtml(imagePath, id + "_properties", "Properties", imagePath + "formatter-tree-properties.gif", content, 600,
+        100);
 
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
   }
@@ -329,7 +336,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     throw new ArticleException("Embedding not found: " + embedder.getTag().text());
   }
 
-  private String generateTreeNode(Builder builder, Builder propertiesBuilder, int expandTo, TreeNode node)
+  private String generateTreeNode(Builder builder, Builder propertyKeysBuilder, Builder propertyValuesBuilder, int expandTo, TreeNode node)
   {
     String id;
 
@@ -352,42 +359,45 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
       for (TreeNode child : children)
       {
-        generateTreeNode(builder, propertiesBuilder, expandTo, child);
+        generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, expandTo, child);
       }
 
       builder.appendGroupEnd();
     }
 
-    generateTreeNodeProperties(propertiesBuilder, node, id, false);
-    return id;
-  }
-
-  private void generateTreeNodeProperties(Builder propertiesBuilder, TreeNode node, String id, boolean visible)
-  {
     EList<TreeNodeProperty> properties = node.getProperties();
     if (!properties.isEmpty())
     {
-      propertiesBuilder.appendIndent();
-      propertiesBuilder.append("<!-- Properties for " + node.getLabel() + " -->" + NL);
-      propertiesBuilder.appendIndent();
-      propertiesBuilder.append("<div id=\"prop_" + id + "\"" + (visible ? "" : " style=\"display:none;\"") + ">" + NL);
-      ++propertiesBuilder.level;
-      visible = false;
-
-      for (TreeNodeProperty property : properties)
-      {
-        generateTreeNodeProperty(propertiesBuilder, node, property);
-      }
-
-      --propertiesBuilder.level;
-      propertiesBuilder.appendIndent();
-      propertiesBuilder.append("</div>" + NL);
+      generateTreeNodeProperties(propertyKeysBuilder, node, id, false, properties, true, "pk", "keys");
+      generateTreeNodeProperties(propertyValuesBuilder, node, id, false, properties, false, "pv", "values");
     }
+
+    return id;
   }
 
-  private void generateTreeNodeProperty(Builder propertiesBuilder, TreeNode node, TreeNodeProperty property)
+  private void generateTreeNodeProperties(Builder builder, TreeNode node, String id, boolean visible, EList<TreeNodeProperty> properties, boolean key,
+      String idPrefix, String comment)
   {
-    String label = property.getKey() + " = " + property.getValue();
+    builder.appendIndent();
+    builder.append("<!-- Property " + comment + " for " + node.getLabel() + " -->" + NL);
+    builder.appendIndent();
+    builder.append("<div id=\"" + idPrefix + "_" + id + "\"" + (visible ? "" : " style=\"display:none;\"") + ">" + NL);
+    ++builder.level;
+
+    for (TreeNodeProperty property : properties)
+    {
+      generateTreeNodeProperty(builder, node, property, key);
+    }
+
+    --builder.level;
+    builder.appendIndent();
+    builder.append("</div>" + NL);
+  }
+
+  private void generateTreeNodeProperty(Builder propertiesBuilder, TreeNode node, TreeNodeProperty property, boolean key)
+  {
+    String value = property.getValue();
+    String label = key ? property.getKey() : value == null ? "" : value;
     String icon = property.getValueImage();
     if (icon != null)
     {
@@ -405,7 +415,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
       for (TreeNodeProperty child : children)
       {
-        generateTreeNodeProperty(propertiesBuilder, node, child);
+        generateTreeNodeProperty(propertiesBuilder, node, child, key);
       }
 
       propertiesBuilder.appendGroupEnd();
@@ -469,12 +479,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       String id = getNextID();
 
       appendIndent();
-      append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\"><span>");
-      appendImage(imagePath + "empty.gif");
-      appendImage(icon);
-      append(" ");
+      append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\">");
+      append("<span>");
+      appendSingleProlog(icon, id);
       appendHref(label, id);
-      append("</span></div>" + NL);
+      append("</span>");
+      append("</div>" + NL);
 
       return id;
     }
@@ -485,15 +495,13 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
       appendIndent();
       append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\">");
-      append("<span><a href=\"javascript:toggle('" + id + "')\">");
-      append("<img src=\"" + imagePath + (expanded ? "minus" : "plus") + ".gif\" id=\"img_" + id + "\">");
-      append("</a>");
-      appendImage(icon);
-      append(" ");
+      append("<span>");
+      appendGroupProlog(icon, id, expanded);
       appendHref(label, id);
-      append("</span></div>" + NL);
+      append("</span>");
+      append("</div>" + NL);
       appendIndent();
-      append("<div id=\"" + id + "\" style=\"" + (expanded ? "" : "display:none; ") + "margin-left:20px;\">" + NL);
+      append("<div id=\"" + id + "\" style=\"" + (expanded ? "" : "display:none; ") + "margin-left:" + getGroupMarginLeft() + "px;\">" + NL);
 
       ++level;
       return id;
@@ -502,19 +510,8 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     public void appendGroupEnd()
     {
       --level;
-
       appendIndent();
       append("</div>" + NL);
-    }
-
-    public void appendImage(String path)
-    {
-      if (path == null)
-      {
-        path = imagePath + "empty-icon.gif";
-      }
-
-      append("<img src=\"" + path + "\" valign=\"middle\"/>");
     }
 
     public void appendHref(String label, String id)
@@ -551,9 +548,119 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       return builder.toString();
     }
 
+    protected void appendEmptyImage(int width, int height)
+    {
+      String path = getImagePath() + "empty.gif";
+      append("<img src=\"" + path + "\" width=\"" + width + "\" height=\"" + height + "\" valign=\"middle\"/>");
+    }
+
+    protected void appendIcon(String icon)
+    {
+      if (icon == null)
+      {
+        appendEmptyImage(16, 16);
+      }
+      else
+      {
+        append("<img src=\"" + icon + "\" width=\"16\" height=\"16\" valign=\"middle\"/>");
+      }
+
+      append("&nbsp;");
+    }
+
+    protected void appendSingleProlog(String icon, String id)
+    {
+      appendEmptyImage(16, 16);
+      appendIcon(icon);
+    }
+
+    protected void appendGroupProlog(String icon, String id, boolean expanded)
+    {
+      append("<a href=\"javascript:toggle('" + id + "')\">");
+      append("<img src=\"" + imagePath + (expanded ? "minus" : "plus") + ".gif\" id=\"img_" + id + "\">");
+      append("</a>");
+      appendIcon(icon);
+    }
+
+    protected int getGroupMarginLeft()
+    {
+      return 20;
+    }
+
     private String getNextID()
     {
       return idPrefix + "_" + (++idCounter);
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  private static class PropertyKeysBuilder extends Builder
+  {
+    public PropertyKeysBuilder(Embedding embedder, int embeddingIndex, String selectionDiv)
+    {
+      super(embedder, embeddingIndex, selectionDiv);
+    }
+
+    @Override
+    protected void appendIcon(String icon)
+    {
+      // Do nothing.
+    }
+
+    @Override
+    protected void appendSingleProlog(String icon, String id)
+    {
+      appendPrologIndent(getLevel());
+    }
+
+    @Override
+    protected void appendGroupProlog(String icon, String id, boolean expanded)
+    {
+      appendPrologIndent(getLevel() - 1);
+      super.appendGroupProlog(icon, id, expanded);
+    }
+
+    @Override
+    protected int getGroupMarginLeft()
+    {
+      return 0;
+    }
+
+    private void appendPrologIndent(int level)
+    {
+      appendEmptyImage(1 + 16 * level, 16);
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  private static class PropertyValuesBuilder extends Builder
+  {
+    public PropertyValuesBuilder(Embedding embedder, int embeddingIndex, String selectionDiv)
+    {
+      super(embedder, embeddingIndex, selectionDiv);
+    }
+
+    @Override
+    protected void appendSingleProlog(String icon, String id)
+    {
+      appendEmptyImage(4, 16);
+      appendIcon(icon);
+    }
+
+    @Override
+    protected void appendGroupProlog(String icon, String id, boolean expanded)
+    {
+      appendSingleProlog(icon, id);
+    }
+
+    @Override
+    protected int getGroupMarginLeft()
+    {
+      return 0;
     }
   }
 } // TreeFormatterImpl
