@@ -259,15 +259,13 @@
       </fileset>
     </copy>
 
-    <copy file="${releng.project}/html/book.css"
-          todir="${project.path}/html"
-          verbose="true"
-          failonerror="false" />
-
-    <copy file="${releng.project}/html/tree.css"
-          todir="${project.path}/html"
-          verbose="true"
-          failonerror="false" />
+    <copy todir="${project.path}/html" verbose="true" failonerror="false">
+      <fileset dir="${releng.project}/html" defaultexcludes="true">
+        <include name="book.css" />
+        <include name="editor.css" />
+        <include name="tree.css" />
+      </fileset>
+    </copy>
 
     <javadoc locale="en"
              encoding="UTF-8"
