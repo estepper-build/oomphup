@@ -27,7 +27,7 @@ import java.util.Collection;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getId <em>Id</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getXmi_ID <em>Xmi ID</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getImage <em>Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getLabel <em>Label</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getChildren <em>Children</em>}</li>
@@ -40,14 +40,14 @@ import java.util.Collection;
 public class TreeNodeImpl extends EObjectImpl implements TreeNode
 {
   /**
-   * The default value of the '{@link #getId() <em>Id</em>}' attribute.
+   * The default value of the '{@link #getXmi_ID() <em>Xmi ID</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getId()
+   * @see #getXmi_ID()
    * @generated
    * @ordered
    */
-  protected static final String ID_EDEFAULT = null;
+  protected static final String XMI_ID_EDEFAULT = null;
 
   /**
    * The default value of the '{@link #getImage() <em>Image</em>}' attribute.
@@ -135,7 +135,7 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public String getId()
+  public String getXmi_ID()
   {
     Resource resource = eResource();
     if (resource instanceof XMIResource)
@@ -253,8 +253,8 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode
   {
     switch (featureID)
     {
-      case ArticlePackage.TREE_NODE__ID:
-        return getId();
+      case ArticlePackage.TREE_NODE__XMI_ID:
+        return getXmi_ID();
       case ArticlePackage.TREE_NODE__IMAGE:
         return getImage();
       case ArticlePackage.TREE_NODE__LABEL:
@@ -332,8 +332,8 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode
   {
     switch (featureID)
     {
-      case ArticlePackage.TREE_NODE__ID:
-        return ID_EDEFAULT == null ? getId() != null : !ID_EDEFAULT.equals(getId());
+      case ArticlePackage.TREE_NODE__XMI_ID:
+        return XMI_ID_EDEFAULT == null ? getXmi_ID() != null : !XMI_ID_EDEFAULT.equals(getXmi_ID());
       case ArticlePackage.TREE_NODE__IMAGE:
         return IMAGE_EDEFAULT == null ? image != null : !IMAGE_EDEFAULT.equals(image);
       case ArticlePackage.TREE_NODE__LABEL:

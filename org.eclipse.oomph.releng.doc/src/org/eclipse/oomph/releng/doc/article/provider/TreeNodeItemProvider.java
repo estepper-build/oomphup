@@ -72,16 +72,16 @@ public class TreeNodeItemProvider extends ItemProviderAdapter implements IEditin
   }
 
   /**
-   * This adds a property descriptor for the Id feature.
+   * This adds a property descriptor for the Xmi ID feature.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected void addIdPropertyDescriptor(Object object)
+  protected void addXmi_IDPropertyDescriptor(Object object)
   {
     itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-        getString("_UI_TreeNode_id_feature"), getString("_UI_PropertyDescriptor_description", "_UI_TreeNode_id_feature", "_UI_TreeNode_type"),
-        ArticlePackage.Literals.TREE_NODE__ID, false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null,
+        getString("_UI_TreeNode_xmi_ID_feature"), getString("_UI_PropertyDescriptor_description", "_UI_TreeNode_xmi_ID_feature", "_UI_TreeNode_type"),
+        ArticlePackage.Literals.TREE_NODE__XMI_ID, false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null,
         new String[] { "org.eclipse.ui.views.properties.expert" }));
   }
 
@@ -197,7 +197,7 @@ public class TreeNodeItemProvider extends ItemProviderAdapter implements IEditin
 
     switch (notification.getFeatureID(TreeNode.class))
     {
-      case ArticlePackage.TREE_NODE__ID:
+      case ArticlePackage.TREE_NODE__XMI_ID:
       case ArticlePackage.TREE_NODE__IMAGE:
       case ArticlePackage.TREE_NODE__LABEL:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

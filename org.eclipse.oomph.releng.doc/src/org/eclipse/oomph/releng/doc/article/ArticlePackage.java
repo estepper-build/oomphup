@@ -2289,13 +2289,13 @@ public interface ArticlePackage extends EPackage
   int TREE_NODE = 37;
 
   /**
-   * The feature id for the '<em><b>Id</b></em>' attribute.
+   * The feature id for the '<em><b>Xmi ID</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TREE_NODE__ID = 0;
+  int TREE_NODE__XMI_ID = 0;
 
   /**
    * The feature id for the '<em><b>Image</b></em>' attribute.
@@ -3351,15 +3351,15 @@ public interface ArticlePackage extends EPackage
   EClass getTreeNode();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getId <em>Id</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getXmi_ID <em>Xmi ID</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Id</em>'.
-   * @see org.eclipse.oomph.releng.doc.article.TreeNode#getId()
+   * @return the meta object for the attribute '<em>Xmi ID</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.TreeNode#getXmi_ID()
    * @see #getTreeNode()
    * @generated
    */
-  EAttribute getTreeNode_Id();
+  EAttribute getTreeNode_Xmi_ID();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.TreeNode#getImage <em>Image</em>}'.
@@ -4286,12 +4286,12 @@ public interface ArticlePackage extends EPackage
     EClass TREE_NODE = eINSTANCE.getTreeNode();
 
     /**
-     * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Xmi ID</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute TREE_NODE__ID = eINSTANCE.getTreeNode_Id();
+    EAttribute TREE_NODE__XMI_ID = eINSTANCE.getTreeNode_Xmi_ID();
 
     /**
      * The meta object literal for the '<em><b>Image</b></em>' attribute feature.

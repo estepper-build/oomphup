@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNode#getId <em>Id</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNode#getXmi_ID <em>Xmi ID</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNode#getImage <em>Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNode#getLabel <em>Label</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.TreeNode#getChildren <em>Children</em>}</li>
@@ -28,19 +28,19 @@ import org.eclipse.emf.ecore.EObject;
 public interface TreeNode extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Id</b></em>' attribute.
+   * Returns the value of the '<em><b>Xmi ID</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Id</em>' attribute isn't clear,
+   * If the meaning of the '<em>Xmi ID</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Id</em>' attribute.
-   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getTreeNode_Id()
+   * @return the value of the '<em>Xmi ID</em>' attribute.
+   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getTreeNode_Xmi_ID()
    * @model transient="true" changeable="false" volatile="true" derived="true"
    * @generated
    */
-  String getId();
+  String getXmi_ID();
 
   /**
    * Returns the value of the '<em><b>Image</b></em>' attribute.

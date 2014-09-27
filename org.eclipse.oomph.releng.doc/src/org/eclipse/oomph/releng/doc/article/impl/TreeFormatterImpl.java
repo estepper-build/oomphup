@@ -19,6 +19,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -31,6 +32,7 @@ import com.sun.javadoc.Tag;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -441,10 +443,11 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     int embeddingIndex = getEmbeddingIndex(embedder);
     String selectionDiv = "selection_" + id + "_" + embeddingIndex;
 
-    Builder propertyKeysBuilder = new PropertyKeysBuilder(embedder, embeddingIndex, null);
-    Builder propertyValuesBuilder = new PropertyValuesBuilder(embedder, embeddingIndex, null);
+    Builder pkBuilder = new PropertyKeysBuilder(embedder, embeddingIndex, null);
+    Builder pvBuilder = new PropertyValuesBuilder(embedder, embeddingIndex, null);
 
     Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
+    TreeNode root = getRootNode(); // TODO What about multiple roots?
 
     int expandTo = getExpandTo();
     if (expandTo == EXPAND_TO_EDEFAULT)
@@ -452,12 +455,35 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       expandTo = Integer.MAX_VALUE;
     }
 
-    TreeNode root = getRootNode(); // TODO What about multiple roots?
-    generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, expandTo, true, root);
+    Set<String> expandedIDs = new HashSet<String>(getExpanded());
+    Set<TreeNode> expandedNodes = new HashSet<TreeNode>();
+    initExpandedNodes(expandedIDs, expandedNodes, root, expandTo, 0);
+
+    TreeNode selectedNode = initSelection(getSelected(), root);
+    if (selectedNode == null)
+    {
+      selectedNode = root;
+    }
+
+    for (;;)
+    {
+      EObject container = selectedNode.eContainer();
+      if (container instanceof TreeNode)
+      {
+        TreeNode parentNode = (TreeNode)container;
+        expandedNodes.add(parentNode);
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    generateTreeNode(builder, pkBuilder, pvBuilder, expandedNodes, selectedNode, root);
 
     String imagePath = builder.getImagePath();
-    String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + propertyKeysBuilder + "</td><td id=\"max_pv_" + id
-        + "_properties\" width=\"100%\">" + propertyValuesBuilder + "</td></tr></table>";
+    String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + pkBuilder + "</td><td id=\"max_pv_" + id
+        + "_properties\" width=\"100%\">" + pvBuilder + "</td></tr></table>";
     String propertiesHtml = SnippetImpl.getEditorHtml(imagePath, id + "_properties", "Properties", imagePath + "formatter-tree-properties.gif", content, 600,
         100);
 
@@ -474,6 +500,52 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
     Resource resource = resourceSet.getResource(URI.createFileURI(file.getAbsolutePath()), true);
     return (TreeNode)resource.getContents().get(0);
+  }
+
+  private void initExpandedNodes(Set<String> expandedIDs, Set<TreeNode> expandedNodes, TreeNode node, int expandTo, int level)
+  {
+    if (level < expandTo)
+    {
+      expandedNodes.add(node);
+    }
+    else
+    {
+      String id = node.getXmi_ID();
+      if (expandedIDs.contains(id))
+      {
+        expandedNodes.add(node);
+      }
+    }
+
+    for (TreeNode child : node.getChildren())
+    {
+      initExpandedNodes(expandedIDs, expandedNodes, child, expandTo, level + 1);
+    }
+  }
+
+  private TreeNode initSelection(String selectedID, TreeNode node)
+  {
+    if (selectedID == null)
+    {
+      return node;
+    }
+
+    String id = node.getXmi_ID();
+    if (selectedID.equals(id))
+    {
+      return node;
+    }
+
+    for (TreeNode child : node.getChildren())
+    {
+      TreeNode result = initSelection(selectedID, child);
+      if (result != null)
+      {
+        return result;
+      }
+    }
+
+    return null;
   }
 
   public int getEmbeddingIndex(Embedding embedder)
@@ -517,11 +589,11 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     throw new ArticleException("Embedding not found: " + embedder.getTag().text());
   }
 
-  private String generateTreeNode(Builder builder, Builder propertyKeysBuilder, Builder propertyValuesBuilder, int expandTo, boolean propertiesVisible,
-      TreeNode node)
+  private String generateTreeNode(Builder builder, Builder pkBuilder, Builder pvBuilder, Set<TreeNode> expandedNodes, TreeNode selectedNode, TreeNode node)
   {
     String id;
 
+    boolean selected = node == selectedNode;
     String label = node.getLabel();
     String icon = node.getImage();
     if (icon != null)
@@ -536,12 +608,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     }
     else
     {
-      boolean expanded = builder.getLevel() < expandTo;
+      boolean expanded = expandedNodes.contains(node);
       id = builder.appendGroupStart(icon, label, expanded);
 
       for (TreeNode child : children)
       {
-        generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, expandTo, false, child);
+        generateTreeNode(builder, pkBuilder, pvBuilder, expandedNodes, selectedNode, child);
       }
 
       builder.appendGroupEnd();
@@ -550,8 +622,8 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     EList<TreeNodeProperty> properties = node.getProperties();
     if (!properties.isEmpty())
     {
-      generateTreeNodeProperties(propertyKeysBuilder, node, id, propertiesVisible, properties, true, "pk", "keys");
-      generateTreeNodeProperties(propertyValuesBuilder, node, id, propertiesVisible, properties, false, "pv", "values");
+      generateTreeNodeProperties(pkBuilder, node, id, selected, properties, true, "pk", "keys");
+      generateTreeNodeProperties(pvBuilder, node, id, selected, properties, false, "pv", "values");
     }
 
     return id;

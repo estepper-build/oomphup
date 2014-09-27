@@ -1223,7 +1223,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNode_Id()
+  public EAttribute getTreeNode_Xmi_ID()
   {
     return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(0);
   }
@@ -1511,7 +1511,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     createEAttribute(imageEClass, IMAGE__FILE);
 
     treeNodeEClass = createEClass(TREE_NODE);
-    createEAttribute(treeNodeEClass, TREE_NODE__ID);
+    createEAttribute(treeNodeEClass, TREE_NODE__XMI_ID);
     createEAttribute(treeNodeEClass, TREE_NODE__IMAGE);
     createEAttribute(treeNodeEClass, TREE_NODE__LABEL);
     createEReference(treeNodeEClass, TREE_NODE__CHILDREN);
@@ -1776,8 +1776,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
         !IS_DERIVED, IS_ORDERED);
 
     initEClass(treeNodeEClass, TreeNode.class, "TreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTreeNode_Id(), ecorePackage.getEString(), "id", null, 0, 1, TreeNode.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE,
-        !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTreeNode_Xmi_ID(), ecorePackage.getEString(), "xmi_ID", null, 0, 1, TreeNode.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE,
+        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
     initEAttribute(getTreeNode_Image(), ecorePackage.getEString(), "image", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTreeNode_Label(), ecorePackage.getEString(), "label", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,

@@ -133,7 +133,7 @@
       <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//Image/file"/>
     </genClasses>
     <genClasses ecoreClass="article.ecore#//TreeNode">
-      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNode/id">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNode/xmi_ID">
         <propertyFilterFlags>org.eclipse.ui.views.properties.expert</propertyFilterFlags>
       </genFeatures>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNode/image"/>
