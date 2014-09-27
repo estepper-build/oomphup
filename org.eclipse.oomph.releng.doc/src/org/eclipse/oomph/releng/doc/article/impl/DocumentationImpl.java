@@ -12,6 +12,7 @@ package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.AssembleScripts;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Context;
@@ -303,11 +304,11 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
 
     for (MethodDoc methodDoc : classDoc.methods())
     {
-      analyzeMethod(methodDoc);
+      analyzeMethod(parent, methodDoc);
     }
   }
 
-  private void analyzeMethod(MethodDoc methodDoc)
+  private void analyzeMethod(StructuralElement parent, MethodDoc methodDoc)
   {
     if (ArticleUtil.isIgnore(methodDoc))
     {
@@ -316,7 +317,16 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
 
     if (ArticleUtil.isSnippet(getContext().getRoot(), methodDoc))
     {
-      new SnippetImpl(this, methodDoc);
+      SnippetImpl snippet = new SnippetImpl(this, methodDoc);
+
+      if (ArticleUtil.isTagged(methodDoc, "@section"))
+      {
+        if (parent instanceof Body)
+        {
+          Body body = (Body)parent;
+          body.getElements().add(new EmbeddingImpl(null, snippet));
+        }
+      }
     }
 
     if (ArticleUtil.isFactory(methodDoc))

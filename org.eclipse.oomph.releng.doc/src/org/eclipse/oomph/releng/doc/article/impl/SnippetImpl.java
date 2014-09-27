@@ -11,6 +11,7 @@
 package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
 import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Documentation;
@@ -541,7 +542,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     }
 
     SeeTag embedderTag = embedder.getTag();
-    String title = embedderTag.label();
+    String title = embedderTag == null ? null : embedderTag.label();
     if (title == null || title.length() == 0)
     {
       title = getTitle();
@@ -712,7 +713,19 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       return ((Section)container).getChapter();
     }
 
-    throw new ArticleException(ArticleUtil.makeConsoleLink("Nested embedding in ", embedder.getTag().position()));
+    SeeTag embedderTag = embedder.getTag();
+    if (embedderTag != null)
+    {
+      throw new ArticleException(ArticleUtil.makeConsoleLink("Nested embedding in ", embedderTag.position()));
+    }
+
+    Body embedderBody = embedder.getBody();
+    if (embedderBody != null)
+    {
+      throw new ArticleException(ArticleUtil.makeConsoleLink("Nested embedding in ", embedderBody.getDoc().position()));
+    }
+
+    throw new ArticleException("Nested embedding");
   }
 
   public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, int contentWidth, int contentHeight)

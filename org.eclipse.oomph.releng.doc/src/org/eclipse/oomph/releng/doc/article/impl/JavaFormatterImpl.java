@@ -79,7 +79,7 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
 
   public String getDefaultTitle(SeeTag embedderTag)
   {
-    return embedderTag.text() + ".java";
+    return embedderTag == null ? null : embedderTag.text() + ".java";
   }
 
   public String[] getSnippetHtml(Embedding embedder, String id, String title)
