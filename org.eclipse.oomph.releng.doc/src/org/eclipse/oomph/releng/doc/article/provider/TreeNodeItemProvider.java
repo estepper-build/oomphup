@@ -61,8 +61,13 @@ public class TreeNodeItemProvider extends ItemProviderAdapter implements IEditin
   public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
   {
     TreeNode treeNode = (TreeNode)object;
-
     List<IItemPropertyDescriptor> result = new ArrayList<IItemPropertyDescriptor>();
+
+    itemPropertyDescriptors = new ArrayList<IItemPropertyDescriptor>();
+    addXmi_IDPropertyDescriptor(object);
+    result.addAll(itemPropertyDescriptors);
+    itemPropertyDescriptors = null;
+
     for (final TreeNodeProperty treeNodeProperty : treeNode.getProperties())
     {
       result.add(new TreeNodePropertyDescriptor(adapterFactory, treeNodeProperty));

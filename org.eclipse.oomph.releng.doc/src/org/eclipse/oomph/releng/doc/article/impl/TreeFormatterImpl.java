@@ -465,19 +465,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       selectedNode = root;
     }
 
-    for (;;)
-    {
-      EObject container = selectedNode.eContainer();
-      if (container instanceof TreeNode)
-      {
-        TreeNode parentNode = (TreeNode)container;
-        expandedNodes.add(parentNode);
-      }
-      else
-      {
-        break;
-      }
-    }
+    initExpandedNodeParents(expandedNodes, selectedNode);
 
     generateTreeNode(builder, pkBuilder, pvBuilder, expandedNodes, selectedNode, root);
 
@@ -490,6 +478,24 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     String selection = "";
     builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\">" + selection + "</div>" + NL);
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
+  }
+
+  private void initExpandedNodeParents(Set<TreeNode> expandedNodes, TreeNode node)
+  {
+    for (;;)
+    {
+      EObject container = node.eContainer();
+      if (container instanceof TreeNode)
+      {
+        TreeNode parentNode = (TreeNode)container;
+        expandedNodes.add(parentNode);
+        node = parentNode;
+      }
+      else
+      {
+        break;
+      }
+    }
   }
 
   private TreeNode getRootNode()
@@ -513,7 +519,10 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       String id = node.getXmi_ID();
       if (expandedIDs.contains(id))
       {
-        expandedNodes.add(node);
+        if (expandedNodes.add(node))
+        {
+          initExpandedNodeParents(expandedNodes, node);
+        }
       }
     }
 
