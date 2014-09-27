@@ -16,6 +16,7 @@ import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -25,6 +26,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import com.sun.javadoc.SeeTag;
@@ -475,9 +477,60 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     String propertiesHtml = SnippetImpl.getEditorHtml(imagePath, id + "_properties", "Properties", imagePath + "formatter-tree-properties.gif", content, 600,
         100);
 
-    String selection = "";
-    builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\">" + selection + "</div>" + NL);
+    String selectedNodeID = IDAdapter.getID(selectedNode);
+    builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\">" + selectedNodeID + "</div>" + NL);
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
+  }
+
+  private int getEmbeddingIndex(Embedding embedder)
+  {
+    int index = 0;
+
+    Body body = embedder.getBody();
+    for (BodyElement element : body.getElements())
+    {
+      if (element instanceof Embedding)
+      {
+        ++index;
+      }
+
+      if (element == embedder)
+      {
+        return index;
+      }
+    }
+
+    if (body instanceof Chapter)
+    {
+      Chapter chapter = (Chapter)body;
+      for (Section section : chapter.getSections())
+      {
+        for (BodyElement element : section.getElements())
+        {
+          if (element instanceof Embedding)
+          {
+            ++index;
+          }
+
+          if (element == embedder)
+          {
+            return index;
+          }
+        }
+      }
+    }
+
+    throw new ArticleException("Embedding not found: " + embedder.getTag().text());
+  }
+
+  private TreeNode getRootNode()
+  {
+    ResourceSet resourceSet = new ResourceSetImpl();
+    Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+    map.put(TYPE, new XMIResourceFactoryImpl());
+
+    Resource resource = resourceSet.getResource(URI.createFileURI(file.getAbsolutePath()), true);
+    return (TreeNode)resource.getContents().get(0);
   }
 
   private void initExpandedNodeParents(Set<TreeNode> expandedNodes, TreeNode node)
@@ -496,16 +549,6 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
         break;
       }
     }
-  }
-
-  private TreeNode getRootNode()
-  {
-    ResourceSet resourceSet = new ResourceSetImpl();
-    Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
-    map.put(TYPE, new XMIResourceFactoryImpl());
-
-    Resource resource = resourceSet.getResource(URI.createFileURI(file.getAbsolutePath()), true);
-    return (TreeNode)resource.getContents().get(0);
   }
 
   private void initExpandedNodes(Set<String> expandedIDs, Set<TreeNode> expandedNodes, TreeNode node, int expandTo, int level)
@@ -557,47 +600,6 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     return null;
   }
 
-  public int getEmbeddingIndex(Embedding embedder)
-  {
-    int index = 0;
-
-    Body body = embedder.getBody();
-    for (BodyElement element : body.getElements())
-    {
-      if (element instanceof Embedding)
-      {
-        ++index;
-      }
-
-      if (element == embedder)
-      {
-        return index;
-      }
-    }
-
-    if (body instanceof Chapter)
-    {
-      Chapter chapter = (Chapter)body;
-      for (Section section : chapter.getSections())
-      {
-        for (BodyElement element : section.getElements())
-        {
-          if (element instanceof Embedding)
-          {
-            ++index;
-          }
-
-          if (element == embedder)
-          {
-            return index;
-          }
-        }
-      }
-    }
-
-    throw new ArticleException("Embedding not found: " + embedder.getTag().text());
-  }
-
   private String generateTreeNode(Builder builder, Builder pkBuilder, Builder pvBuilder, Set<TreeNode> expandedNodes, TreeNode selectedNode, TreeNode node)
   {
     String id;
@@ -613,12 +615,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     EList<TreeNode> children = node.getChildren();
     if (children.isEmpty())
     {
-      id = builder.appendSingle(icon, label);
+      id = builder.appendSingle(icon, label, selected);
     }
     else
     {
       boolean expanded = expandedNodes.contains(node);
-      id = builder.appendGroupStart(icon, label, expanded);
+      id = builder.appendGroupStart(icon, label, selected, expanded);
 
       for (TreeNode child : children)
       {
@@ -635,6 +637,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       generateTreeNodeProperties(pvBuilder, node, id, selected, properties, false, "pv", "values");
     }
 
+    new IDAdapter(node, id);
     return id;
   }
 
@@ -670,11 +673,11 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     EList<TreeNodeProperty> children = property.getProperties();
     if (children.isEmpty())
     {
-      propertiesBuilder.appendSingle(icon, label);
+      propertiesBuilder.appendSingle(icon, label, false);
     }
     else
     {
-      propertiesBuilder.appendGroupStart(icon, label, true);
+      propertiesBuilder.appendGroupStart(icon, label, false, true);
 
       for (TreeNodeProperty child : children)
       {
@@ -682,6 +685,40 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       }
 
       propertiesBuilder.appendGroupEnd();
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public static final class IDAdapter extends AdapterImpl
+  {
+    private final String id;
+
+    public IDAdapter(TreeNode node, String id)
+    {
+      this.id = id;
+      node.eAdapters().add(this);
+    }
+
+    @Override
+    public boolean isAdapterForType(Object type)
+    {
+      return type == IDAdapter.class;
+    }
+
+    public static String getID(TreeNode node)
+    {
+      if (node != null)
+      {
+        IDAdapter adapter = (IDAdapter)EcoreUtil.getAdapter(node.eAdapters(), IDAdapter.class);
+        if (adapter != null)
+        {
+          return adapter.id;
+        }
+      }
+
+      return "";
     }
   }
 
@@ -737,7 +774,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       return level;
     }
 
-    public String appendSingle(String icon, String label)
+    public String appendSingle(String icon, String label, boolean selected)
     {
       String id = getNextID();
 
@@ -745,14 +782,14 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\">");
       append("<span>");
       appendSingleProlog(icon, id);
-      appendHref(label, id);
+      appendHref(label, id, selected);
       append("</span>");
       append("</div>" + NL);
 
       return id;
     }
 
-    public String appendGroupStart(String icon, String label, boolean expanded)
+    public String appendGroupStart(String icon, String label, boolean selected, boolean expanded)
     {
       String id = getNextID();
 
@@ -760,7 +797,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       append("<div class=\"" + (selectionDiv == null ? "pe" : "te") + "\">");
       append("<span>");
       appendGroupProlog(icon, id, expanded);
-      appendHref(label, id);
+      appendHref(label, id, selected);
       append("</span>");
       append("</div>" + NL);
       appendIndent();
@@ -777,7 +814,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       append("</div>" + NL);
     }
 
-    public void appendHref(String label, String id)
+    public void appendHref(String label, String id, boolean selected)
     {
       label = label.replaceAll(" ", "&nbsp;");
 
@@ -787,7 +824,8 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       }
       else
       {
-        append("<a href=\"javascript:select('" + selectionDiv + "', '" + id + "')\" id=\"href_" + id + "\" class=\"nosel\">" + label + "</a>");
+        append("<a href=\"javascript:select('" + selectionDiv + "', '" + id + "')\" id=\"href_" + id + "\" class=\"" + (selected ? "sel" : "nosel") + "\">"
+            + label + "</a>");
       }
     }
 
