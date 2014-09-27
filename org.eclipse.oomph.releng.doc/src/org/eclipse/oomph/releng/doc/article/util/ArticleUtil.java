@@ -40,6 +40,38 @@ public final class ArticleUtil
   {
   }
 
+  public static Tag getTag(Doc doc, String tagName)
+  {
+    Tag[] tags = doc.tags(tagName);
+    if (tags.length > 1)
+    {
+      throw new ArticleException("More than one " + tagName + " tag not allowed: " + makeConsoleLink(doc, tags[1]));
+    }
+
+    if (tags.length == 1)
+    {
+      return tags[0];
+    }
+
+    return null;
+  }
+
+  public static String getTagText(Doc doc, String tagName)
+  {
+    Tag[] tags = doc.tags(tagName);
+    if (tags.length > 1)
+    {
+      throw new ArticleException("More than one " + tagName + " tag not allowed: " + makeConsoleLink(doc, tags[1]));
+    }
+
+    if (tags.length == 1)
+    {
+      return tags[0].text();
+    }
+
+    return null;
+  }
+
   public static boolean isDocumented(Doc doc)
   {
     Tag[] tags = doc.inlineTags();
@@ -304,6 +336,17 @@ public final class ArticleUtil
     }
 
     result.add(file.getName());
+  }
+
+  public static String makeConsoleLink(Doc doc, Tag tag)
+  {
+    SourcePosition position = tag.position();
+    if (position == null)
+    {
+      position = doc.position();
+    }
+
+    return makeConsoleLink(doc, position);
   }
 
   public static String makeConsoleLink(Doc doc)

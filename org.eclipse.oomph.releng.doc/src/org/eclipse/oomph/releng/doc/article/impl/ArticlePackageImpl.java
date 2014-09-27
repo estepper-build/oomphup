@@ -1161,6 +1161,36 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTreeFormatter_ExpandTo()
+  {
+    return (EAttribute)treeFormatterEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTreeFormatter_Expanded()
+  {
+    return (EAttribute)treeFormatterEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTreeFormatter_Selected()
+  {
+    return (EAttribute)treeFormatterEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -1193,7 +1223,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNode_Image()
+  public EAttribute getTreeNode_Id()
   {
     return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(0);
   }
@@ -1203,7 +1233,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTreeNode_Label()
+  public EAttribute getTreeNode_Image()
   {
     return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(1);
   }
@@ -1213,9 +1243,19 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getTreeNode_Label()
+  {
+    return (EAttribute)treeNodeEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getTreeNode_Children()
   {
-    return (EReference)treeNodeEClass.getEStructuralFeatures().get(2);
+    return (EReference)treeNodeEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1225,7 +1265,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    */
   public EReference getTreeNode_Properties()
   {
-    return (EReference)treeNodeEClass.getEStructuralFeatures().get(3);
+    return (EReference)treeNodeEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1463,11 +1503,15 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
 
     treeFormatterEClass = createEClass(TREE_FORMATTER);
     createEAttribute(treeFormatterEClass, TREE_FORMATTER__FILE);
+    createEAttribute(treeFormatterEClass, TREE_FORMATTER__EXPAND_TO);
+    createEAttribute(treeFormatterEClass, TREE_FORMATTER__EXPANDED);
+    createEAttribute(treeFormatterEClass, TREE_FORMATTER__SELECTED);
 
     imageEClass = createEClass(IMAGE);
     createEAttribute(imageEClass, IMAGE__FILE);
 
     treeNodeEClass = createEClass(TREE_NODE);
+    createEAttribute(treeNodeEClass, TREE_NODE__ID);
     createEAttribute(treeNodeEClass, TREE_NODE__IMAGE);
     createEAttribute(treeNodeEClass, TREE_NODE__LABEL);
     createEReference(treeNodeEClass, TREE_NODE__CHILDREN);
@@ -1720,12 +1764,20 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEClass(treeFormatterEClass, TreeFormatter.class, "TreeFormatter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTreeFormatter_File(), getFile(), "file", null, 0, 1, TreeFormatter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
         !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTreeFormatter_ExpandTo(), ecorePackage.getEInt(), "expandTo", "-1", 0, 1, TreeFormatter.class, !IS_TRANSIENT, !IS_VOLATILE,
+        IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTreeFormatter_Expanded(), ecorePackage.getEString(), "expanded", null, 0, -1, TreeFormatter.class, !IS_TRANSIENT, !IS_VOLATILE,
+        IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTreeFormatter_Selected(), ecorePackage.getEString(), "selected", null, 0, 1, TreeFormatter.class, !IS_TRANSIENT, !IS_VOLATILE,
+        IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(imageEClass, Image.class, "Image", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImage_File(), getFile(), "file", null, 1, 1, Image.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
         !IS_DERIVED, IS_ORDERED);
 
     initEClass(treeNodeEClass, TreeNode.class, "TreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTreeNode_Id(), ecorePackage.getEString(), "id", null, 0, 1, TreeNode.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE,
+        !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
     initEAttribute(getTreeNode_Image(), ecorePackage.getEString(), "image", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTreeNode_Label(), ecorePackage.getEString(), "label", null, 0, 1, TreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,

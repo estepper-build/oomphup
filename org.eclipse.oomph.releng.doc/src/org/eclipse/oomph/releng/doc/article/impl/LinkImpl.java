@@ -57,9 +57,9 @@ public class LinkImpl extends BodyElementImpl implements Link
     super();
   }
 
-  LinkImpl(SeeTag tag, LinkTarget target)
+  LinkImpl(SeeTag seeTag, LinkTarget target)
   {
-    super(tag);
+    super(seeTag);
     this.target = target;
   }
 

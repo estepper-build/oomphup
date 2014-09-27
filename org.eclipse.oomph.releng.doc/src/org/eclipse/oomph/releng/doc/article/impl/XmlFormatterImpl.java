@@ -12,6 +12,7 @@ package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Embedding;
+import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -77,8 +78,11 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     super();
   }
 
-  XmlFormatterImpl(File file)
+  XmlFormatterImpl(Snippet snippet, String args)
   {
+    super(snippet);
+
+    File file = getFileArg(args);
     setFile(file);
   }
 

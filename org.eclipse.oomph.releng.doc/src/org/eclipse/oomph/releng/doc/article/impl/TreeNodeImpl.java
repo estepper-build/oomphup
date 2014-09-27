@@ -13,8 +13,10 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.emf.ecore.xmi.XMIResource;
 
 import java.util.Collection;
 
@@ -25,6 +27,7 @@ import java.util.Collection;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getId <em>Id</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getImage <em>Image</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getLabel <em>Label</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeNodeImpl#getChildren <em>Children</em>}</li>
@@ -36,6 +39,16 @@ import java.util.Collection;
  */
 public class TreeNodeImpl extends EObjectImpl implements TreeNode
 {
+  /**
+   * The default value of the '{@link #getId() <em>Id</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getId()
+   * @generated
+   * @ordered
+   */
+  protected static final String ID_EDEFAULT = null;
+
   /**
    * The default value of the '{@link #getImage() <em>Image</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -115,6 +128,23 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode
   protected EClass eStaticClass()
   {
     return ArticlePackage.Literals.TREE_NODE;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public String getId()
+  {
+    Resource resource = eResource();
+    if (resource instanceof XMIResource)
+    {
+      XMIResource xmiResource = (XMIResource)resource;
+      return xmiResource.getID(this);
+    }
+
+    return null;
   }
 
   /**
@@ -223,6 +253,8 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode
   {
     switch (featureID)
     {
+      case ArticlePackage.TREE_NODE__ID:
+        return getId();
       case ArticlePackage.TREE_NODE__IMAGE:
         return getImage();
       case ArticlePackage.TREE_NODE__LABEL:
@@ -300,6 +332,8 @@ public class TreeNodeImpl extends EObjectImpl implements TreeNode
   {
     switch (featureID)
     {
+      case ArticlePackage.TREE_NODE__ID:
+        return ID_EDEFAULT == null ? getId() != null : !ID_EDEFAULT.equals(getId());
       case ArticlePackage.TREE_NODE__IMAGE:
         return IMAGE_EDEFAULT == null ? image != null : !IMAGE_EDEFAULT.equals(image);
       case ArticlePackage.TREE_NODE__LABEL:

@@ -36,6 +36,8 @@
     <genClasses ecoreClass="article.ecore#//Snippet">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference article.ecore#//Snippet/callouts"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference article.ecore#//Snippet/formatter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//Snippet/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//Snippet/titleImage"/>
     </genClasses>
     <genClasses ecoreClass="article.ecore#//Diagram"/>
     <genClasses ecoreClass="article.ecore#//Factory"/>
@@ -121,17 +123,25 @@
     <genClasses ecoreClass="article.ecore#//XmlFormatter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//XmlFormatter/file"/>
     </genClasses>
+    <genClasses ecoreClass="article.ecore#//TreeFormatter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeFormatter/file"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeFormatter/expandTo"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeFormatter/expanded"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeFormatter/selected"/>
+    </genClasses>
     <genClasses ecoreClass="article.ecore#//Image">
       <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//Image/file"/>
     </genClasses>
     <genClasses ecoreClass="article.ecore#//TreeNode">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNode/id">
+        <propertyFilterFlags>org.eclipse.ui.views.properties.expert</propertyFilterFlags>
+      </genFeatures>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNode/image"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNode/label"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference article.ecore#//TreeNode/children"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference article.ecore#//TreeNode/properties"/>
     </genClasses>
     <genClasses ecoreClass="article.ecore#//TreeNodeProperty">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNodeProperty/keyImage"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNodeProperty/key"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNodeProperty/valueImage"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNodeProperty/value"/>

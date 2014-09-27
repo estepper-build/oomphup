@@ -139,91 +139,46 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     initFormatter(doc);
     initCallouts(doc);
 
-    Tag[] titleTags = doc.tags("@title");
-    if (titleTags.length > 1)
-    {
-      throw new ArticleException("More than one @title tag not allowed: " + ArticleUtil.makeConsoleLink(doc));
-    }
-
-    if (titleTags.length == 1)
-    {
-      String text = titleTags[0].text();
-      if (text.length() != 0)
-      {
-        setTitle(text);
-      }
-    }
-
-    Tag[] imageTags = doc.tags("@image");
-    if (imageTags.length > 1)
-    {
-      throw new ArticleException("More than one @image tag not allowed: " + ArticleUtil.makeConsoleLink(doc));
-    }
-
-    if (imageTags.length == 1)
-    {
-      String text = imageTags[0].text();
-      if (text.length() != 0)
-      {
-        setTitleImage(text);
-      }
-    }
+    setTitle(ArticleUtil.getTagText(doc, "@title"));
+    setTitleImage(ArticleUtil.getTagText(doc, "@image"));
   }
 
   private void initFormatter(Doc doc)
   {
-    Tag[] tags = doc.tags("@snippet");
-    if (tags.length > 1)
+    String text = ArticleUtil.getTagText(doc, "@snippet");
+    if (text != null && text.length() != 0)
     {
-      throw new ArticleException("More than one @snippet tag not allowed: " + ArticleUtil.makeConsoleLink(doc));
-    }
+      String format;
+      String args;
 
-    if (tags.length == 1)
-    {
-      String text = tags[0].text();
-      if (text.length() != 0)
+      int pos = text.indexOf(' ');
+      if (pos != -1)
       {
-        String format;
-        String args;
+        format = text.substring(0, pos).trim().toLowerCase();
+        args = text.substring(pos + 1).trim();
+      }
+      else
+      {
+        format = text;
+        args = "";
+      }
 
-        int pos = text.indexOf(' ');
-        if (pos != -1)
-        {
-          format = text.substring(0, pos).trim().toLowerCase();
-          args = text.substring(pos + 1).trim();
-        }
-        else
-        {
-          format = text;
-          args = "";
-        }
+      format = format.trim().toLowerCase();
+      args = args.trim();
 
-        format = format.trim().toLowerCase();
-        args = args.trim();
-
-        try
-        {
-          if (format.equals(XmlFormatter.TYPE))
-          {
-            File file = getFileArg(doc, args);
-            setFormatter(new XmlFormatterImpl(file));
-          }
-          else if (format.equals(TreeFormatter.TYPE))
-          {
-            File file = getFileArg(doc, args);
-            setFormatter(new TreeFormatterImpl(file));
-          }
-        }
-        catch (IOException ex)
-        {
-          ex.printStackTrace();
-        }
+      if (format.equals(XmlFormatter.TYPE))
+      {
+        new XmlFormatterImpl(this, args);
+      }
+      else if (format.equals(TreeFormatter.TYPE))
+      {
+        new TreeFormatterImpl(this, args);
       }
     }
 
     if (getFormatter() == null)
     {
-      setFormatter(new JavaFormatterImpl());
+      new JavaFormatterImpl(this);
     }
   }
 
@@ -525,6 +480,55 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return result.toString();
   }
 
+  public void addHeaders(Set<String> headers, Embedding embedder)
+  {
+    headers.add("<link rel=\"stylesheet\" href=\"" + embedder.getBody().getHtmlPath() + "editor.css\" charset=\"UTF-8\" type=\"text/css\">");
+    headers.add("<script src=\"http://code.jquery.com/jquery-1.11.1.min.js\"></script>");
+    headers.add("<script src=\"http://code.jquery.com/ui/1.11.0/jquery-ui.min.js\"></script>");
+    headers.add("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css\">");
+    headers.add("<script>" + NL + "$(function() {" + NL + "$( \".resizable\" ).resizable({ handles:\"s,e,se\", autoHide:true });" + NL + "});" + NL
+        + "</script>");
+
+    headers.add("<script type=\"text/javascript\">" + NL + //
+        "function maximize(id)" + NL + //
+        "{" + NL + //
+        "  e = document.getElementById('max_' + id);" + NL + //
+        "  c1 = document.getElementById('editor_content_1_' + id);" + NL + //
+        "  c2 = document.getElementById('editor_content_2_' + id);" + NL + //
+        "  pv = document.getElementById('max_pv_' + id);" + NL + //
+        "  if (e.className == 'max')" + NL + //
+        "  {" + NL + //
+        "    e.className = 'rst';" + NL + //
+        "    e.setAttribute('title', 'Restore');" + NL + //
+        "    c1.setAttribute('style_orig', c1.getAttribute('style'));" + NL + //
+        "    c1.setAttribute('style', 'border:2px solid #99b4d1; border-top:none;');" + NL + //
+        "    c2.setAttribute('style', '');" + NL + //
+        "    if (pv != null)" + NL + //
+        "    {" + NL + //
+        "      pv.setAttribute('width_orig', pv.getAttribute('width'));" + NL + //
+        "      pv.setAttribute('width', '');" + NL + //
+        "    }" + NL + //
+        "  }" + NL + //
+        "  else" + NL + //
+        "  {" + NL + //
+        "    e.className = 'max';" + NL + //
+        "    e.setAttribute('title', 'Maximize');" + NL + //
+        "    c1.setAttribute('style', c1.getAttribute('style_orig'));" + NL + //
+        "    c1.setAttribute('style_orig', '');" + NL + //
+        "    c2.setAttribute('style', 'overflow:scroll; width:100%; height:100%;');" + NL + //
+        "    if (pv != null)" + NL + //
+        "    {" + NL + //
+        "      pv.setAttribute('width', pv.getAttribute('width_orig'));" + NL + //
+        "      pv.setAttribute('width_orig', '');" + NL + //
+        "    }" + NL + //
+        "  }" + NL + //
+        "}" + NL + //
+        "</script>");
+
+    Formatter formatter = getFormatter();
+    formatter.addHeaders(headers, embedder, this);
+  }
+
   public void generate(PrintWriter out, Embedding embedder) throws IOException
   {
     Formatter formatter = getFormatter();
@@ -536,7 +540,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       snippetID = snippetID.substring(lastDot + 1);
     }
 
-    SeeTag embedderTag = (SeeTag)embedder.getTag();
+    SeeTag embedderTag = embedder.getTag();
     String title = embedderTag.label();
     if (title == null || title.length() == 0)
     {
@@ -709,67 +713,6 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     }
 
     throw new ArticleException(ArticleUtil.makeConsoleLink("Nested embedding in ", embedder.getTag().position()));
-  }
-
-  private static File getFileArg(Doc doc, String args) throws IOException
-  {
-    int firstSpace = args.indexOf(' ');
-    if (firstSpace != -1)
-    {
-      args = args.substring(0, firstSpace);
-    }
-
-    File folder = doc.position().file().getParentFile();
-    return new File(folder, args).getCanonicalFile();
-  }
-
-  public void addHeaders(Set<String> headers, Embedding embedder)
-  {
-    headers.add("<link rel=\"stylesheet\" href=\"" + embedder.getBody().getHtmlPath() + "editor.css\" charset=\"UTF-8\" type=\"text/css\">");
-    headers.add("<script src=\"http://code.jquery.com/jquery-1.11.1.min.js\"></script>");
-    headers.add("<script src=\"http://code.jquery.com/ui/1.11.0/jquery-ui.min.js\"></script>");
-    headers.add("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css\">");
-    headers.add("<script>" + NL + "$(function() {" + NL + "$( \".resizable\" ).resizable({ handles:\"s,e,se\", autoHide:true });" + NL + "});" + NL
-        + "</script>");
-
-    headers.add("<script type=\"text/javascript\">" + NL + //
-        "function maximize(id)" + NL + //
-        "{" + NL + //
-        "  e = document.getElementById('max_' + id);" + NL + //
-        "  c1 = document.getElementById('editor_content_1_' + id);" + NL + //
-        "  c2 = document.getElementById('editor_content_2_' + id);" + NL + //
-        "  pv = document.getElementById('max_pv_' + id);" + NL + //
-        "  if (e.className == 'max')" + NL + //
-        "  {" + NL + //
-        "    e.className = 'rst';" + NL + //
-        "    e.setAttribute('title', 'Restore');" + NL + //
-        "    c1.setAttribute('style_orig', c1.getAttribute('style'));" + NL + //
-        "    c1.setAttribute('style', 'border:2px solid #99b4d1; border-top:none;');" + NL + //
-        "    c2.setAttribute('style', '');" + NL + //
-        "    if (pv != null)" + NL + //
-        "    {" + NL + //
-        "      pv.setAttribute('width_orig', pv.getAttribute('width'));" + NL + //
-        "      pv.setAttribute('width', '');" + NL + //
-        "    }" + NL + //
-        "  }" + NL + //
-        "  else" + NL + //
-        "  {" + NL + //
-        "    e.className = 'max';" + NL + //
-        "    e.setAttribute('title', 'Maximize');" + NL + //
-        "    c1.setAttribute('style', c1.getAttribute('style_orig'));" + NL + //
-        "    c1.setAttribute('style_orig', '');" + NL + //
-        "    c2.setAttribute('style', 'overflow:scroll; width:100%; height:100%;');" + NL + //
-        "    if (pv != null)" + NL + //
-        "    {" + NL + //
-        "      pv.setAttribute('width', pv.getAttribute('width_orig'));" + NL + //
-        "      pv.setAttribute('width_orig', '');" + NL + //
-        "    }" + NL + //
-        "  }" + NL + //
-        "}" + NL + //
-        "</script>");
-
-    Formatter formatter = getFormatter();
-    formatter.addHeaders(headers, embedder, this);
   }
 
   public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, int contentWidth, int contentHeight)

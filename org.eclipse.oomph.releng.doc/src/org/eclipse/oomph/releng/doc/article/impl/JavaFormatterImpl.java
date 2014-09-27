@@ -13,6 +13,7 @@ package org.eclipse.oomph.releng.doc.article.impl;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
+import org.eclipse.oomph.releng.doc.article.Snippet;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -59,6 +60,11 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
   protected JavaFormatterImpl()
   {
     super();
+  }
+
+  JavaFormatterImpl(Snippet snippet)
+  {
+    super(snippet);
   }
 
   /**

@@ -10,6 +10,8 @@
  */
 package org.eclipse.oomph.releng.doc.article;
 
+import com.sun.javadoc.SeeTag;
+
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Link</b></em>'. <!-- end-user-doc -->
  *
@@ -49,5 +51,7 @@ public interface Link extends BodyElement
    * @generated
    */
   void setTarget(LinkTarget value);
+
+  SeeTag getTag();
 
 } // Link

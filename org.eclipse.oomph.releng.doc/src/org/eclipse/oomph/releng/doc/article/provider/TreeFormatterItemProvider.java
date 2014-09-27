@@ -49,6 +49,9 @@ public class TreeFormatterItemProvider extends FormatterItemProvider
       super.getPropertyDescriptors(object);
 
       addFilePropertyDescriptor(object);
+      addExpandToPropertyDescriptor(object);
+      addExpandedPropertyDescriptor(object);
+      addSelectedPropertyDescriptor(object);
     }
     return itemPropertyDescriptors;
   }
@@ -65,6 +68,48 @@ public class TreeFormatterItemProvider extends FormatterItemProvider
         getString("_UI_TreeFormatter_file_feature"),
         getString("_UI_PropertyDescriptor_description", "_UI_TreeFormatter_file_feature", "_UI_TreeFormatter_type"),
         ArticlePackage.Literals.TREE_FORMATTER__FILE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+  }
+
+  /**
+   * This adds a property descriptor for the Expand To feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected void addExpandToPropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_TreeFormatter_expandTo_feature"),
+        getString("_UI_PropertyDescriptor_description", "_UI_TreeFormatter_expandTo_feature", "_UI_TreeFormatter_type"),
+        ArticlePackage.Literals.TREE_FORMATTER__EXPAND_TO, true, false, false, ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE, null, null));
+  }
+
+  /**
+   * This adds a property descriptor for the Expanded feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected void addExpandedPropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_TreeFormatter_expanded_feature"),
+        getString("_UI_PropertyDescriptor_description", "_UI_TreeFormatter_expanded_feature", "_UI_TreeFormatter_type"),
+        ArticlePackage.Literals.TREE_FORMATTER__EXPANDED, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+  }
+
+  /**
+   * This adds a property descriptor for the Selected feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected void addSelectedPropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_TreeFormatter_selected_feature"),
+        getString("_UI_PropertyDescriptor_description", "_UI_TreeFormatter_selected_feature", "_UI_TreeFormatter_type"),
+        ArticlePackage.Literals.TREE_FORMATTER__SELECTED, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
   }
 
   /**
@@ -119,6 +164,9 @@ public class TreeFormatterItemProvider extends FormatterItemProvider
     switch (notification.getFeatureID(TreeFormatter.class))
     {
       case ArticlePackage.TREE_FORMATTER__FILE:
+      case ArticlePackage.TREE_FORMATTER__EXPAND_TO:
+      case ArticlePackage.TREE_FORMATTER__EXPANDED:
+      case ArticlePackage.TREE_FORMATTER__SELECTED:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
         return;
     }

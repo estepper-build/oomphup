@@ -14,6 +14,7 @@ import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Snippet;
+import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -25,6 +26,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.sun.javadoc.Doc;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -49,6 +52,11 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
   protected FormatterImpl()
   {
     super();
+  }
+
+  FormatterImpl(Snippet snippet)
+  {
+    snippet.setFormatter(this);
   }
 
   /**
@@ -250,5 +258,26 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
   }
 
   protected abstract String getFormatterType();
+
+  protected final File getFileArg(String args)
+  {
+    int firstSpace = args.indexOf(' ');
+    if (firstSpace != -1)
+    {
+      args = args.substring(0, firstSpace);
+    }
+
+    Doc doc = getSnippet().getDoc();
+    File folder = doc.position().file().getParentFile();
+
+    try
+    {
+      return new File(folder, args).getCanonicalFile();
+    }
+    catch (IOException ex)
+    {
+      throw new ArticleException(ex);
+    }
+  }
 
 } // FormatterImpl

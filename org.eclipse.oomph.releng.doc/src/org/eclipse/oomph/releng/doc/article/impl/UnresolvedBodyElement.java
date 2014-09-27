@@ -91,9 +91,9 @@ public class UnresolvedBodyElement extends BodyElementImpl
     return Collections.singletonList(this);
   }
 
-  private List<? extends BodyElement> resolveSeeTag(Context context, SeeTag tag)
+  private List<? extends BodyElement> resolveSeeTag(Context context, SeeTag seeTag)
   {
-    MemberDoc referencedMember = tag.referencedMember();
+    MemberDoc referencedMember = seeTag.referencedMember();
     if (referencedMember != null)
     {
       Object target = context.lookup(referencedMember);
@@ -104,11 +104,11 @@ public class UnresolvedBodyElement extends BodyElementImpl
 
       if (target != null)
       {
-        return createBodyElements(context, tag, target);
+        return createBodyElements(context, seeTag, target);
       }
     }
 
-    ClassDoc referencedClass = tag.referencedClass();
+    ClassDoc referencedClass = seeTag.referencedClass();
     if (referencedClass != null)
     {
       Object target = context.lookup(referencedClass);
@@ -119,7 +119,7 @@ public class UnresolvedBodyElement extends BodyElementImpl
 
       if (target != null)
       {
-        return createBodyElements(context, tag, target);
+        return createBodyElements(context, seeTag, target);
       }
     }
 
@@ -180,11 +180,11 @@ public class UnresolvedBodyElement extends BodyElementImpl
     }
   }
 
-  private List<? extends BodyElement> createBodyElements(Context context, SeeTag tag, Object target)
+  private List<? extends BodyElement> createBodyElements(Context context, SeeTag seeTag, Object target)
   {
     if (target instanceof LinkTarget)
     {
-      if (target instanceof Body && tag.label().equals("!!inline!!"))
+      if (target instanceof Body && seeTag.label().equals("!!inline!!"))
       {
         Body body = (Body)target;
         EList<BodyElement> elements = body.getElements();
@@ -199,12 +199,12 @@ public class UnresolvedBodyElement extends BodyElementImpl
         return inlined;
       }
 
-      return Collections.singletonList(new LinkImpl(tag, (LinkTarget)target));
+      return Collections.singletonList(new LinkImpl(seeTag, (LinkTarget)target));
     }
 
     if (target instanceof EmbeddableElement)
     {
-      return Collections.singletonList(new EmbeddingImpl(tag, (EmbeddableElement)target));
+      return Collections.singletonList(new EmbeddingImpl(seeTag, (EmbeddableElement)target));
     }
 
     return null;

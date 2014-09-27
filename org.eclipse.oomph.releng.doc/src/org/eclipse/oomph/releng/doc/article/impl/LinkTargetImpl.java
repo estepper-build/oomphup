@@ -155,15 +155,15 @@ public abstract class LinkTargetImpl extends EObjectImpl implements LinkTarget
     return super.eIsSet(featureID);
   }
 
-  public void generateLink(PrintWriter out, StructuralElement linkSource, SeeTag tag)
+  public void generateLink(PrintWriter out, StructuralElement linkSource, SeeTag seeTag)
   {
-    String label = tag == null ? null : tag.label();
+    String label = seeTag == null ? null : seeTag.label();
     if (label == null || label.length() == 0)
     {
       label = getDefaultLabel();
       if (label == null || label.length() == 0)
       {
-        label = tag == null ? null : tag.text();
+        label = seeTag == null ? null : seeTag.text();
       }
     }
 

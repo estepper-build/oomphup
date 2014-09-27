@@ -67,6 +67,6 @@ public interface LinkTarget extends Identifiable
    */
   String linkFrom(StructuralElement source);
 
-  void generateLink(PrintWriter out, StructuralElement linkSource, SeeTag tag);
+  void generateLink(PrintWriter out, StructuralElement linkSource, SeeTag seeTag);
 
 } // LinkTarget

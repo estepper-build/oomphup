@@ -10,6 +10,8 @@
  */
 package org.eclipse.oomph.releng.doc.article;
 
+import com.sun.javadoc.SeeTag;
+
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Embedding</b></em>'. <!-- end-user-doc -->
  *
@@ -40,5 +42,7 @@ public interface Embedding extends BodyElement
    * @generated
    */
   EmbeddableElement getElement();
+
+  SeeTag getTag();
 
 } // Embedding

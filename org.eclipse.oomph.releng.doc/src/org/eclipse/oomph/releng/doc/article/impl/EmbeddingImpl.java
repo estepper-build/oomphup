@@ -56,9 +56,9 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
     super();
   }
 
-  EmbeddingImpl(SeeTag tag, EmbeddableElement element)
+  EmbeddingImpl(SeeTag seeTag, EmbeddableElement element)
   {
-    super(tag);
+    super(seeTag);
     this.element = element;
   }
 

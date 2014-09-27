@@ -13,6 +13,7 @@ import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
@@ -22,11 +23,14 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import com.sun.javadoc.SeeTag;
+import com.sun.javadoc.Tag;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +42,9 @@ import java.util.Set;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl#getFile <em>File</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl#getExpandTo <em>Expand To</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl#getExpanded <em>Expanded</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.TreeFormatterImpl#getSelected <em>Selected</em>}</li>
  * </ul>
  * </p>
  *
@@ -45,8 +52,6 @@ import java.util.Set;
  */
 public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 {
-  private static final int DEFAULT_EXPAND_TO = 2;
-
   /**
    * The default value of the '{@link #getFile() <em>File</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -68,6 +73,56 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
   protected File file = FILE_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getExpandTo() <em>Expand To</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getExpandTo()
+   * @generated
+   * @ordered
+   */
+  protected static final int EXPAND_TO_EDEFAULT = -1;
+
+  /**
+   * The cached value of the '{@link #getExpandTo() <em>Expand To</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getExpandTo()
+   * @generated
+   * @ordered
+   */
+  protected int expandTo = EXPAND_TO_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getExpanded() <em>Expanded</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getExpanded()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> expanded;
+
+  /**
+   * The default value of the '{@link #getSelected() <em>Selected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSelected()
+   * @generated
+   * @ordered
+   */
+  protected static final String SELECTED_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSelected() <em>Selected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSelected()
+   * @generated
+   * @ordered
+   */
+  protected String selected = SELECTED_EDEFAULT;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -77,9 +132,26 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     super();
   }
 
-  TreeFormatterImpl(File file)
+  TreeFormatterImpl(Snippet snippet, String args)
   {
+    super(snippet);
+
+    File file = getFileArg(args);
     setFile(file);
+
+    String expandTo = ArticleUtil.getTagText(snippet.getDoc(), "@expandTo");
+    if (expandTo != null && expandTo.length() != 0)
+    {
+      setExpandTo(Integer.parseInt(expandTo));
+    }
+
+    EList<String> expanded = getExpanded();
+    for (Tag tag : snippet.getDoc().tags("@expanded"))
+    {
+      expanded.add(tag.text());
+    }
+
+    setSelected(ArticleUtil.getTagText(snippet.getDoc(), "@selected"));
   }
 
   /**
@@ -123,6 +195,70 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
    * <!-- end-user-doc -->
    * @generated
    */
+  public int getExpandTo()
+  {
+    return expandTo;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setExpandTo(int newExpandTo)
+  {
+    int oldExpandTo = expandTo;
+    expandTo = newExpandTo;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.TREE_FORMATTER__EXPAND_TO, oldExpandTo, expandTo));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<String> getExpanded()
+  {
+    if (expanded == null)
+    {
+      expanded = new EDataTypeUniqueEList<String>(String.class, this, ArticlePackage.TREE_FORMATTER__EXPANDED);
+    }
+    return expanded;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getSelected()
+  {
+    return selected;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSelected(String newSelected)
+  {
+    String oldSelected = selected;
+    selected = newSelected;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.TREE_FORMATTER__SELECTED, oldSelected, selected));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -130,6 +266,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     {
       case ArticlePackage.TREE_FORMATTER__FILE:
         return getFile();
+      case ArticlePackage.TREE_FORMATTER__EXPAND_TO:
+        return getExpandTo();
+      case ArticlePackage.TREE_FORMATTER__EXPANDED:
+        return getExpanded();
+      case ArticlePackage.TREE_FORMATTER__SELECTED:
+        return getSelected();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -139,6 +281,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -146,6 +289,16 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     {
       case ArticlePackage.TREE_FORMATTER__FILE:
         setFile((File)newValue);
+        return;
+      case ArticlePackage.TREE_FORMATTER__EXPAND_TO:
+        setExpandTo((Integer)newValue);
+        return;
+      case ArticlePackage.TREE_FORMATTER__EXPANDED:
+        getExpanded().clear();
+        getExpanded().addAll((Collection<? extends String>)newValue);
+        return;
+      case ArticlePackage.TREE_FORMATTER__SELECTED:
+        setSelected((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -164,6 +317,15 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       case ArticlePackage.TREE_FORMATTER__FILE:
         setFile(FILE_EDEFAULT);
         return;
+      case ArticlePackage.TREE_FORMATTER__EXPAND_TO:
+        setExpandTo(EXPAND_TO_EDEFAULT);
+        return;
+      case ArticlePackage.TREE_FORMATTER__EXPANDED:
+        getExpanded().clear();
+        return;
+      case ArticlePackage.TREE_FORMATTER__SELECTED:
+        setSelected(SELECTED_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -180,6 +342,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     {
       case ArticlePackage.TREE_FORMATTER__FILE:
         return FILE_EDEFAULT == null ? file != null : !FILE_EDEFAULT.equals(file);
+      case ArticlePackage.TREE_FORMATTER__EXPAND_TO:
+        return expandTo != EXPAND_TO_EDEFAULT;
+      case ArticlePackage.TREE_FORMATTER__EXPANDED:
+        return expanded != null && !expanded.isEmpty();
+      case ArticlePackage.TREE_FORMATTER__SELECTED:
+        return SELECTED_EDEFAULT == null ? selected != null : !SELECTED_EDEFAULT.equals(selected);
     }
     return super.eIsSet(featureID);
   }
@@ -200,6 +368,12 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (file: ");
     result.append(file);
+    result.append(", expandTo: ");
+    result.append(expandTo);
+    result.append(", expanded: ");
+    result.append(expanded);
+    result.append(", selected: ");
+    result.append(selected);
     result.append(')');
     return result.toString();
   }
@@ -272,8 +446,14 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
     Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
 
+    int expandTo = getExpandTo();
+    if (expandTo == EXPAND_TO_EDEFAULT)
+    {
+      expandTo = Integer.MAX_VALUE;
+    }
+
     TreeNode root = getRootNode(); // TODO What about multiple roots?
-    generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, DEFAULT_EXPAND_TO, true, root);
+    generateTreeNode(builder, propertyKeysBuilder, propertyValuesBuilder, expandTo, true, root);
 
     String imagePath = builder.getImagePath();
     String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + propertyKeysBuilder + "</td><td id=\"max_pv_" + id

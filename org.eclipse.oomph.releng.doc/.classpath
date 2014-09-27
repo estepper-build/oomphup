@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.8-beta4-20110826.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-schemas-3.8-beta4-20110826.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.8-beta4-20110826.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tools.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tools.jar" sourcepath="tools-src-1.7.0_65.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
