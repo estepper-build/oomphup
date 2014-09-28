@@ -42,6 +42,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -54,6 +56,7 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -63,6 +66,7 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -73,12 +77,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
@@ -88,10 +94,10 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
@@ -117,6 +123,12 @@ public class PreprocessApplication
       .compile(
           "@[ \t]*snippet[ \t]+tree[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)([ \t]+\\(categorized|advanced|categorized[ \t]+advanced|advanced[ \t]+categorized\\))?[ \t]*[\r\n]",
           Pattern.MULTILINE);
+
+  private static Pattern IMAGE_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+image[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n]",
+      Pattern.MULTILINE);
+
+  private static Pattern DIAGRAM_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+diagram[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n]",
+      Pattern.MULTILINE);
 
   private static final Object BLANK = ArticlePlugin.INSTANCE.getImage("full/obj16/Blank");
 
@@ -230,224 +242,442 @@ public class PreprocessApplication
       URI uri = URI.createFileURI(file.getPath());
       if ("java".equals(uri.fileExtension()))
       {
-        try
+        visitJava(uri);
+      }
+    }
+  }
+
+  private void visitJava(URI uri)
+  {
+    try
+    {
+      String contents = getContents(uri, "UTF-8");
+      visitImages(uri, contents);
+      visitDiagrams(uri, contents);
+      visitTrees(uri, contents);
+    }
+    catch (IOException ex)
+    {
+      // Ignore.
+    }
+  }
+
+  private void visitTrees(URI uri, String contents) throws IOException
+  {
+    for (Matcher matcher = TREE_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+    {
+      String target = matcher.group(1);
+      String sources = matcher.group(2);
+      String options = matcher.group(3);
+
+      if (sources != null && sources.length() != 0)
+      {
+        targetURI = resolve(uri, URI.createURI(target));
+        List<URI> sourceURIs = new ArrayList<URI>();
+        for (String source : sources.split("\\s"))
         {
-          String contents = getContents(file, "UTF-8");
-          for (Matcher matcher = TREE_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+          sourceURIs.add(resolve(uri, URI.createURI(source)));
+        }
+
+        boolean categorized = false;
+        boolean advanced = false;
+        if (options != null)
+        {
+          for (String option : options.split("\\s"))
           {
-            String target = matcher.group(1);
-            String sources = matcher.group(2);
-            String options = matcher.group(3);
-
-            if (sources != null && sources.length() != 0)
+            if ("categorized".equals(option))
             {
-              targetURI = resolve(uri, URI.createURI(target));
-              List<URI> sourceURIs = new ArrayList<URI>();
-              for (String source : sources.split("\\s"))
-              {
-                sourceURIs.add(resolve(uri, URI.createURI(source)));
-              }
+              categorized = true;
+            }
+            else if ("advanced".equals(option))
+            {
+              advanced = true;
+            }
+          }
+        }
 
-              boolean categorized = false;
-              boolean advanced = false;
-              if (options != null)
+        List<TreeNode> treeNodes = new ArrayList<TreeNode>();
+        Map<Object, TreeNode> treeNodeMap = new HashMap<Object, TreeNode>();
+
+        for (URI sourceURI : sourceURIs)
+        {
+          pruned.clear();
+          labelProvider = null;
+          contentProvider = null;
+          propertySheetPage = null;
+          viewer = null;
+          filters = null;
+
+          IViewPart view = getView(sourceURI);
+          if (view != null)
+          {
+            try
+            {
+              visitTree(treeNodes, treeNodeMap, getTreeViewer(display.getFocusControl()));
+            }
+            catch (PartInitException ex)
+            {
+              ex.printStackTrace();
+            }
+          }
+          else
+          {
+            IEditorPart editor = getEditor(sourceURI);
+            if (editor != null)
+            {
+              try
               {
-                for (String option : options.split("\\s"))
+                if (editor instanceof IViewerProvider)
                 {
-                  if ("categorized".equals(option))
+                  IViewerProvider viewerProvider = (IViewerProvider)editor;
+                  Viewer viewer = viewerProvider.getViewer();
+                  String query = sourceURI.query();
+                  URI queryURI = URI.createURI(query == null ? "" : query);
+                  if (queryURI.segmentCount() == 1 && "Outline".equals(queryURI.segment(0)))
                   {
-                    categorized = true;
+                    ContentOutline contentOutline = (ContentOutline)getWorkbenchPage().showView("org.eclipse.ui.views.ContentOutline");
+                    contentOutline.setFocus();
+                    visitTree(treeNodes, treeNodeMap, getTreeViewer(display.getFocusControl()));
                   }
-                  else if ("advanced".equals(option))
+                  else if (viewer instanceof TreeViewer)
                   {
-                    advanced = true;
+                    TreeViewer treeViewer = (TreeViewer)viewer;
+                    visitTree(treeNodes, treeNodeMap, treeViewer);
                   }
                 }
               }
-
-              List<TreeNode> treeNodes = new ArrayList<TreeNode>();
-              Map<Object, TreeNode> treeNodeMap = new HashMap<Object, TreeNode>();
-
-              for (URI sourceURI : sourceURIs)
+              catch (PartInitException ex)
               {
-                pruned.clear();
-                labelProvider = null;
-                contentProvider = null;
-                propertySheetPage = null;
-                viewer = null;
-                filters = null;
+                ex.printStackTrace();
+              }
 
-                if ("viewer".equals(sourceURI.scheme()))
+              // editor.dispose();
+            }
+            else
+            {
+              labelProvider = defaultLabelProvider;
+              contentProvider = defaultContentProvider;
+
+              String fragment = sourceURI.fragment();
+              if (fragment != null)
+              {
+                boolean allChildren = false;
+                if (fragment.endsWith("/*"))
                 {
-                  try
-                  {
-                    String query = sourceURI.query();
-                    if (query != null)
-                    {
-                      for (String segment : URI.createURI(query).segments())
-                      {
-                        URI filteredClass = URI.createURI(segment);
-                        try
-                        {
-                          pruned.add(CommonPlugin.loadClass(filteredClass.scheme(), filteredClass.opaquePart()));
-                        }
-                        catch (ClassNotFoundException ex)
-                        {
-                          ex.printStackTrace();
-                        }
-                      }
-                    }
+                  fragment = fragment.substring(0, fragment.length() - 2);
+                  sourceURI = sourceURI.appendFragment(fragment);
+                  allChildren = true;
+                }
 
-                    IViewPart view = getWorkbenchPage().showView(sourceURI.authority());
-                    visitTree(treeNodes, treeNodeMap, getTreeViewer(display.getFocusControl()));
-                  }
-                  catch (PartInitException ex)
+                if (fragment.length() == 0)
+                {
+                  URI sourceResourceURI = sourceURI.trimFragment();
+                  Resource resource = resourceSet.getResource(sourceResourceURI, true);
+                  URI resourceURI = resource.getURI();
+                  resource.setURI(sourceResourceURI);
+                  TreeNode treeNode = createTreeNode(treeNodeMap, resource);
+                  resource.setURI(resourceURI);
+                  treeNodes.add(treeNode);
+
+                  for (EObject eObject : resource.getContents())
                   {
-                    ex.printStackTrace();
+                    treeNodes.add(createTreeNode(treeNodeMap, eObject));
                   }
                 }
                 else
                 {
-                  String query = sourceURI.query();
-                  if (query != null)
+                  EObject eObject = resourceSet.getEObject(sourceURI, true);
+                  if (allChildren)
                   {
-                    URI queryURI = URI.createURI(query);
-                    if ("editor".equals(queryURI.scheme()))
+                    for (EObject child : eObject.eContents())
                     {
-                      IEditorInput editorInput = getEditorInput(sourceURI.trimQuery());
-                      if (editorInput != null)
-                      {
-                        try
-                        {
-                          String editorID = queryURI.authority();
-                          if (editorID == null || "".equals(editorID))
-                          {
-                            editorID = workbench.getEditorRegistry().getDefaultEditor(sourceURI.lastSegment()).getId();
-                          }
-
-                          IEditorPart editor = getWorkbenchPage().openEditor(editorInput, editorID);
-                          editor.setFocus();
-
-                          display.timerExec(5000, new Runnable()
-                          {
-                            public void run()
-                            {
-                            }
-                          });
-
-                          busyWait();
-
-                          if (editor instanceof IViewerProvider)
-                          {
-                            IViewerProvider viewerProvider = (IViewerProvider)editor;
-                            Viewer viewer = viewerProvider.getViewer();
-                            if (queryURI.segmentCount() == 1 && "Outline".equals(queryURI.segment(0)))
-                            {
-                              ContentOutline contentOutline = (ContentOutline)getWorkbenchPage().showView("org.eclipse.ui.views.ContentOutline");
-                              contentOutline.setFocus();
-                              visitTree(treeNodes, treeNodeMap, getTreeViewer(display.getFocusControl()));
-                            }
-                            else if (viewer instanceof TreeViewer)
-                            {
-                              TreeViewer treeViewer = (TreeViewer)viewer;
-                              visitTree(treeNodes, treeNodeMap, treeViewer);
-                            }
-                          }
-                        }
-                        catch (PartInitException ex)
-                        {
-                          ex.printStackTrace();
-                        }
-                      }
+                      treeNodes.add(createTreeNode(treeNodeMap, child));
                     }
                   }
                   else
                   {
-                    labelProvider = defaultLabelProvider;
-                    contentProvider = defaultContentProvider;
-
-                    String fragment = sourceURI.fragment();
-                    if (fragment != null)
-                    {
-                      boolean allChildren = false;
-                      if (fragment.endsWith("/*"))
-                      {
-                        fragment = fragment.substring(0, fragment.length() - 2);
-                        sourceURI = sourceURI.appendFragment(fragment);
-                        allChildren = true;
-                      }
-
-                      if (fragment.length() == 0)
-                      {
-                        URI sourceResourceURI = sourceURI.trimFragment();
-                        Resource resource = resourceSet.getResource(sourceResourceURI, true);
-                        URI resourceURI = resource.getURI();
-                        resource.setURI(sourceResourceURI);
-                        TreeNode treeNode = createTreeNode(treeNodeMap, resource);
-                        resource.setURI(resourceURI);
-                        treeNodes.add(treeNode);
-
-                        for (EObject eObject : resource.getContents())
-                        {
-                          treeNodes.add(createTreeNode(treeNodeMap, eObject));
-                        }
-                      }
-                      else
-                      {
-                        EObject eObject = resourceSet.getEObject(sourceURI, true);
-                        if (allChildren)
-                        {
-                          for (EObject child : eObject.eContents())
-                          {
-                            treeNodes.add(createTreeNode(treeNodeMap, child));
-                          }
-                        }
-                        else
-                        {
-                          treeNodes.add(createTreeNode(treeNodeMap, eObject));
-                        }
-                      }
-                    }
-                    else
-                    {
-                      Resource resource = resourceSet.getResource(sourceURI, true);
-                      URI resourceURI = resource.getURI();
-                      resource.setURI(sourceURI);
-                      TreeNode treeNode = createTreeNode(treeNodeMap, resource);
-                      resource.setURI(resourceURI);
-                      treeNodes.add(treeNode);
-                    }
+                    treeNodes.add(createTreeNode(treeNodeMap, eObject));
                   }
                 }
               }
-
-              if (!treeNodes.isEmpty())
+              else
               {
-                XMIResource treeResource = (XMIResource)resourceSet.getResourceFactoryRegistry().getFactory(URI.createURI("*.setup")).createResource(targetURI);
-                treeResource.getContents().addAll(treeNodes);
-
-                for (Map.Entry<Object, TreeNode> entry : treeNodeMap.entrySet())
-                {
-                  Object object = entry.getKey();
-                  Object unwrappedObject = AdapterFactoryEditingDomain.unwrap(object);
-                  if (unwrappedObject instanceof EObject)
-                  {
-                    EObject eObject = (EObject)unwrappedObject;
-                    URI id = EcoreUtil.getURI(eObject);
-                    treeResource.setID(entry.getValue(), escape(id.isPlatformResource() ? id.toPlatformString(false) + "#" + id.fragment() : id.toString()));
-                  }
-                }
-
-                treeResource.save(null);
+                Resource resource = resourceSet.getResource(sourceURI, true);
+                URI resourceURI = resource.getURI();
+                resource.setURI(sourceURI);
+                TreeNode treeNode = createTreeNode(treeNodeMap, resource);
+                resource.setURI(resourceURI);
+                treeNodes.add(treeNode);
               }
             }
           }
         }
-        catch (IOException ex)
+
+        if (!treeNodes.isEmpty())
         {
-          // Ignore.
+          XMIResource treeResource = (XMIResource)resourceSet.getResourceFactoryRegistry().getFactory(URI.createURI("*.setup")).createResource(targetURI);
+          treeResource.getContents().addAll(treeNodes);
+
+          for (Map.Entry<Object, TreeNode> entry : treeNodeMap.entrySet())
+          {
+            Object object = entry.getKey();
+            Object unwrappedObject = AdapterFactoryEditingDomain.unwrap(object);
+            if (unwrappedObject instanceof EObject)
+            {
+              EObject eObject = (EObject)unwrappedObject;
+              URI id = EcoreUtil.getURI(eObject);
+              treeResource.setID(entry.getValue(), escape(id.isPlatformResource() ? id.toPlatformString(false) + "#" + id.fragment() : id.toString()));
+            }
+          }
+
+          treeResource.save(null);
         }
       }
+    }
+  }
+
+  private void visitImages(URI uri, String contents) throws IOException
+  {
+    for (Matcher matcher = IMAGE_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+    {
+      String target = matcher.group(1);
+      String source = matcher.group(2);
+
+      if (source != null && source.length() != 0)
+      {
+        targetURI = resolve(uri, URI.createURI(target));
+        URI sourceURI = resolve(uri, URI.createURI(source));
+
+        IViewPart view = getView(sourceURI);
+        if (view != null)
+        {
+          Control partControl = getPartControl(display.getFocusControl());
+          capture(partControl);
+        }
+        else
+        {
+          IEditorPart editor = getEditor(sourceURI);
+          if (editor != null)
+          {
+            Control partControl = getPartControl(display.getFocusControl());
+            capture(partControl);
+            // editor.dispose();
+          }
+        }
+      }
+    }
+  }
+
+  private void visitDiagrams(URI uri, String contents) throws IOException
+  {
+    for (Matcher matcher = DIAGRAM_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+    {
+      String target = matcher.group(1);
+      String source = matcher.group(2);
+
+      if (source != null && source.length() != 0)
+      {
+        targetURI = resolve(uri, URI.createURI(target));
+        URI sourceURI = resolve(uri, URI.createURI(source));
+        try
+        {
+          final IEditorPart editor = getEditor(sourceURI);
+
+          Class<?> saveAsImageFileAction = CommonPlugin.loadClass("org.eclipse.sirius.diagram.ui",
+              "org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
+          IAction action = (IAction)saveAsImageFileAction.newInstance();
+          EarlyStartup.closeShell = false;
+
+          final Listener displayListener = new Listener()
+          {
+            private boolean outputVisited;
+
+            private String type;
+
+            {
+              String fileExtension = targetURI.fileExtension();
+              if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
+              {
+                type = "JPG";
+              }
+              else if ("svg".equalsIgnoreCase(fileExtension))
+              {
+                type = "SVG";
+              }
+              else if ("bmp".equalsIgnoreCase(fileExtension))
+              {
+                type = "BMP";
+              }
+              else if ("gif".equalsIgnoreCase(fileExtension))
+              {
+                type = "GIF";
+              }
+              else
+              {
+                type = "PNG";
+              }
+            }
+
+            public void handleEvent(final Event event)
+            {
+              if (event.widget instanceof Shell)
+              {
+                display.removeListener(SWT.Skin, this);
+                Shell shell = (Shell)event.widget;
+                updateDialogSettings(shell);
+
+                busyWait();
+
+                display.asyncExec(new Runnable()
+                {
+                  public void run()
+                  {
+                    try
+                    {
+                      getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
+                      // editor.dispose();
+                      EarlyStartup.closeShell = true;
+                    }
+                    catch (Exception ex)
+                    {
+                      ex.printStackTrace();
+                    }
+                  }
+                });
+
+              }
+            }
+
+            private void updateDialogSettings(Control control)
+            {
+              if (control instanceof Combo)
+              {
+                Combo combo = (Combo)control;
+                if (outputVisited)
+                {
+                  combo.setText(type);
+                }
+                else
+                {
+                  combo.setText(targetURI.toFileString());
+                }
+
+                return;
+              }
+
+              if (control instanceof Composite)
+              {
+                Composite composite = (Composite)control;
+                for (Control child : composite.getChildren())
+                {
+                  updateDialogSettings(child);
+                }
+              }
+            }
+          };
+          display.addListener(SWT.Skin, displayListener);
+
+          action.run();
+        }
+        catch (Exception ex)
+        {
+          ex.printStackTrace();
+        }
+      }
+    }
+  }
+
+  private IViewPart getView(URI sourceURI)
+  {
+    if ("viewer".equals(sourceURI.scheme()))
+    {
+      try
+      {
+        String query = sourceURI.query();
+        if (query != null)
+        {
+          for (String segment : URI.createURI(query).segments())
+          {
+            URI filteredClass = URI.createURI(segment);
+            try
+            {
+              pruned.add(CommonPlugin.loadClass(filteredClass.scheme(), filteredClass.opaquePart()));
+            }
+            catch (ClassNotFoundException ex)
+            {
+              ex.printStackTrace();
+            }
+          }
+        }
+
+        IViewPart view = getWorkbenchPage().showView(sourceURI.authority());
+        busyWait();
+        view.setFocus();
+        return view;
+      }
+      catch (PartInitException ex)
+      {
+        ex.printStackTrace();
+      }
+    }
+
+    return null;
+  }
+
+  private IEditorPart getEditor(URI sourceURI)
+  {
+    String query = sourceURI.query();
+    if (query != null)
+    {
+      URI queryURI = URI.createURI(query);
+      if ("editor".equals(queryURI.scheme()))
+      {
+        IEditorInput editorInput = getEditorInput(sourceURI);
+        if (editorInput != null)
+        {
+          String editorID = getEditorID(sourceURI);
+          try
+          {
+            IEditorPart editor = getWorkbenchPage().openEditor(editorInput, editorID);
+            busyWait();
+            editor.setFocus();
+            return editor;
+          }
+          catch (PartInitException ex)
+          {
+            ex.printStackTrace();
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private String getEditorID(URI sourceURI)
+  {
+    String query = sourceURI.query();
+    if (query != null)
+    {
+      URI queryURI = URI.createURI(query);
+      if ("editor".equals(queryURI.scheme()))
+      {
+        String editorID = queryURI.authority();
+        if (editorID != null && !"".equals(editorID))
+        {
+          return editorID;
+        }
+      }
+    }
+
+    return workbench.getEditorRegistry().getDefaultEditor(sourceURI.lastSegment()).getId();
+  }
+
+  private void visit(Control control)
+  {
+    if (control != null)
+    {
+      visit(control.getParent());
     }
   }
 
@@ -722,6 +952,49 @@ public class PreprocessApplication
     return result;
   }
 
+  private void capture(Control control) throws IOException
+  {
+    Point tableSize = control.getSize();
+    GC gc = new GC(control);
+    final Image image = new Image(display, tableSize.x, tableSize.y);
+    gc.copyArea(image, 0, 0);
+    gc.dispose();
+
+    ImageLoader imageLoader = new ImageLoader();
+    imageLoader.data = new ImageData[] { image.getImageData() };
+    OutputStream out = resourceSet.getURIConverter().createOutputStream(targetURI);
+
+    int type;
+    String fileExtension = targetURI.fileExtension();
+    if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
+    {
+      type = SWT.IMAGE_JPEG;
+    }
+    else if ("ico".equalsIgnoreCase(fileExtension))
+    {
+      type = SWT.IMAGE_ICO;
+    }
+    else if ("bmp".equalsIgnoreCase(fileExtension))
+    {
+      type = SWT.IMAGE_BMP;
+    }
+    else if ("gif".equalsIgnoreCase(fileExtension))
+    {
+      type = SWT.IMAGE_GIF;
+    }
+    else if ("tiff".equalsIgnoreCase(fileExtension))
+    {
+      type = SWT.IMAGE_TIFF;
+    }
+    else
+    {
+      type = SWT.IMAGE_PNG;
+    }
+
+    imageLoader.save(out, type);
+    out.close();
+  }
+
   private ResourceSet createResourceSet()
   {
     try
@@ -744,7 +1017,6 @@ public class PreprocessApplication
     try
     {
       workspace.setDescription(description);
-
       workspace.run(new IWorkspaceRunnable()
       {
         public void run(IProgressMonitor monitor) throws CoreException
@@ -820,25 +1092,48 @@ public class PreprocessApplication
     return locationURI;
   }
 
-  private static IEditorInput getEditorInput(final URI normalizedURI)
+  private static IEditorInput getEditorInput(final URI uri)
   {
-    if (normalizedURI.isPlatformResource())
+    if (uri.lastSegment().endsWith("aird"))
     {
-      IFile workspaceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(normalizedURI.toPlatformString(true)));
+      XMLMemento memento = XMLMemento.createWriteRoot("input");
+      memento.putString("SESSION_RESOURCE_URI", "platform:/resource/org.eclipse.oomph.setup/model/Setup.aird");
+      memento.putString("bundle", "org.eclipse.sirius.ui");
+      memento.putString("class", "org.eclipse.sirius.ui.business.api.session.SessionEditorInput");
+      memento.putString("factoryID", "org.eclipse.sirius.ui.business.api.session.SessionEditorInputFactory");
+      memento.putString("name", "Overview"); // TODO
+      memento.putString("uri", uri.trimQuery().toString());
+
+      try
+      {
+        Class<?> editorInputClass = CommonPlugin.loadClass("org.eclipse.sirius.ui", "org.eclipse.sirius.ui.business.api.session.SessionEditorInput");
+        Constructor<?> constructor = editorInputClass.getConstructor(IMemento.class);
+        IEditorInput editorInput = (IEditorInput)constructor.newInstance(memento);
+        return editorInput;
+      }
+      catch (Exception ex)
+      {
+        ex.printStackTrace();
+      }
+    }
+
+    if (uri.isPlatformResource())
+    {
+      IFile workspaceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.trimQuery().trimFragment().toPlatformString(true)));
       return new FileEditorInput(workspaceFile);
 
     }
 
-    if (normalizedURI.isFile())
+    if (uri.isFile())
     {
-      FileEditorInput editorInput = getFileEditorInput(normalizedURI);
+      FileEditorInput editorInput = getFileEditorInput(uri.trimQuery().trimFragment());
       if (editorInput != null)
       {
         return editorInput;
       }
     }
 
-    return new URIEditorInput(normalizedURI, normalizedURI.lastSegment());
+    return new URIEditorInput(uri, uri.lastSegment());
   }
 
   private static FileEditorInput getFileEditorInput(URI uri)
@@ -919,6 +1214,37 @@ public class PreprocessApplication
     return workbenchWindow.getActivePage();
   }
 
+  private Control getPartControl(Control control)
+  {
+    if (control == null)
+    {
+      return null;
+    }
+
+    if (control.getData("modelElement") != null)
+    {
+      return getCTabFolder(control);
+    }
+
+    return getPartControl(control.getParent());
+  }
+
+  private CTabFolder getCTabFolder(Control control)
+  {
+    if (control == null)
+    {
+      return null;
+    }
+
+    if (control instanceof CTabFolder)
+    {
+      CTabFolder cTabFolder = (CTabFolder)control;
+      return cTabFolder;
+    }
+
+    return getCTabFolder(control.getParent());
+  }
+
   private TreeViewer getTreeViewer(Control control)
   {
     if (control != null)
@@ -994,6 +1320,37 @@ public class PreprocessApplication
     }
   }
 
+  public static Method getMethod(Class<?> c, String methodName, Class<?>... parameterTypes)
+  {
+    try
+    {
+      try
+      {
+        Method method = c.getDeclaredMethod(methodName, parameterTypes);
+        makeAccessible(method);
+        return method;
+      }
+      catch (NoSuchMethodException ex)
+      {
+        Class<?> superclass = c.getSuperclass();
+        if (superclass != null)
+        {
+          return getMethod(superclass, methodName, parameterTypes);
+        }
+
+        throw ex;
+      }
+    }
+    catch (RuntimeException ex)
+    {
+      throw ex;
+    }
+    catch (Exception ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
   private static Object getValue(Field field, Object target)
   {
     try
@@ -1018,13 +1375,17 @@ public class PreprocessApplication
     }
   }
 
-  private String getContents(File file, String encoding) throws IOException
+  private String getContents(URI uri, String encoding) throws IOException
   {
-    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+    BufferedInputStream bufferedInputStream = new BufferedInputStream(resourceSet.getURIConverter().createInputStream(uri));
     byte[] input = new byte[bufferedInputStream.available()];
     bufferedInputStream.read(input);
     bufferedInputStream.close();
     return encoding == null ? new String(input) : new String(input, encoding);
+  }
+
+  private void foo(IEditorInput editorInput)
+  {
   }
 
   public static class CaptureWidgetImageGC

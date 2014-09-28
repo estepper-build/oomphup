@@ -23,6 +23,8 @@ import java.io.IOException;
 
 public class EarlyStartup implements IStartup
 {
+  static boolean closeShell = true;
+
   public void earlyStartup()
   {
     final String projects = System.getProperty("preprocessor.projects");
@@ -43,7 +45,10 @@ public class EarlyStartup implements IStartup
               {
                 public void run()
                 {
-                  shell.close();
+                  if (closeShell && !shell.isDisposed())
+                  {
+                    shell.close();
+                  }
                 }
               });
             }
