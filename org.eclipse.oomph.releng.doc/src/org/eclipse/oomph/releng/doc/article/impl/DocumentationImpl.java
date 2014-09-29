@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.AssembleScripts;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
-import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Context;
@@ -22,6 +21,7 @@ import org.eclipse.oomph.releng.doc.article.Javadoc;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -166,7 +166,7 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
     analyzeDocumentation(projectFolder);
     if (defaultElement == null)
     {
-      throw new AssertionError("No default element declared in " + getTitle());
+      throw new ArticleException("No default element declared in " + getTitle());
     }
 
     setPath(defaultElement.getFullPath());
@@ -317,15 +317,9 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
 
     if (ArticleUtil.isSnippet(getContext().getRoot(), methodDoc))
     {
-      SnippetImpl snippet = new SnippetImpl(this, methodDoc);
-
-      if (ArticleUtil.isTagged(methodDoc, "@section"))
+      if (!ArticleUtil.isTagged(methodDoc, "@section"))
       {
-        if (parent instanceof Body)
-        {
-          Body body = (Body)parent;
-          body.getElements().add(new EmbeddingImpl(null, snippet));
-        }
+        new SnippetImpl(this, methodDoc);
       }
     }
 
@@ -363,7 +357,7 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
   {
     try
     {
-      Resource resource = AssembleScripts.JavaDoc.getTocXmiResource(projectFolder, false);
+      Resource resource = AssembleScripts.getTocXmiResource(projectFolder, false);
 
       for (Object content : resource.getContents().toArray())
       {
@@ -700,7 +694,7 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
   {
     if (this.defaultElement != null)
     {
-      throw new AssertionError("Multiple default elements declared in " + getTitle());
+      throw new ArticleException("Multiple default elements declared in " + getTitle());
     }
 
     this.defaultElement = defaultElement;

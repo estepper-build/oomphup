@@ -6,8 +6,13 @@ import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
 import org.eclipse.oomph.releng.doc.article.Chapter;
+import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Documentation;
+import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Section;
+import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -19,11 +24,13 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.MethodDoc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc -->
@@ -51,7 +58,11 @@ public class SectionImpl extends LinkTargetImpl implements Section
    */
   protected EList<BodyElement> elements;
 
-  private FieldDoc fieldDoc;
+  private MemberDoc fieldOrMethodDoc;
+
+  private Snippet snippet;
+
+  private Embedding snippetEmbedder;
 
   /**
    * <!-- begin-user-doc -->
@@ -63,16 +74,26 @@ public class SectionImpl extends LinkTargetImpl implements Section
     super();
   }
 
-  SectionImpl(Chapter chapter, FieldDoc fieldDoc)
+  SectionImpl(Chapter chapter, MemberDoc fieldOrMethodDoc)
   {
-    this.fieldDoc = fieldDoc;
+    this.fieldOrMethodDoc = fieldOrMethodDoc;
     chapter.getSections().add(this);
-    chapter.getDocumentation().getContext().register(getId(), this);
+
+    Documentation documentation = chapter.getDocumentation();
+    Context context = documentation.getContext();
+    context.register(getId(), this);
 
     EList<BodyElement> elements = getElements();
-    BodyElementContainerImpl.analyzeTags(elements, fieldDoc.inlineTags(), false);
+    BodyElementContainerImpl.analyzeTags(elements, fieldOrMethodDoc.inlineTags(), false);
 
-    BodyImpl.parseSeeTags(elements, fieldDoc);
+    if (ArticleUtil.isTagged(fieldOrMethodDoc, "@snippet"))
+    {
+      snippet = new SnippetImpl(documentation, fieldOrMethodDoc);
+      snippetEmbedder = new EmbeddingImpl(null, snippet);
+      elements.add(snippetEmbedder);
+    }
+
+    BodyImpl.parseSeeTags(elements, fieldOrMethodDoc);
   }
 
   /**
@@ -340,7 +361,7 @@ public class SectionImpl extends LinkTargetImpl implements Section
   @Override
   public Object getId()
   {
-    return fieldDoc;
+    return fieldOrMethodDoc;
   }
 
   @Override
@@ -356,6 +377,14 @@ public class SectionImpl extends LinkTargetImpl implements Section
     return chapter.linkFrom(source) + getAnchorSuffix();
   }
 
+  public void addHeaders(Set<String> headers)
+  {
+    if (snippet != null)
+    {
+      snippet.addHeaders(headers, snippetEmbedder);
+    }
+  }
+
   public void generate(PrintWriter out) throws IOException
   {
     Chapter chapter = getChapter();
@@ -368,7 +397,14 @@ public class SectionImpl extends LinkTargetImpl implements Section
 
   private String getAnchorSuffix()
   {
-    return "." + fieldDoc.name();
+    String result = "." + fieldOrMethodDoc.name();
+
+    if (fieldOrMethodDoc instanceof MethodDoc)
+    {
+      result += "()";
+    }
+
+    return result;
   }
 
 } // SectionImpl

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
+import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.ecore.EClass;
@@ -59,7 +60,7 @@ public class ArticleImpl extends ChapterImpl implements Article
       String name = chapter.getName();
       if (chapters.put(name, chapter) != null)
       {
-        throw new AssertionError("Ambiguous chapter name: " + ArticleUtil.makeConsoleLink(chapter.getDoc()));
+        throw new ArticleException("Ambiguous chapter name: " + ArticleUtil.makeConsoleLink(chapter.getDoc()));
       }
     }
   }

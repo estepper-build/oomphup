@@ -60,9 +60,9 @@ public class AssembleScripts
 {
   public static final boolean INCLUDE_SPI = true;
 
-  private static final String EXPORT_PACKAGE = "Export-Package";
+  public static final String ANTLIB_NAME = "buildLib.ant";
 
-  private static final AntLib ANTLIB = new AntLib();
+  private static final String EXPORT_PACKAGE = "Export-Package";
 
   private static final Pattern PACKAGE_INFO_PATTERN = Pattern.compile(".*<body[^>]*>\\s*(.*)\\s*<p>\\s*</body>.*", Pattern.MULTILINE | Pattern.DOTALL);
 
@@ -72,69 +72,75 @@ public class AssembleScripts
 
   private static final String NL = System.getProperty("line.separator");
 
-  private static File helpcenter;
+  private final File helpcenter;
 
-  private static File plugins;
+  private final File plugins;
 
-  private static File releng;
+  private final File releng;
 
-  public static void main(String[] args) throws Exception
+  private final AntLib antLib = new AntLib();
+
+  private Logger logger = new Logger();
+
+  public AssembleScripts(File helpcenter, File plugins, File releng)
   {
-    try
-    {
-      plugins = new File(args[0]).getCanonicalFile();
-      helpcenter = new File(args[1]).getCanonicalFile();
-      releng = new File(args[2]).getCanonicalFile();
-
-      for (File plugin : plugins.listFiles())
-      {
-        if (plugin.isDirectory())
-        {
-          Properties buildProperties = getProperties(new File(plugin, "build.properties"));
-          String javadocProject = buildProperties.getProperty("doc.project");
-          if (javadocProject != null)
-          {
-            Set<String> excludedPackages = getExcludedPackages(buildProperties);
-            assembleJavaDocOptions(plugin, javadocProject, excludedPackages);
-          }
-        }
-      }
-
-      for (JavaDoc javaDoc : ANTLIB.getJavaDocs())
-      {
-        assembleArticleOptions(javaDoc);
-
-        javaDoc.generateAnt();
-        javaDoc.generateTocXmi();
-      }
-
-      System.out.println();
-      ANTLIB.generate();
-      ANTLIB.generateDebug();
-      ANTLIB.generateDocsTxt();
-      System.out.println();
-
-      for (JavaDoc javaDoc : ANTLIB.getJavaDocs())
-      {
-        for (SourcePlugin sourcePlugin : javaDoc.getSourcePlugins())
-        {
-          sourcePlugin.validatePackageInfos();
-        }
-      }
-
-      System.out.println();
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-      throw ex;
-    }
+    this.helpcenter = helpcenter;
+    this.plugins = plugins;
+    this.releng = releng;
   }
 
-  private static void assembleJavaDocOptions(File plugin, String javadocProject, Set<String> excludedPackages) throws IOException, BundleException
+  public void setLogger(Logger logger)
   {
-    SourcePlugin sourcePlugin = ANTLIB.getSourcePlugin(plugin.getName());
-    JavaDoc javaDoc = ANTLIB.getJavaDoc(javadocProject);
+    this.logger = logger;
+  }
+
+  public AntLib run() throws Exception
+  {
+    for (File plugin : plugins.listFiles())
+    {
+      if (plugin.isDirectory())
+      {
+        Properties buildProperties = getProperties(new File(plugin, "build.properties"));
+        String javadocProject = buildProperties.getProperty("doc.project");
+        if (javadocProject != null)
+        {
+          Set<String> excludedPackages = getExcludedPackages(buildProperties);
+          assembleJavaDocOptions(plugin, javadocProject, excludedPackages);
+        }
+      }
+    }
+
+    for (JavaDoc javaDoc : antLib.getJavaDocs())
+    {
+      assembleArticleOptions(javaDoc);
+
+      javaDoc.generateAnt();
+      javaDoc.generateTocXmi();
+    }
+
+    logger.info("");
+    antLib.generate();
+    antLib.generateDebug();
+    antLib.generateDocsTxt();
+    logger.info("");
+
+    for (JavaDoc javaDoc : antLib.getJavaDocs())
+    {
+      for (SourcePlugin sourcePlugin : javaDoc.getSourcePlugins())
+      {
+        sourcePlugin.validatePackageInfos();
+      }
+    }
+
+    return antLib;
+  }
+
+  private void assembleJavaDocOptions(File plugin, String javadocProject, Set<String> excludedPackages) throws IOException, BundleException
+  {
+    SourcePlugin sourcePlugin = antLib.getSourcePlugin(plugin.getName());
+    JavaDoc javaDoc = antLib.getJavaDoc(javadocProject);
+
+    sourcePlugin.setJavaDoc(javaDoc);
     javaDoc.getSourcePlugins().add(sourcePlugin);
 
     Manifest manifest = getManifest(plugin);
@@ -169,7 +175,7 @@ public class AssembleScripts
     }
   }
 
-  private static void assembleArticleOptions(JavaDoc javaDoc) throws IOException, BundleException
+  private void assembleArticleOptions(JavaDoc javaDoc) throws IOException, BundleException
   {
     File plugin = javaDoc.getProject();
     Manifest manifest = getManifest(plugin);
@@ -177,7 +183,7 @@ public class AssembleScripts
     ManifestElement[] manifestElements = getManifestElements(manifest);
     if (manifestElements == null || manifestElements.length == 0)
     {
-      System.err.println("No public packages in " + plugin.getName());
+      logger.error("No public packages in " + plugin.getName());
     }
     else
     {
@@ -192,7 +198,7 @@ public class AssembleScripts
     }
   }
 
-  private static boolean isIncluded(Set<String> excludedPackages, String packageName)
+  private boolean isIncluded(Set<String> excludedPackages, String packageName)
   {
     if (packageName.endsWith(".spi"))
     {
@@ -212,12 +218,12 @@ public class AssembleScripts
     return true;
   }
 
-  private static boolean isPublic(ManifestElement manifestElement)
+  private boolean isPublic(ManifestElement manifestElement)
   {
     return manifestElement.getDirective("x-internal") == null && manifestElement.getDirective("x-friends") == null;
   }
 
-  private static Set<String> getExcludedPackages(Properties buildProperties)
+  private Set<String> getExcludedPackages(Properties buildProperties)
   {
     Set<String> excludedPackages = new HashSet<String>();
 
@@ -236,7 +242,7 @@ public class AssembleScripts
     return excludedPackages;
   }
 
-  private static ManifestElement[] getManifestElements(Manifest manifest) throws BundleException
+  private ManifestElement[] getManifestElements(Manifest manifest) throws BundleException
   {
     Attributes attributes = manifest.getMainAttributes();
     String exportPackage = attributes.getValue(EXPORT_PACKAGE);
@@ -244,7 +250,7 @@ public class AssembleScripts
     return elements == null ? new ManifestElement[0] : elements;
   }
 
-  private static Manifest getManifest(File plugin) throws IOException
+  private Manifest getManifest(File plugin) throws IOException
   {
     File metaInf = new File(plugin, "META-INF");
     File manifest = new File(metaInf, "MANIFEST.MF");
@@ -262,6 +268,13 @@ public class AssembleScripts
         in.close();
       }
     }
+  }
+
+  private static List<String> sort(Collection<String> collection)
+  {
+    List<String> result = new ArrayList<String>(collection);
+    Collections.sort(result);
+    return result;
   }
 
   public static Properties getProperties(File file)
@@ -337,13 +350,6 @@ public class AssembleScripts
     return pluginName;
   }
 
-  private static List<String> sort(Collection<String> collection)
-  {
-    List<String> result = new ArrayList<String>(collection);
-    Collections.sort(result);
-    return result;
-  }
-
   public static void writeGenerationWarning(BufferedWriter writer) throws IOException
   {
     writer.write("\t<!-- =========================================== -->" + NL);
@@ -351,10 +357,68 @@ public class AssembleScripts
     writer.write("\t<!-- =========================================== -->" + NL);
   }
 
+  public static Resource getTocXmiResource(File project, boolean create) throws IOException
+  {
+    ArticlePackage.eINSTANCE.eClass();
+
+    ResourceSet resourceSet = new ResourceSetImpl();
+    Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+    map.put("xmi", new XMIResourceFactoryImpl());
+
+    File target = new File(project, "toc.xmi");
+    URI uri = URI.createFileURI(target.getCanonicalPath());
+
+    if (create)
+    {
+      return resourceSet.createResource(uri);
+    }
+
+    return resourceSet.getResource(uri, true);
+  }
+
+  public static void main(String[] args) throws Exception
+  {
+    try
+    {
+      AssembleScripts assembleScripts = new AssembleScripts(new File(args[0]).getCanonicalFile(), new File(args[1]).getCanonicalFile(),
+          new File(args[2]).getCanonicalFile());
+      AntLib antLib = assembleScripts.run();
+      assembleScripts.logger.info("");
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      throw ex;
+    }
+  }
+
   /**
    * @author Eike Stepper
    */
-  public static class AntLib
+  public static class Logger
+  {
+    public void info(Object object)
+    {
+      System.out.println(object);
+    }
+
+    public void error(Object object)
+    {
+      if (object instanceof Throwable)
+      {
+        ((Throwable)object).printStackTrace();
+      }
+      else
+      {
+        System.err.println(object);
+      }
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
+  public final class AntLib
   {
     private Map<String, SourcePlugin> sourcePlugins = new HashMap<String, SourcePlugin>();
 
@@ -438,8 +502,8 @@ public class AssembleScripts
 
       try
       {
-        File target = new File(helpcenter, "buildLib.ant");
-        System.out.println("Generating " + target.getCanonicalPath());
+        File target = new File(helpcenter, ANTLIB_NAME);
+        logger.info("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
         BufferedWriter writer = new BufferedWriter(out);
@@ -461,16 +525,35 @@ public class AssembleScripts
         writeGenerationWarning(writer);
         writer.write("" + NL);
 
-        // Generate delegator
-        writer.write("\t<target name=\"delegate\">" + NL);
-
+        // Generate project targets
         List<JavaDoc> javaDocs = (List<JavaDoc>)getJavaDocsSortedByDependencies();
         for (JavaDoc javaDoc : javaDocs)
         {
-          writer.write("\t\t<ant antfile=\"${plugins.dir}/" + javaDoc.getProject().getName() + "/build.xml\" target=\"${delegate.target}\" />" + NL);
+          String project = javaDoc.getProject().getName();
+          writer.write("\t<target name=\"" + project + "\" unless=\"skip." + project + "\">" + NL);
+          writer.write("\t\t<ant antfile=\"${plugins.dir}/" + project + "/build.xml\" target=\"${delegate.target}\" />" + NL);
+          writer.write("\t</target>" + NL);
+          writer.write("" + NL);
         }
 
-        writer.write("\t</target>" + NL);
+        // Generate delegator
+        writer.write("\t<target name=\"delegate\" depends=\"");
+        boolean first = true;
+        for (JavaDoc javaDoc : javaDocs)
+        {
+          if (first)
+          {
+            first = false;
+          }
+          else
+          {
+            writer.write(",");
+          }
+
+          writer.write(javaDoc.getProject().getName());
+        }
+
+        writer.write("\" />" + NL);
         writer.write("" + NL);
 
         // Generate toc
@@ -512,7 +595,7 @@ public class AssembleScripts
       {
         File target = new File(helpcenter, "docs.txt");
         target.getParentFile().mkdirs();
-        System.out.println("Generating " + target.getCanonicalPath());
+        logger.info("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
         @SuppressWarnings("resource")
@@ -548,7 +631,7 @@ public class AssembleScripts
       {
         File target = new File(helpcenter, "debug/frame.html");
         target.getParentFile().mkdirs();
-        System.out.println("Generating " + target.getCanonicalPath());
+        logger.info("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
         @SuppressWarnings("resource")
@@ -596,8 +679,10 @@ public class AssembleScripts
   /**
    * @author Eike Stepper
    */
-  public static class SourcePlugin implements Comparable<SourcePlugin>
+  public final class SourcePlugin implements Comparable<SourcePlugin>
   {
+    private JavaDoc javaDoc;
+
     private String projectName;
 
     private String label;
@@ -610,6 +695,16 @@ public class AssembleScripts
     {
       this.projectName = projectName;
       label = getPluginName(getProject());
+    }
+
+    public JavaDoc getJavaDoc()
+    {
+      return javaDoc;
+    }
+
+    void setJavaDoc(JavaDoc javaDoc)
+    {
+      this.javaDoc = javaDoc;
     }
 
     @Override
@@ -674,7 +769,7 @@ public class AssembleScripts
 
           if (!packageInfo.isFile())
           {
-            System.err.println("Package info missing: " + packageInfo.getCanonicalPath());
+            logger.error("Package info missing: " + packageInfo.getCanonicalPath());
           }
         }
       }
@@ -707,11 +802,11 @@ public class AssembleScripts
       Matcher matcher = PACKAGE_INFO_PATTERN.matcher(input);
       if (!matcher.matches())
       {
-        System.err.println("No match: " + packageHtml.getCanonicalPath());
+        logger.error("No match: " + packageHtml.getCanonicalPath());
         return;
       }
 
-      System.out.println("Converting " + packageHtml.getCanonicalPath());
+      logger.info("Converting " + packageHtml.getCanonicalPath());
       String comment = matcher.group(1);
       FileWriter out = null;
 
@@ -759,7 +854,7 @@ public class AssembleScripts
   /**
    * @author Eike Stepper
    */
-  public static class JavaDoc
+  public final class JavaDoc
   {
     private String projectName;
 
@@ -811,7 +906,7 @@ public class AssembleScripts
       {
         if (result.add(dependency))
         {
-          JavaDoc child = ANTLIB.getJavaDocIfExists(dependency);
+          JavaDoc child = antLib.getJavaDocIfExists(dependency);
           recurseDependencies(child, result);
         }
       }
@@ -868,7 +963,7 @@ public class AssembleScripts
       try
       {
         File target = new File(project, "build.xml");
-        System.out.println("Generating " + target.getCanonicalPath());
+        logger.info("Generating " + target.getCanonicalPath());
 
         out = new FileWriter(target);
         BufferedWriter writer = new BufferedWriter(out);
@@ -893,21 +988,21 @@ public class AssembleScripts
             {
               if (articlePackages.isEmpty())
               {
-                writer.write("\t<property name=\"article.skip\" value=\"true\" />" + NL);
+                writer.write("\t<property name=\"skip.articledoc\" value=\"true\" />" + NL);
               }
             }
             else if ("<!-- SCHEMA SKIP -->".equals(id))
             {
               if (schemaPlugins.isEmpty())
               {
-                writer.write("\t<property name=\"schema.skip\" value=\"true\" />" + NL);
+                writer.write("\t<property name=\"skip.schemadoc\" value=\"true\" />" + NL);
               }
             }
             else if ("<!-- JAVA SKIP -->".equals(id))
             {
               if (packageNames.isEmpty())
               {
-                writer.write("\t<property name=\"java.skip\" value=\"true\" />" + NL);
+                writer.write("\t<property name=\"skip.javadoc\" value=\"true\" />" + NL);
               }
             }
             else if ("<!-- SOURCE FOLDERS -->".equals(id))
@@ -966,7 +1061,7 @@ public class AssembleScripts
 
               for (String dependency : sort(getAllDependencies()))
               {
-                JavaDoc javaDoc = ANTLIB.getJavaDoc(dependency);
+                JavaDoc javaDoc = antLib.getJavaDoc(dependency);
                 for (String articlePackage : sort(javaDoc.getArticlePackages()))
                 {
                   writer.write("\t\t\t<package name=\"" + articlePackage + "\" />" + NL);
@@ -1043,7 +1138,7 @@ public class AssembleScripts
     public void generateTocXmi() throws IOException
     {
       Resource resource = getTocXmiResource(getProject(), true);
-      System.out.println("Generating " + new File(resource.getURI().toFileString()).getCanonicalPath());
+      logger.info("Generating " + new File(resource.getURI().toFileString()).getCanonicalPath());
 
       for (SourcePlugin sourcePlugin : getSortedSourcePlugins())
       {
@@ -1068,25 +1163,6 @@ public class AssembleScripts
       }
 
       resource.save(null);
-    }
-
-    public static Resource getTocXmiResource(File project, boolean create) throws IOException
-    {
-      ArticlePackage.eINSTANCE.eClass();
-
-      ResourceSet resourceSet = new ResourceSetImpl();
-      Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
-      map.put("xmi", new XMIResourceFactoryImpl());
-
-      File target = new File(project, "toc.xmi");
-      URI uri = URI.createFileURI(target.getCanonicalPath());
-
-      if (create)
-      {
-        return resourceSet.createResource(uri);
-      }
-
-      return resourceSet.getResource(uri, true);
     }
   }
 }

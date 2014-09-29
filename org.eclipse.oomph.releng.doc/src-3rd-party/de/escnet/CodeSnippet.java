@@ -10,7 +10,6 @@
  */
 package de.escnet;
 
-
 import com.sun.javadoc.Doc;
 
 import de.java2html.Java2Html;
@@ -112,8 +111,7 @@ public final class CodeSnippet
     }
   }
 
-  private static String getSnippetText(BufferedReader reader, int startLine, boolean includeSignature)
-      throws IOException
+  private static String getSnippetText(BufferedReader reader, int startLine, boolean includeSignature) throws IOException
   {
     StringBuilder builder = new StringBuilder();
     int number = 1;
@@ -198,7 +196,7 @@ public final class CodeSnippet
     Matcher matcher = PATTERN0.matcher(html);
     if (!matcher.matches())
     {
-      throw new AssertionError("No match found");
+      throw new RuntimeException("No match found");
     }
 
     String code = matcher.group(1);

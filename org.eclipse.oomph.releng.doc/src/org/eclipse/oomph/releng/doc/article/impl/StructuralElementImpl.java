@@ -10,6 +10,7 @@ import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
+import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -651,7 +652,8 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
       generate(out);
 
       out.write("<HR>" + NL);
-      out.write("<i>Copyright (c) 2011, 2012 Eike Stepper (Berlin, Germany) and others.</i>" + NL);
+      out.write("<small><i class=\"copyright\">Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.<br>All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html</i><small>"
+          + NL);
       out.write("</BODY>" + NL);
       out.write("</HTML>" + NL);
     }
@@ -733,7 +735,8 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
     Documentation documentation = getDocumentation();
     if (documentation == null || !documentation.isAnalyzed())
     {
-      throw new AssertionError("Documentation analysis is not finished, yet");
+      throw new ArticleException("Documentation analysis is not finished, yet");
     }
   }
+
 } // StructuralElementImpl

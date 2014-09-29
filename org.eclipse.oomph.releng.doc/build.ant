@@ -19,7 +19,7 @@
   <echo message="releng.project = ${releng.project}" />
 
   <loadfile property="tp.classpath" srcfile="${tp.classpath.file}" />
-  <target name="assemble.scripts">
+  <target name="assemble.scripts" unless="skip.assemble.scripts" >
     <java classname="org.eclipse.oomph.releng.doc.AssembleScripts" failonerror="true">
       <classpath path="${tp.classpath}" />
       <classpath path="${releng.project}/bin" />

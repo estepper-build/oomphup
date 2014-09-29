@@ -4,6 +4,7 @@ package org.eclipse.oomph.releng.doc.article;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc -->
@@ -51,6 +52,8 @@ public interface Section extends LinkTarget, BodyElementContainer
    * @generated
    */
   void setChapter(Chapter value);
+
+  void addHeaders(Set<String> headers);
 
   void generate(PrintWriter out) throws IOException;
 

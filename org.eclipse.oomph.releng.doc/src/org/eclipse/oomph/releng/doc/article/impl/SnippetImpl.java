@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -739,7 +739,8 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     builder.append("      <td width=\"25px\"><div style=\"position:relative;\"><img src=\"" + imagePath
         + "editor-1.png\"><img style=\"position:absolute; top:5px; left:5px;\" src=\"" + editorIcon + "\"></div></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath
-        + "editor-2.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title + "</font></td>" + NL);
+        + "editor-2.png); background-repeat:repeat-x;\" width=\"1px\"><font face=\"Segoe UI,Arial\" size=\"-1\">" + title.replace(" ", "&nbsp;")
+        + "</font></td>" + NL);
     builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-3.png\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"right\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"center\" width=\"16\">" //

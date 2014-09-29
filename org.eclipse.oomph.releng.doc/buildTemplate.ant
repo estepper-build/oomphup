@@ -58,7 +58,7 @@
            classname="org.eclipse.pde.internal.core.ant.ConvertSchemaToHTML"
            classpathref="javadoc.classpath"/>
 
-  <target name="build.java" unless="java.skip">
+  <target name="build.java" unless="skip.javadoc">
     <echo message="Building JavaDoc for ${PROJECT-NAME}" />
 
     <delete includeemptydirs="true" failonerror="false">
@@ -93,9 +93,9 @@
              windowtitle="${javadoc.name}"
              doctitle="&lt;h1>${javadoc.name}&lt;/h1>"
              overview="${project.path}/overview.html"
-             bottom="&lt;i>Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.&lt;/i>">
+             bottom="&lt;i class=&quot;copyright&quot;>Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.&lt;br>All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html&lt;/i>">
 
-      <!-- Disable APIviz UML diagram generation
+    	<!-- Disable APIviz UML diagram generation
       <doclet name="org.jboss.apiviz.APIviz" path="${releng.project}/bin">
         <param name="-nopackagediagram" />
         <param name="-nosubtypes" />
@@ -208,7 +208,7 @@
     </java>
   </target>
 
-  <target name="build.schema" unless="schema.skip">
+  <target name="build.schema" unless="skip.schemadoc">
     <echo message="Building SchemaDoc for ${PROJECT-NAME}" />
 
     <delete includeemptydirs="true" failonerror="false">
@@ -233,7 +233,7 @@
     </replaceregexp>
   </target>
 
-  <target name="build.article" unless="article.skip">
+  <target name="build.article" unless="skip.articledoc">
     <echo message="Building Articles for ${PROJECT-NAME}" />
 
     <tstamp>

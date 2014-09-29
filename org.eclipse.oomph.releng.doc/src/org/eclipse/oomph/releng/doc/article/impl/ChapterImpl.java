@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2012 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -26,12 +27,17 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.MethodDoc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Chapter</b></em>'. <!-- end-user-doc -->
@@ -70,21 +76,39 @@ public class ChapterImpl extends BodyImpl implements Chapter
   {
     super(parent, makePath(classDoc), classDoc);
     ((ArticleImpl)getArticle()).registerChapter(this);
-    createSections(classDoc.fields());
+
+    List<MemberDoc> memberDocs = new ArrayList<MemberDoc>();
+    for (FieldDoc fieldDoc : classDoc.fields())
+    {
+      memberDocs.add(fieldDoc);
+    }
+
+    for (MethodDoc methodDoc : classDoc.methods())
+    {
+      if (ArticleUtil.isTagged(methodDoc, "@section"))
+      {
+        memberDocs.add(methodDoc);
+      }
+    }
+
+    Collections.sort(memberDocs, new Comparator<MemberDoc>()
+    {
+      public int compare(MemberDoc o1, MemberDoc o2)
+      {
+        return o1.position().line() - o2.position().line();
+      }
+    });
+
+    for (MemberDoc memberDoc : memberDocs)
+    {
+      new SectionImpl(this, memberDoc);
+    }
+
   }
 
   private static String makePath(ClassDoc classDoc)
   {
     return classDoc.simpleTypeName() + (classDoc.containingClass() == null ? ".html" : "");
-  }
-
-  private void createSections(FieldDoc[] fieldDocs)
-  {
-    EList<Section> sections = getSections();
-    for (FieldDoc fieldDoc : fieldDocs)
-    {
-      Section section = new SectionImpl(this, fieldDoc);
-    }
   }
 
   /**
@@ -250,6 +274,16 @@ public class ChapterImpl extends BodyImpl implements Chapter
     }
 
     return getArticle().getFullPath() + "#" + getName();
+  }
+
+  @Override
+  public void addHeaders(Set<String> headers)
+  {
+    super.addHeaders(headers);
+    for (Section section : getSections())
+    {
+      section.addHeaders(headers);
+    }
   }
 
   @Override
