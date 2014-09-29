@@ -10,5 +10,9 @@
       <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
       <repository location="http://download.eclipse.org/modeling/emf/emf/updates/2.10.x"/>
     </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <unit id="org.eclipse.oomph.all.feature.group" version="0.0.0"/>
+      <repository location="http://hudson.eclipse.org/oomph/job/integration/lastSuccessfulBuild/artifact/updates"/>
+    </location>
   </locations>
 </target>

@@ -52,7 +52,6 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -559,38 +558,7 @@ public class DocDash extends ViewPart
           {
             ILaunchConfigurationType type = launchManager.getLaunchConfigurationType("org.eclipse.pde.ui.RuntimeWorkbench");
             ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Preprocess Documentation"));
-
-            wc.setAttribute("append.args", true);
-            wc.setAttribute("askclear", true);
-            wc.setAttribute("automaticAdd", true);
-            wc.setAttribute("automaticValidate", false);
-            wc.setAttribute("bootstrap", "");
-            wc.setAttribute("checked", "[NONE]");
-            wc.setAttribute("clearConfig", false);
-            wc.setAttribute("clearws", false);
-            wc.setAttribute("clearwslog", false);
-            wc.setAttribute("configLocation", "${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Preprocess Documentation");
-            wc.setAttribute("default", true);
-            wc.setAttribute("includeOptional", true);
-            wc.setAttribute("location", "${workspace_loc}/preprocessor-workspace");
-            wc.setAttribute("org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING", "UTF-8");
-            wc.setAttribute("org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD", true);
-            wc.setAttribute("org.eclipse.jdt.launching.JRE_CONTAINER",
-                "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7");
-            wc.setAttribute("org.eclipse.jdt.launching.PROGRAM_ARGUMENTS",
-                "-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog");
-            wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.pde.ui.workbenchClasspathProvider");
-            wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Dpreprocessor.projects="
-                + preprocessorProjects);
-            wc.setAttribute("pde.version", "3.3");
-            wc.setAttribute("product", "org.eclipse.sdk.ide");
-            wc.setAttribute("show_selected_only", false);
-            wc.setAttribute("templateConfig", "${target_home}\\configuration\\config.ini");
-            wc.setAttribute("tracing", false);
-            wc.setAttribute("useCustomFeatures", false);
-            wc.setAttribute("useDefaultConfig", true);
-            wc.setAttribute("useDefaultConfigArea", true);
-            wc.setAttribute("useProduct", true);
+            configurePreprocessor(wc, preprocessorProjects);
 
             ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
             waitForLaunch(launch);
@@ -600,17 +568,7 @@ public class DocDash extends ViewPart
           {
             ILaunchConfigurationType type = launchManager.getLaunchConfigurationType("org.eclipse.ant.AntLaunchConfigurationType");
             ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Generate Documentation"));
-            wc.setAttribute("org.eclipse.ant.ui.DEFAULT_VM_INSTALL", false);
-            wc.setAttribute("org.eclipse.jdt.launching.CLASSPATH_PROVIDER", "org.eclipse.ant.ui.AntClasspathProvider");
-            wc.setAttribute("org.eclipse.jdt.launching.JRE_CONTAINER",
-                "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7");
-            wc.setAttribute("org.eclipse.jdt.launching.MAIN_TYPE", "org.eclipse.ant.internal.launching.remote.InternalAntRunner");
-            wc.setAttribute("org.eclipse.jdt.launching.PROJECT_ATTR", "");
-            wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.ant.ui.AntClasspathProvider");
-            wc.setAttribute("org.eclipse.ui.externaltools.ATTR_LOCATION", releng + "/build.ant");
-            wc.setAttribute("org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS", generatorArguments.toString());
-            wc.setAttribute("org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY", helpcenter.getAbsolutePath());
-            wc.setAttribute("process_factory_id", "org.eclipse.ant.ui.remoteAntProcessFactory");
+            configureGenerator(wc, generatorArguments);
 
             ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
             waitForLaunch(launch);
@@ -677,6 +635,54 @@ public class DocDash extends ViewPart
         }
       }
     }.schedule();
+  }
+
+  private void configureGenerator(ILaunchConfigurationWorkingCopy wc, final StringBuilder generatorArguments)
+  {
+    wc.setAttribute("org.eclipse.ant.ui.DEFAULT_VM_INSTALL", false);
+    wc.setAttribute("org.eclipse.jdt.launching.CLASSPATH_PROVIDER", "org.eclipse.ant.ui.AntClasspathProvider");
+    wc.setAttribute("org.eclipse.jdt.launching.JRE_CONTAINER",
+        "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7");
+    wc.setAttribute("org.eclipse.jdt.launching.MAIN_TYPE", "org.eclipse.ant.internal.launching.remote.InternalAntRunner");
+    wc.setAttribute("org.eclipse.jdt.launching.PROJECT_ATTR", "");
+    wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.ant.ui.AntClasspathProvider");
+    wc.setAttribute("org.eclipse.ui.externaltools.ATTR_LOCATION", releng + "/build.ant");
+    wc.setAttribute("org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS", generatorArguments.toString());
+    wc.setAttribute("org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY", helpcenter.getAbsolutePath());
+    wc.setAttribute("process_factory_id", "org.eclipse.ant.ui.remoteAntProcessFactory");
+  }
+
+  private void configurePreprocessor(ILaunchConfigurationWorkingCopy wc, final StringBuilder preprocessorProjects)
+  {
+    wc.setAttribute("append.args", true);
+    wc.setAttribute("askclear", true);
+    wc.setAttribute("automaticAdd", true);
+    wc.setAttribute("automaticValidate", false);
+    wc.setAttribute("bootstrap", "");
+    wc.setAttribute("checked", "[NONE]");
+    wc.setAttribute("clearConfig", false);
+    wc.setAttribute("clearws", false);
+    wc.setAttribute("clearwslog", false);
+    wc.setAttribute("configLocation", "${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Preprocess Documentation");
+    wc.setAttribute("default", true);
+    wc.setAttribute("includeOptional", true);
+    wc.setAttribute("location", "${workspace_loc}/preprocessor-workspace");
+    wc.setAttribute("org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING", "UTF-8");
+    wc.setAttribute("org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD", true);
+    wc.setAttribute("org.eclipse.jdt.launching.JRE_CONTAINER",
+        "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7");
+    wc.setAttribute("org.eclipse.jdt.launching.PROGRAM_ARGUMENTS", "-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog");
+    wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.pde.ui.workbenchClasspathProvider");
+    wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Dpreprocessor.projects=" + preprocessorProjects);
+    wc.setAttribute("pde.version", "3.3");
+    wc.setAttribute("product", "org.eclipse.sdk.ide");
+    wc.setAttribute("show_selected_only", false);
+    wc.setAttribute("templateConfig", "${target_home}\\configuration\\config.ini");
+    wc.setAttribute("tracing", false);
+    wc.setAttribute("useCustomFeatures", false);
+    wc.setAttribute("useDefaultConfig", true);
+    wc.setAttribute("useDefaultConfigArea", true);
+    wc.setAttribute("useProduct", true);
   }
 
   /**
