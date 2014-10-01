@@ -32,6 +32,7 @@ import org.eclipse.oomph.releng.doc.article.Factory;
 import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
+import org.eclipse.oomph.releng.doc.article.ImageFactory;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -833,6 +834,28 @@ public class ArticleSwitch<T>
         }
         return result;
       }
+      case ArticlePackage.IMAGE_FACTORY:
+      {
+        ImageFactory imageFactory = (ImageFactory)theEObject;
+        T result = caseImageFactory(imageFactory);
+        if (result == null)
+        {
+          result = caseFactory(imageFactory);
+        }
+        if (result == null)
+        {
+          result = caseEmbeddableElement(imageFactory);
+        }
+        if (result == null)
+        {
+          result = caseIdentifiable(imageFactory);
+        }
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
       default:
         return defaultCase(theEObject);
     }
@@ -1390,6 +1413,22 @@ public class ArticleSwitch<T>
    * @generated
    */
   public T caseTreeNodeProperty(TreeNodeProperty object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Image Factory</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Image Factory</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseImageFactory(ImageFactory object)
   {
     return null;
   }

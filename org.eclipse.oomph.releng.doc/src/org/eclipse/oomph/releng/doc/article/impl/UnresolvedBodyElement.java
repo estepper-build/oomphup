@@ -77,9 +77,9 @@ public class UnresolvedBodyElement extends BodyElementImpl
       SeeTag seeTag = (SeeTag)tag;
       resolved = resolveSeeTag(context, seeTag);
     }
-    else if (tag.name().equals("@img"))
+    else if (tag.name().equals("@image"))
     {
-      resolved = resolveImgTag(context, tag);
+      resolved = resolveImageTag(context, tag);
     }
 
     if (resolved != null)
@@ -166,10 +166,15 @@ public class UnresolvedBodyElement extends BodyElementImpl
     return null;
   }
 
-  private List<? extends BodyElement> resolveImgTag(Context context, Tag tag)
+  private List<? extends BodyElement> resolveImageTag(Context context, Tag tag)
   {
     File source = tag.position().file().getParentFile();
     String path = tag.text();
+    int index = path.indexOf(' ');
+    if (index != -1)
+    {
+      path = path.substring(0, index);
+    }
 
     try
     {

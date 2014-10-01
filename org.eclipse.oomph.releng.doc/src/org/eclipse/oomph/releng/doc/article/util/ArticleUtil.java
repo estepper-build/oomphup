@@ -142,9 +142,9 @@ public final class ArticleUtil
     return isTagged(root, doc, "@snippet");
   }
 
-  public static boolean isFactory(MethodDoc doc)
+  public static boolean isImageFactory(MethodDoc doc)
   {
-    return isTagged(doc, "@factory");
+    return isTagged(doc, "@image");
   }
 
   public static String getSimplePackageName(PackageDoc packageDoc)

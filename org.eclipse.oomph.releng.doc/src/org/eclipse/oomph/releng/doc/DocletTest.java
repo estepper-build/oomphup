@@ -22,9 +22,9 @@ import java.util.List;
  */
 public class DocletTest
 {
-  private static final String RELENG = "C:/develop/git/oomphup/org.eclipse.oomph.releng.doc";
+  private static final String RELENG = "D:/sandbox/oomph/git/oomphup/org.eclipse.oomph.releng.doc";
 
-  private static final String BASE = "C:/develop/oomph/git/org.eclipse.oomph";
+  private static final String BASE = "D:/sandbox/oomph/git/org.eclipse.oomph";
 
   private static final String PLUGINS = BASE + "/plugins";
 

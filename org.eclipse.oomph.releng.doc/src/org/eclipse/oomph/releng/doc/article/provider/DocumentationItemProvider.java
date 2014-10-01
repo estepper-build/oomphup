@@ -193,7 +193,7 @@ public class DocumentationItemProvider extends StructuralElementItemProvider
 
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.DOCUMENTATION__EMBEDDABLE_ELEMENTS, ArticleFactory.eINSTANCE.createSnippet()));
 
-    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.DOCUMENTATION__EMBEDDABLE_ELEMENTS, ArticleFactory.eINSTANCE.createFactory()));
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.DOCUMENTATION__EMBEDDABLE_ELEMENTS, ArticleFactory.eINSTANCE.createImageFactory()));
   }
 
 }

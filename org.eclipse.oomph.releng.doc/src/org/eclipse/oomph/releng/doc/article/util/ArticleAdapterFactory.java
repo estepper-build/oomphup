@@ -32,6 +32,7 @@ import org.eclipse.oomph.releng.doc.article.Factory;
 import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
+import org.eclipse.oomph.releng.doc.article.ImageFactory;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -346,6 +347,12 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseTreeNodeProperty(TreeNodeProperty object)
     {
       return createTreeNodePropertyAdapter();
+    }
+
+    @Override
+    public Adapter caseImageFactory(ImageFactory object)
+    {
+      return createImageFactoryAdapter();
     }
 
     @Override
@@ -882,6 +889,21 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTreeNodePropertyAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.ImageFactory <em>Image Factory</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.ImageFactory
+   * @generated
+   */
+  public Adapter createImageFactoryAdapter()
   {
     return null;
   }

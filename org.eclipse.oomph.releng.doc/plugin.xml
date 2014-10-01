@@ -31,18 +31,6 @@
       </editor>
    </extension>
 
-   <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
-      <!-- @generated article -->
-      <factory
-            uri="http://www.eclipse.org/ARTICLE/1.0"
-            class="org.eclipse.oomph.releng.doc.article.provider.ArticleItemProviderAdapterFactory"
-            supportedTypes=
-              "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
-               org.eclipse.emf.edit.provider.IStructuredItemContentProvider
-               org.eclipse.emf.edit.provider.ITreeItemContentProvider
-               org.eclipse.emf.edit.provider.IItemLabelProvider
-               org.eclipse.emf.edit.provider.IItemPropertySource"/>
-   </extension>
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -56,6 +44,19 @@
             id="org.eclipse.oomph.releng.doc.ui.DocDash"
             name="Doc Dash">
       </view>
+   </extension>
+
+   <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
+      <!-- @generated article -->
+      <factory
+            uri="http://www.eclipse.org/ARTICLE/1.0"
+            class="org.eclipse.oomph.releng.doc.article.provider.ArticleItemProviderAdapterFactory"
+            supportedTypes=
+              "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
+               org.eclipse.emf.edit.provider.IStructuredItemContentProvider
+               org.eclipse.emf.edit.provider.ITreeItemContentProvider
+               org.eclipse.emf.edit.provider.IItemLabelProvider
+               org.eclipse.emf.edit.provider.IItemPropertySource"/>
    </extension>
 
 </plugin>

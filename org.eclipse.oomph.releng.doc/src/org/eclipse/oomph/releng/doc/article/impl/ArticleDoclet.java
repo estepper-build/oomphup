@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
+import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Context;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
@@ -195,21 +196,6 @@ public class ArticleDoclet
 
   static
   {
-    // Preload classes
-    new ArticleImpl();
-    new CalloutImpl();
-    new CategoryImpl();
-    new ChapterImpl();
-    new ContextImpl();
-    new DiagramImpl();
-    new DocumentationImpl();
-    new EmbeddingImpl();
-    new ExternalTargetImpl();
-    new FactoryImpl();
-    new JavaElementImpl();
-    new LinkImpl();
-    new SnippetImpl();
-    new SourceCodeImpl();
-    new TextImpl();
+    ArticlePackage.eINSTANCE.eClass();
   }
 }

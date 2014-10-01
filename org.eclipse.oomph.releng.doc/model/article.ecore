@@ -45,7 +45,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="titleImage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Diagram" eSuperTypes="#//BodyElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Factory" eSuperTypes="#//EmbeddableElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Factory" abstract="true" eSuperTypes="#//EmbeddableElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="JavaElement" eSuperTypes="#//LinkTarget">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="classFile" eType="#//File"
         changeable="false"/>
@@ -189,5 +189,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
         eType="#//TreeNodeProperty" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ImageFactory" eSuperTypes="#//Factory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="#//File"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -2398,13 +2398,68 @@ public interface ArticlePackage extends EPackage
   int TREE_NODE_PROPERTY_FEATURE_COUNT = 4;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.ImageFactoryImpl <em>Image Factory</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.ImageFactoryImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getImageFactory()
+   * @generated
+   */
+  int IMAGE_FACTORY = 39;
+
+  /**
+   * The feature id for the '<em><b>Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FACTORY__ID = FACTORY__ID;
+
+  /**
+   * The feature id for the '<em><b>Documentation</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FACTORY__DOCUMENTATION = FACTORY__DOCUMENTATION;
+
+  /**
+   * The feature id for the '<em><b>Doc</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FACTORY__DOC = FACTORY__DOC;
+
+  /**
+   * The feature id for the '<em><b>File</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FACTORY__FILE = FACTORY_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Image Factory</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FACTORY_FEATURE_COUNT = FACTORY_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '<em>Root Doc</em>' data type.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see com.sun.javadoc.RootDoc
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 39;
+  int ROOT_DOC = 40;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2413,7 +2468,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 40;
+  int FILE = 41;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2422,7 +2477,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 41;
+  int DOC = 42;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2431,7 +2486,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 42;
+  int TAG = 43;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -3460,6 +3515,27 @@ public interface ArticlePackage extends EPackage
   EReference getTreeNodeProperty_Properties();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.ImageFactory <em>Image Factory</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Image Factory</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.ImageFactory
+   * @generated
+   */
+  EClass getImageFactory();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.ImageFactory#getFile <em>File</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.ImageFactory#getFile()
+   * @see #getImageFactory()
+   * @generated
+   */
+  EAttribute getImageFactory_File();
+
+  /**
    * Returns the meta object for data type '{@link com.sun.javadoc.RootDoc <em>Root Doc</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4366,6 +4442,24 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EReference TREE_NODE_PROPERTY__PROPERTIES = eINSTANCE.getTreeNodeProperty_Properties();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.ImageFactoryImpl <em>Image Factory</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.ImageFactoryImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getImageFactory()
+     * @generated
+     */
+    EClass IMAGE_FACTORY = eINSTANCE.getImageFactory();
+
+    /**
+     * The meta object literal for the '<em><b>File</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute IMAGE_FACTORY__FILE = eINSTANCE.getImageFactory_File();
 
     /**
      * The meta object literal for the '<em>Root Doc</em>' data type.

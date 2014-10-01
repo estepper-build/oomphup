@@ -124,9 +124,9 @@ public class ImageImpl extends BodyElementImpl implements Image
     File source = linkSource.getDoc().position().file().getParentFile();
     String link = ArticleUtil.createLink(source, file);
 
-    out.write("<p align=\"center\"><img src=\"");
+    out.write("<img src=\"");
     out.write(link);
-    out.write("\"></p>" + NL);
+    out.write("\">" + NL);
   }
 
 } // ImageImpl

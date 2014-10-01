@@ -147,5 +147,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//TreeNodeProperty/value"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference article.ecore#//TreeNodeProperty/properties"/>
     </genClasses>
+    <genClasses ecoreClass="article.ecore#//ImageFactory">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//ImageFactory/file"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

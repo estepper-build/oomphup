@@ -323,9 +323,9 @@ public class DocumentationImpl extends StructuralElementImpl implements Document
       }
     }
 
-    if (ArticleUtil.isFactory(methodDoc))
+    if (ArticleUtil.isImageFactory(methodDoc))
     {
-      new FactoryImpl(this, methodDoc);
+      new ImageFactoryImpl(this, methodDoc);
     }
   }
 

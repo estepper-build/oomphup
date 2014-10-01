@@ -25,8 +25,8 @@ import org.eclipse.oomph.releng.doc.article.Excel;
 import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
 import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
-import org.eclipse.oomph.releng.doc.article.Factory;
 import org.eclipse.oomph.releng.doc.article.Image;
+import org.eclipse.oomph.releng.doc.article.ImageFactory;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -115,8 +115,6 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createSnippet();
       case ArticlePackage.DIAGRAM:
         return createDiagram();
-      case ArticlePackage.FACTORY:
-        return createFactory();
       case ArticlePackage.JAVA_ELEMENT:
         return createJavaElement();
       case ArticlePackage.CALLOUT:
@@ -163,6 +161,8 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createTreeNode();
       case ArticlePackage.TREE_NODE_PROPERTY:
         return createTreeNodeProperty();
+      case ArticlePackage.IMAGE_FACTORY:
+        return createImageFactory();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -268,16 +268,6 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     DiagramImpl diagram = new DiagramImpl();
     return diagram;
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * @generated
-   */
-  public Factory createFactory()
-  {
-    FactoryImpl factory = new FactoryImpl();
-    return factory;
   }
 
   /**
@@ -512,6 +502,17 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     TreeNodePropertyImpl treeNodeProperty = new TreeNodePropertyImpl();
     return treeNodeProperty;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ImageFactory createImageFactory()
+  {
+    ImageFactoryImpl imageFactory = new ImageFactoryImpl();
+    return imageFactory;
   }
 
   /**

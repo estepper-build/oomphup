@@ -248,31 +248,6 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
   }
 
   /**
-   * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.Factory} instances.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected FactoryItemProvider factoryItemProvider;
-
-  /**
-   * This creates an adapter for a {@link org.eclipse.oomph.releng.doc.article.Factory}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Adapter createFactoryAdapter()
-  {
-    if (factoryItemProvider == null)
-    {
-      factoryItemProvider = new FactoryItemProvider(this);
-    }
-
-    return factoryItemProvider;
-  }
-
-  /**
    * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.JavaElement} instances.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -848,6 +823,31 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
   }
 
   /**
+   * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.ImageFactory} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected ImageFactoryItemProvider imageFactoryItemProvider;
+
+  /**
+   * This creates an adapter for a {@link org.eclipse.oomph.releng.doc.article.ImageFactory}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createImageFactoryAdapter()
+  {
+    if (imageFactoryItemProvider == null)
+    {
+      imageFactoryItemProvider = new ImageFactoryItemProvider(this);
+    }
+
+    return imageFactoryItemProvider;
+  }
+
+  /**
    * This returns the root adapter factory that contains this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -903,7 +903,7 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
     if (isFactoryForType(type))
     {
       Object adapter = super.adapt(object, type);
-      if (!(type instanceof Class<?>) || ((Class<?>)type).isInstance(adapter))
+      if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter)))
       {
         return adapter;
       }
@@ -959,129 +959,67 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
   public void dispose()
   {
     if (documentationItemProvider != null)
-    {
       documentationItemProvider.dispose();
-    }
     if (contextItemProvider != null)
-    {
       contextItemProvider.dispose();
-    }
     if (categoryItemProvider != null)
-    {
       categoryItemProvider.dispose();
-    }
     if (articleItemProvider != null)
-    {
       articleItemProvider.dispose();
-    }
     if (chapterItemProvider != null)
-    {
       chapterItemProvider.dispose();
-    }
     if (snippetItemProvider != null)
-    {
       snippetItemProvider.dispose();
-    }
     if (diagramItemProvider != null)
-    {
       diagramItemProvider.dispose();
-    }
-    if (factoryItemProvider != null)
-    {
-      factoryItemProvider.dispose();
-    }
     if (javaElementItemProvider != null)
-    {
       javaElementItemProvider.dispose();
-    }
     if (calloutItemProvider != null)
-    {
       calloutItemProvider.dispose();
-    }
     if (externalTargetItemProvider != null)
-    {
       externalTargetItemProvider.dispose();
-    }
     if (sectionItemProvider != null)
-    {
       sectionItemProvider.dispose();
-    }
     if (textItemProvider != null)
-    {
       textItemProvider.dispose();
-    }
     if (linkItemProvider != null)
-    {
       linkItemProvider.dispose();
-    }
     if (embeddingItemProvider != null)
-    {
       embeddingItemProvider.dispose();
-    }
     if (sourceCodeItemProvider != null)
-    {
       sourceCodeItemProvider.dispose();
-    }
     if (pluginItemProvider != null)
-    {
       pluginItemProvider.dispose();
-    }
     if (javaPackageItemProvider != null)
-    {
       javaPackageItemProvider.dispose();
-    }
     if (javadocItemProvider != null)
-    {
       javadocItemProvider.dispose();
-    }
     if (externalArticleItemProvider != null)
-    {
       externalArticleItemProvider.dispose();
-    }
     if (schemadocItemProvider != null)
-    {
       schemadocItemProvider.dispose();
-    }
     if (extensionPointItemProvider != null)
-    {
       extensionPointItemProvider.dispose();
-    }
     if (tocItemProvider != null)
-    {
       tocItemProvider.dispose();
-    }
     if (pluginResourceItemProvider != null)
-    {
       pluginResourceItemProvider.dispose();
-    }
     if (excelItemProvider != null)
-    {
       excelItemProvider.dispose();
-    }
     if (javaFormatterItemProvider != null)
-    {
       javaFormatterItemProvider.dispose();
-    }
     if (xmlFormatterItemProvider != null)
-    {
       xmlFormatterItemProvider.dispose();
-    }
     if (treeFormatterItemProvider != null)
-    {
       treeFormatterItemProvider.dispose();
-    }
     if (imageItemProvider != null)
-    {
       imageItemProvider.dispose();
-    }
     if (treeNodeItemProvider != null)
-    {
       treeNodeItemProvider.dispose();
-    }
     if (treeNodePropertyItemProvider != null)
-    {
       treeNodePropertyItemProvider.dispose();
-    }
+    if (imageFactoryItemProvider != null)
+      imageFactoryItemProvider.dispose();
   }
 
 }

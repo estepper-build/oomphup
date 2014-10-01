@@ -30,10 +30,8 @@ import java.util.Set;
  *
  * @generated
  */
-public class FactoryImpl extends EmbeddableElementImpl implements Factory
+public abstract class FactoryImpl extends EmbeddableElementImpl implements Factory
 {
-  private MethodDoc methodDoc;
-
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
@@ -45,9 +43,7 @@ public class FactoryImpl extends EmbeddableElementImpl implements Factory
 
   FactoryImpl(Documentation documentation, MethodDoc methodDoc)
   {
-    setDocumentation(documentation);
-    this.methodDoc = methodDoc;
-    documentation.getContext().register(getId(), this);
+    super(documentation, methodDoc);
   }
 
   /**
@@ -62,19 +58,8 @@ public class FactoryImpl extends EmbeddableElementImpl implements Factory
 
   public void addHeaders(Set<String> headers, Embedding embedder)
   {
-    // TODO: implement FactoryImpl.addHeaders(headers, embedder)
-    throw new UnsupportedOperationException();
   }
 
-  public void generate(PrintWriter out, Embedding embedder) throws IOException
-  {
-    // TODO: implement FactoryImpl.generate(out, embedder)
-    throw new UnsupportedOperationException();
-  }
+  public abstract void generate(PrintWriter out, Embedding embedder) throws IOException;
 
-  @Override
-  public Object getId()
-  {
-    return methodDoc;
-  }
 } // FactoryImpl

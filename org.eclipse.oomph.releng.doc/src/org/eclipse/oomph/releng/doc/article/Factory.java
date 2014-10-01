@@ -15,7 +15,7 @@ package org.eclipse.oomph.releng.doc.article;
  *
  *
  * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getFactory()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface Factory extends EmbeddableElement

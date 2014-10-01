@@ -84,14 +84,6 @@ public interface ArticleFactory extends EFactory
   Diagram createDiagram();
 
   /**
-   * Returns a new object of class '<em>Factory</em>'.
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * @return a new object of class '<em>Factory</em>'.
-   * @generated
-   */
-  Factory createFactory();
-
-  /**
    * Returns a new object of class '<em>Java Element</em>'.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return a new object of class '<em>Java Element</em>'.
@@ -278,6 +270,15 @@ public interface ArticleFactory extends EFactory
    * @generated
    */
   TreeNodeProperty createTreeNodeProperty();
+
+  /**
+   * Returns a new object of class '<em>Image Factory</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Image Factory</em>'.
+   * @generated
+   */
+  ImageFactory createImageFactory();
 
   /**
    * Returns the package supported by this factory.
