@@ -90,7 +90,7 @@ public class EarlyStartup implements IStartup
               @Override
               protected IStatus run(IProgressMonitor monitor)
               {
-                final PreprocessApplication preprocessApplication = new PreprocessApplication();
+                final Preprocessor preprocessApplication = new Preprocessor();
                 Job job = new UIJob(workbench.getDisplay(), "Preprocessing")
                 {
                   @Override

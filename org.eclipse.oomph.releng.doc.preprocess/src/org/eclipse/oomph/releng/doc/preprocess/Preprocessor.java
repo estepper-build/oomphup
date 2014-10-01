@@ -1,10 +1,20 @@
 package org.eclipse.oomph.releng.doc.preprocess;
 
+import org.eclipse.oomph.internal.ui.AccessUtil;
 import org.eclipse.oomph.releng.doc.article.ArticleFactory;
 import org.eclipse.oomph.releng.doc.article.ArticlePlugin;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
+import org.eclipse.oomph.util.ReflectUtil;
+import org.eclipse.oomph.util.StringUtil;
 
+import org.eclipse.emf.codegen.merge.java.facade.FacadeVisitor;
+import org.eclipse.emf.codegen.merge.java.facade.JAbstractType;
+import org.eclipse.emf.codegen.merge.java.facade.JCompilationUnit;
+import org.eclipse.emf.codegen.merge.java.facade.JField;
+import org.eclipse.emf.codegen.merge.java.facade.JMethod;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
@@ -57,15 +67,9 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -73,8 +77,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
@@ -96,9 +98,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
@@ -114,18 +114,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("restriction")
-public class PreprocessApplication
+public class Preprocessor
 {
   private static final String PREPROCESSOR_REPLACEMENT = "preprocessor.replacement.";
 
-  // {
   private static Pattern TREE_SNIPPET_PATTERN = Pattern
       .compile(
           "@[ \t]*snippet[ \t]+tree[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)([ \t]+\\(categorized|advanced|categorized[ \t]+advanced|advanced[ \t]+categorized\\))?[ \t]*[\r\n]",
           Pattern.MULTILINE);
 
-  private static Pattern IMAGE_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+image[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n]",
-      Pattern.MULTILINE);
+  // {{
+  private static Pattern IMAGE_PATTERN = Pattern.compile("@[ \t]*image[ \t]+([^ \t\n\r}]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n}]", Pattern.MULTILINE);
 
   private static Pattern DIAGRAM_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+diagram[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n]",
       Pattern.MULTILINE);
@@ -139,8 +138,9 @@ public class PreprocessApplication
     Object loadFamily = null;
     try
     {
-      loadFamily = getValue(
-          getField(CommonPlugin.loadClass("org.eclipse.oomph.setup.ui", "org.eclipse.oomph.setup.ui.SetupEditorSupport"), "FAMILY_MODEL_LOAD"), null);
+      loadFamily = ReflectUtil.getValue(
+          ReflectUtil.getField(CommonPlugin.loadClass("org.eclipse.oomph.setup.ui", "org.eclipse.oomph.setup.ui.SetupEditorSupport"), "FAMILY_MODEL_LOAD"),
+          null);
     }
     catch (ClassNotFoundException ex)
     {
@@ -175,6 +175,12 @@ public class PreprocessApplication
 
   private URI imageFolder;
 
+  private String bundleID;
+
+  private JAbstractType type;
+
+  private JMethod method;
+
   private URI targetURI;
 
   private ILabelProvider labelProvider;
@@ -189,7 +195,7 @@ public class PreprocessApplication
 
   private Map<String, String> replacements = new HashMap<String, String>();
 
-  public PreprocessApplication()
+  public Preprocessor()
   {
     computeTargetPlatform();
 
@@ -224,7 +230,9 @@ public class PreprocessApplication
 
   public void visitProject(File project)
   {
-    imageFolder = URI.createFileURI(project.getPath()).appendSegment("images").appendSegment("trees");
+    URI projectURI = URI.createFileURI(project.getPath());
+    bundleID = projectURI.lastSegment();
+    imageFolder = projectURI.appendSegment("images").appendSegment("trees");
     visit(project);
   }
 
@@ -247,14 +255,64 @@ public class PreprocessApplication
     }
   }
 
-  private void visitJava(URI uri)
+  private void visitJava(final URI uri)
   {
     try
     {
       String contents = getContents(uri, "UTF-8");
-      visitImages(uri, contents);
-      visitDiagrams(uri, contents);
-      visitTrees(uri, contents);
+      ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
+      astFacadeHelper.setCompilerCompliance("1.7");
+      ASTJCompilationUnit compilationUnit = astFacadeHelper.createCompilationUnit(uri.lastSegment(), contents);
+
+      new FacadeVisitor()
+      {
+        protected void visitComment(String comment)
+        {
+          if (comment != null)
+          {
+            try
+            {
+              visitImages(uri, comment);
+              visitTrees(uri, comment);
+            }
+            catch (IOException ex)
+            {
+              ex.printStackTrace();
+            }
+          }
+        }
+
+        @Override
+        protected boolean visit(JCompilationUnit compilationUnit)
+        {
+          return super.visit(compilationUnit);
+        }
+
+        @Override
+        protected boolean visit(JField field)
+        {
+          visitComment(field.getComment());
+          return super.visit(field);
+        }
+
+        @Override
+        protected boolean visit(JMethod method)
+        {
+          Preprocessor.this.method = method;
+          visitComment(method.getComment());
+          Preprocessor.this.method = null;
+          return super.visit(method);
+        }
+
+        @Override
+        protected boolean visit(JAbstractType abstractType)
+        {
+          type = abstractType;
+          visitComment(abstractType.getComment());
+          type = abstractType;
+          return super.visit(abstractType);
+        }
+      }.start(compilationUnit);
     }
     catch (IOException ex)
     {
@@ -358,6 +416,23 @@ public class PreprocessApplication
               labelProvider = defaultLabelProvider;
               contentProvider = defaultContentProvider;
 
+              String query = sourceURI.query();
+              if (query != null)
+              {
+                URI queryURI = URI.createURI(query);
+                if ("prune".equals(queryURI.scheme()))
+                {
+                  for (String segment : queryURI.segments())
+                  {
+                    Class<?> segmentClass = loadClass(segment);
+                    if (segmentClass != null)
+                    {
+                      pruned.add(segmentClass);
+                    }
+                  }
+                }
+              }
+
               String fragment = sourceURI.fragment();
               if (fragment != null)
               {
@@ -438,7 +513,7 @@ public class PreprocessApplication
 
   private void visitImages(URI uri, String contents) throws IOException
   {
-    for (Matcher matcher = IMAGE_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+    for (Matcher matcher = IMAGE_PATTERN.matcher(contents); matcher.find();)
     {
       String target = matcher.group(1);
       String source = matcher.group(2);
@@ -448,140 +523,167 @@ public class PreprocessApplication
         targetURI = resolve(uri, URI.createURI(target));
         URI sourceURI = resolve(uri, URI.createURI(source));
 
-        IViewPart view = getView(sourceURI);
-        if (view != null)
+        if ("invoke".equals(sourceURI.scheme()))
         {
-          Control partControl = getPartControl(display.getFocusControl());
-          capture(partControl);
+          String typeName = sourceURI.authority();
+          if (StringUtil.isEmpty(typeName))
+          {
+            typeName = type.getQualifiedName();
+          }
+
+          String methodName;
+          if (sourceURI.segmentCount() == 0)
+          {
+            methodName = method.getName();
+          }
+          else
+          {
+            methodName = sourceURI.segment(0);
+          }
+
+          try
+          {
+            Class<?> invocationClass = loadClass(typeName);
+            Method method = invocationClass.getMethod(methodName);
+
+            EarlyStartup.closeShell = false;
+            Image image = (Image)method.invoke(null);
+            saveImage(image);
+            image.dispose();
+            EarlyStartup.closeShell = true;
+          }
+          catch (Exception ex)
+          {
+            ex.printStackTrace();
+          }
         }
         else
         {
-          IEditorPart editor = getEditor(sourceURI);
-          if (editor != null)
+          IViewPart view = getView(sourceURI);
+          if (view != null)
           {
             Control partControl = getPartControl(display.getFocusControl());
             capture(partControl);
-            // editor.dispose();
           }
-        }
-      }
-    }
-  }
-
-  private void visitDiagrams(URI uri, String contents) throws IOException
-  {
-    for (Matcher matcher = DIAGRAM_SNIPPET_PATTERN.matcher(contents); matcher.find();)
-    {
-      String target = matcher.group(1);
-      String source = matcher.group(2);
-
-      if (source != null && source.length() != 0)
-      {
-        targetURI = resolve(uri, URI.createURI(target));
-        URI sourceURI = resolve(uri, URI.createURI(source));
-        try
-        {
-          final IEditorPart editor = getEditor(sourceURI);
-
-          Class<?> saveAsImageFileAction = CommonPlugin.loadClass("org.eclipse.sirius.diagram.ui",
-              "org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
-          IAction action = (IAction)saveAsImageFileAction.newInstance();
-          EarlyStartup.closeShell = false;
-
-          final Listener displayListener = new Listener()
+          else
           {
-            private boolean outputVisited;
-
-            private String type;
-
+            IEditorPart editor = getEditor(sourceURI);
+            if (editor != null)
             {
-              String fileExtension = targetURI.fileExtension();
-              if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
+              URI queryURI = URI.createURI(sourceURI.query());
+              if ("diagram".equals(queryURI.query()))
               {
-                type = "JPG";
-              }
-              else if ("svg".equalsIgnoreCase(fileExtension))
-              {
-                type = "SVG";
-              }
-              else if ("bmp".equalsIgnoreCase(fileExtension))
-              {
-                type = "BMP";
-              }
-              else if ("gif".equalsIgnoreCase(fileExtension))
-              {
-                type = "GIF";
+                Class<?> saveAsImageFileAction = loadClass("org.eclipse.sirius.diagram.ui:org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
+                try
+                {
+                  IAction action = (IAction)saveAsImageFileAction.newInstance();
+                  EarlyStartup.closeShell = false;
+
+                  final Listener displayListener = new Listener()
+                  {
+                    private boolean outputVisited;
+
+                    private String type;
+
+                    {
+                      String fileExtension = targetURI.fileExtension();
+                      if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
+                      {
+                        type = "JPG";
+                      }
+                      else if ("svg".equalsIgnoreCase(fileExtension))
+                      {
+                        type = "SVG";
+                      }
+                      else if ("bmp".equalsIgnoreCase(fileExtension))
+                      {
+                        type = "BMP";
+                      }
+                      else if ("gif".equalsIgnoreCase(fileExtension))
+                      {
+                        type = "GIF";
+                      }
+                      else
+                      {
+                        type = "PNG";
+                      }
+                    }
+
+                    public void handleEvent(final Event event)
+                    {
+                      if (event.widget instanceof Shell)
+                      {
+                        display.removeListener(SWT.Skin, this);
+                        Shell shell = (Shell)event.widget;
+                        updateDialogSettings(shell);
+
+                        busyWait();
+
+                        display.asyncExec(new Runnable()
+                        {
+                          public void run()
+                          {
+                            try
+                            {
+                              ReflectUtil.getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
+                              // editor.dispose();
+                              EarlyStartup.closeShell = true;
+                            }
+                            catch (Exception ex)
+                            {
+                              ex.printStackTrace();
+                            }
+                          }
+                        });
+
+                      }
+                    }
+
+                    private void updateDialogSettings(Control control)
+                    {
+                      if (control instanceof Combo)
+                      {
+                        Combo combo = (Combo)control;
+                        if (outputVisited)
+                        {
+                          combo.setText(type);
+                        }
+                        else
+                        {
+                          combo.setText(targetURI.toFileString());
+                        }
+
+                        return;
+                      }
+
+                      if (control instanceof Composite)
+                      {
+                        Composite composite = (Composite)control;
+                        for (Control child : composite.getChildren())
+                        {
+                          updateDialogSettings(child);
+                        }
+                      }
+                    }
+                  };
+                  display.addListener(SWT.Skin, displayListener);
+
+                  action.run();
+                }
+                catch (Exception exception)
+                {
+
+                }
               }
               else
               {
-                type = "PNG";
+                Control partControl = getPartControl(display.getFocusControl());
+                capture(partControl);
               }
+
+              // editor.dispose();
             }
-
-            public void handleEvent(final Event event)
-            {
-              if (event.widget instanceof Shell)
-              {
-                display.removeListener(SWT.Skin, this);
-                Shell shell = (Shell)event.widget;
-                updateDialogSettings(shell);
-
-                busyWait();
-
-                display.asyncExec(new Runnable()
-                {
-                  public void run()
-                  {
-                    try
-                    {
-                      getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
-                      // editor.dispose();
-                      EarlyStartup.closeShell = true;
-                    }
-                    catch (Exception ex)
-                    {
-                      ex.printStackTrace();
-                    }
-                  }
-                });
-
-              }
-            }
-
-            private void updateDialogSettings(Control control)
-            {
-              if (control instanceof Combo)
-              {
-                Combo combo = (Combo)control;
-                if (outputVisited)
-                {
-                  combo.setText(type);
-                }
-                else
-                {
-                  combo.setText(targetURI.toFileString());
-                }
-
-                return;
-              }
-
-              if (control instanceof Composite)
-              {
-                Composite composite = (Composite)control;
-                for (Control child : composite.getChildren())
-                {
-                  updateDialogSettings(child);
-                }
-              }
-            }
-          };
-          display.addListener(SWT.Skin, displayListener);
-
-          action.run();
-        }
-        catch (Exception ex)
-        {
-          ex.printStackTrace();
+          }
         }
       }
     }
@@ -598,14 +700,10 @@ public class PreprocessApplication
         {
           for (String segment : URI.createURI(query).segments())
           {
-            URI filteredClass = URI.createURI(segment);
-            try
+            Class<?> segmentClass = loadClass(segment);
+            if (segmentClass != null)
             {
-              pruned.add(CommonPlugin.loadClass(filteredClass.scheme(), filteredClass.opaquePart()));
-            }
-            catch (ClassNotFoundException ex)
-            {
-              ex.printStackTrace();
+              pruned.add(segmentClass);
             }
           }
         }
@@ -639,6 +737,24 @@ public class PreprocessApplication
           try
           {
             IEditorPart editor = getWorkbenchPage().openEditor(editorInput, editorID);
+
+            String editorQuery = queryURI.query();
+            if (editorQuery != null)
+            {
+              URI editorQueryURI = URI.createURI(editorQuery);
+              if (!editorQueryURI.hasRelativePath())
+              {
+                for (String segment : editorQueryURI.segments())
+                {
+                  Class<?> segmentClass = loadClass(segment);
+                  if (segmentClass != null)
+                  {
+                    pruned.add(segmentClass);
+                  }
+                }
+              }
+            }
+
             busyWait();
             editor.setFocus();
             return editor;
@@ -734,12 +850,15 @@ public class PreprocessApplication
       }
     }
 
+    EList<TreeNode> children = treeNode.getChildren();
+
     if (object instanceof EObject)
     {
       EObject eObject = (EObject)object;
       Resource resource = eObject.eResource();
       if (resource != null && "user".equals(resource.getURI().scheme()))
       {
+        children.add(createEllipses());
         return treeNode;
       }
     }
@@ -748,11 +867,11 @@ public class PreprocessApplication
     {
       if (prunedClass.isInstance(object))
       {
+        children.add(createEllipses());
         return treeNode;
       }
     }
 
-    EList<TreeNode> children = treeNode.getChildren();
     for (Object child : contentProvider.getChildren(object))
     {
       if (select(object, child))
@@ -761,6 +880,15 @@ public class PreprocessApplication
       }
     }
 
+    return treeNode;
+  }
+
+  private TreeNode createEllipses()
+  {
+    String imageURL = getImageURL(ArticlePlugin.INSTANCE.getImage("ellipses"));
+    TreeNode treeNode = ArticleFactory.eINSTANCE.createTreeNode();
+    treeNode.setImage(imageURL);
+    treeNode.setLabel("...");
     return treeNode;
   }
 
@@ -954,12 +1082,13 @@ public class PreprocessApplication
 
   private void capture(Control control) throws IOException
   {
-    Point tableSize = control.getSize();
-    GC gc = new GC(control);
-    final Image image = new Image(display, tableSize.x, tableSize.y);
-    gc.copyArea(image, 0, 0);
-    gc.dispose();
+    Image image = AccessUtil.captureControl(control);
+    saveImage(image);
+    image.dispose();
+  }
 
+  private void saveImage(Image image) throws IOException
+  {
     ImageLoader imageLoader = new ImageLoader();
     imageLoader.data = new ImageData[] { image.getImageData() };
     OutputStream out = resourceSet.getURIConverter().createOutputStream(targetURI);
@@ -1285,94 +1414,8 @@ public class PreprocessApplication
   private static IPropertySheetEntry getPropertySheetEntry(PropertySheetPage propertySheetPage, Object object)
   {
     propertySheetPage.selectionChanged(null, new StructuredSelection(object));
-    Object value = getValue(getField(propertySheetPage.getClass(), "rootEntry"), propertySheetPage);
+    Object value = ReflectUtil.getValue(ReflectUtil.getField(propertySheetPage.getClass(), "rootEntry"), propertySheetPage);
     return (IPropertySheetEntry)value;
-  }
-
-  private static Field getField(Class<?> c, String fieldName)
-  {
-    try
-    {
-      try
-      {
-        Field field = c.getDeclaredField(fieldName);
-        makeAccessible(field);
-        return field;
-      }
-      catch (NoSuchFieldException ex)
-      {
-        Class<?> superclass = c.getSuperclass();
-        if (superclass != null)
-        {
-          return getField(superclass, fieldName);
-        }
-
-        return null;
-      }
-    }
-    catch (RuntimeException ex)
-    {
-      throw ex;
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  public static Method getMethod(Class<?> c, String methodName, Class<?>... parameterTypes)
-  {
-    try
-    {
-      try
-      {
-        Method method = c.getDeclaredMethod(methodName, parameterTypes);
-        makeAccessible(method);
-        return method;
-      }
-      catch (NoSuchMethodException ex)
-      {
-        Class<?> superclass = c.getSuperclass();
-        if (superclass != null)
-        {
-          return getMethod(superclass, methodName, parameterTypes);
-        }
-
-        throw ex;
-      }
-    }
-    catch (RuntimeException ex)
-    {
-      throw ex;
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  private static Object getValue(Field field, Object target)
-  {
-    try
-    {
-      return field.get(target);
-    }
-    catch (RuntimeException ex)
-    {
-      throw ex;
-    }
-    catch (Exception ex)
-    {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  private static <T> void makeAccessible(AccessibleObject accessibleObject)
-  {
-    if (!accessibleObject.isAccessible())
-    {
-      accessibleObject.setAccessible(true);
-    }
   }
 
   private String getContents(URI uri, String encoding) throws IOException
@@ -1384,74 +1427,29 @@ public class PreprocessApplication
     return encoding == null ? new String(input) : new String(input, encoding);
   }
 
-  private void foo(IEditorInput editorInput)
+  private Class<?> loadClass(String typeName)
   {
-  }
-
-  public static class CaptureWidgetImageGC
-  {
-    public static void mainx(String[] args)
+    String pluginID;
+    String className;
+    int index = typeName.indexOf(':');
+    if (index == -1)
     {
-      final Display display = new Display();
-      final Shell shell = new Shell(display);
-      shell.setText("Widget");
+      pluginID = bundleID;
+      className = typeName;
+    }
+    else
+    {
+      pluginID = typeName.substring(0, index);
+      className = typeName.substring(index + 1);
+    }
 
-      final Table table = new Table(shell, SWT.MULTI);
-      table.setLinesVisible(true);
-      table.setBounds(10, 10, 100, 100);
-      for (int i = 0; i < 9; i++)
-      {
-        new TableItem(table, SWT.NONE).setText("item" + i);
-      }
-
-      Button button = new Button(shell, SWT.PUSH);
-      button.setText("Capture");
-      button.pack();
-      button.setLocation(10, 140);
-      button.addListener(SWT.Selection, new Listener()
-      {
-        public void handleEvent(Event event)
-        {
-          Point tableSize = table.getSize();
-          GC gc = new GC(table);
-          final Image image = new Image(display, tableSize.x, tableSize.y);
-          gc.copyArea(image, 0, 0);
-          gc.dispose();
-
-          Shell popup = new Shell(shell);
-          popup.setText("Image");
-          popup.addListener(SWT.Close, new Listener()
-          {
-            public void handleEvent(Event e)
-            {
-              image.dispose();
-            }
-          });
-
-          Canvas canvas = new Canvas(popup, SWT.NONE);
-          canvas.setBounds(10, 10, tableSize.x + 10, tableSize.y + 10);
-          canvas.addPaintListener(new PaintListener()
-          {
-            public void paintControl(PaintEvent e)
-            {
-              e.gc.drawImage(image, 0, 0);
-            }
-          });
-          popup.pack();
-          popup.open();
-        }
-      });
-      shell.pack();
-      shell.open();
-      while (!shell.isDisposed())
-      {
-        if (!display.readAndDispatch())
-        {
-          display.sleep();
-        }
-      }
-      display.dispose();
+    try
+    {
+      return CommonPlugin.loadClass(pluginID, className);
+    }
+    catch (ClassNotFoundException ex)
+    {
+      throw new ReflectUtil.ReflectionException(ex);
     }
   }
-
 }
