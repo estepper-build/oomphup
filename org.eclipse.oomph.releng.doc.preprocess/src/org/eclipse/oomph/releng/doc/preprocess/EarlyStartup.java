@@ -119,7 +119,7 @@ public class EarlyStartup implements IStartup
                     }
 
                     display.removeListener(SWT.Skin, displayListener);
-
+                    System.exit(0);
                     return Status.OK_STATUS;
                   }
                 };
