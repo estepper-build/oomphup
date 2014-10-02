@@ -522,7 +522,7 @@ public class Preprocessor
       String source = matcher.group(2);
 
       targetURI = resolve(uri, URI.createURI(target));
-      URI sourceURI = URI.createURI(source);
+      URI sourceURI = resolve(uri, URI.createURI(source));
 
       Resource resource = resourceSet.getResource(sourceURI, true);
       resource.save(resourceSet.getURIConverter().createOutputStream(targetURI), null);

@@ -16,20 +16,20 @@ import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.XmlFormatter;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.resource.ContentHandler;
+import org.eclipse.emf.ecore.resource.URIConverter;
 
 import com.sun.javadoc.SeeTag;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Xml Formatter</b></em>'. <!-- end-user-doc -->
@@ -44,11 +44,13 @@ import java.io.File;
  */
 public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
 {
+  private static Pattern TAG_PATTERN = Pattern.compile("(<\\?.*?\\?>)|(<!--[ \t]*callout[ \t]*-->)|(<!--.*?-->)|(<.*?/?>)", Pattern.MULTILINE | Pattern.DOTALL);
+
+  private static Pattern ATTRIBUTE_PATTERN = Pattern.compile("'[^']*?'|\"[^\"]*?\"", Pattern.MULTILINE | Pattern.DOTALL);
+
   private static final String CALLOUT = "callout";
 
   private static final String CALLOUT_MARKER = "<!--" + CALLOUT + "-->";
-
-  private static final SAXParserFactory FACTORY = SAXParserFactory.newInstance();
 
   /**
    * The default value of the '{@link #getFile() <em>File</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -213,21 +215,15 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
 
   public String[] getSnippetHtml(Embedding embedder, String id, String title)
   {
-    XmlHandler handler = new XmlHandler();
-
     try
     {
-      SAXParser parser = FACTORY.newSAXParser();
-      parser.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-      parser.parse(file, handler);
+      String html = getHtml(URI.createFileURI(file.toString()));
+      return new String[] { SnippetImpl.CONTENT_INDENT + "<code>" + NL + html + SnippetImpl.CONTENT_INDENT + "</code>" + NL };
     }
-    catch (Exception ex)
+    catch (IOException ex)
     {
-      ex.printStackTrace();
       return new String[] { "<b><font color=\"#FF0000\">" + ex.getMessage() + "</font></b>" };
     }
-
-    return new String[] { SnippetImpl.CONTENT_INDENT + "<code>" + NL + handler.getHtml() + SnippetImpl.CONTENT_INDENT + "</code>" + NL };
   }
 
   public String getCalloutMarker()
@@ -235,180 +231,138 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     return CALLOUT_MARKER;
   }
 
-  /**
-   * @author Eike Stepper
-   */
-  private static final class XmlHandler extends DefaultHandler implements LexicalHandler
+  // public static void main(String[] args) throws Exception
+  // {
+  // URI uri =
+  // URI.createFileURI("D:/sandbox/oomph/git/org.eclipse.oomph/plugins/org.eclipse.oomph.setup.doc/src/org/eclipse/oomph/setup/doc/examples/test.xml");
+  // URIConverter.INSTANCE.getContentHandlers().add(new XMLContentHandlerImpl());
+  // getHtml(uri);
+  // }
+
+  private static String getHtml(URI uri) throws IOException
   {
-    private static final String NL = System.getProperty("line.separator");
+    Map<String, ?> contentDescription = URIConverter.INSTANCE.contentDescription(uri, null);
+    String contents = getContents(uri, (String)contentDescription.get(ContentHandler.CHARSET_PROPERTY));
 
-    StringBuilder builder = new StringBuilder();
-
-    StringBuilder element;
-
-    public XmlHandler()
+    Matcher matcher = TAG_PATTERN.matcher(contents);
+    StringBuffer result = new StringBuffer();
+    while (matcher.find())
     {
-    }
-
-    public String getHtml()
-    {
-      return builder.toString();
-    }
-
-    @Override
-    public void startDocument() throws SAXException
-    {
-      builder
-          .append("<font color=\"#0000e1\">&lt;?xml version=<font color=\"#000080\">'1.0'</font> encoding=<font color=\"#000080\">'UTF-8'</font>?&gt;</font><br/>"
-              + NL);
-    }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-    {
-      appendElement(false);
-
-      element = new StringBuilder();
-      element.append("&lt;");
-      element.append(qName);
-
-      for (int i = 0; i < attributes.getLength(); i++)
+      String callout = matcher.group(2);
+      if (callout != null)
       {
-        String name = attributes.getQName(i);
-        String value = attributes.getValue(i);
-
-        element.append("&nbsp;");
-        element.append(name);
-
-        element.append("<font color=\"#000080\">");
-        element.append("=\"");
-        element.append(value);
-        element.append("\"");
-        element.append("</font>");
-      }
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException
-    {
-      if (!appendElement(true))
-      {
-        builder.append("<font color=\"#0000e1\">");
-        builder.append("&lt;/");
-        builder.append(qName);
-        builder.append("&gt;");
-        builder.append("</font>");
-      }
-    }
-
-    @Override
-    public void characters(char ch[], int start, int length) throws SAXException
-    {
-      appendElement(false);
-      appendCharacters(ch, start, length);
-    }
-
-    @Override
-    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
-    {
-      appendElement(false);
-      appendCharacters(ch, start, length);
-    }
-
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
-      appendElement(false);
-
-      String comment = new String(ch, start, length).trim();
-      if (comment.equals(CALLOUT))
-      {
-        builder.append(CALLOUT_MARKER);
+        append(result, matcher);
+        result.append(CALLOUT_MARKER);
       }
       else
       {
-        builder.append("<font color=\"#3f7f5f\">&lt;!--");
-        appendCharacters(ch, start, length);
-        builder.append("--&gt;</font>");
-      }
-    }
-
-    private boolean appendElement(boolean end)
-    {
-      if (element != null)
-      {
-        builder.append("<font color=\"#0000e1\">");
-        builder.append(element.toString());
-
-        if (end)
+        String xmlHeader = matcher.group(1);
+        if (xmlHeader != null)
         {
-          builder.append("/");
+          append(result, matcher);
+          result.append("<font color=\"#0000e1\">");
+          handleAttributes(result, xmlHeader);
+          result.append("</font><font color=\"#000080\">");
         }
-
-        builder.append("&gt;");
-        builder.append("</font>");
-
-        element = null;
-        return true;
+        else
+        {
+          String xmlComment = matcher.group(3);
+          if (xmlComment != null)
+          {
+            append(result, matcher);
+            result.append("</font><font color=\"#3f7f5f\">");
+            int index = result.length();
+            result.append(xmlComment);
+            replace(result, index);
+            result.append("</font><font color=\"#000080\">");
+          }
+          else
+          {
+            String xmlTag = matcher.group(4);
+            append(result, matcher);
+            result.append("</font><font color=\"#0000e1\">");
+            handleAttributes(result, xmlTag);
+            result.append("</font><font color=\"#000080\">");
+          }
+        }
       }
-
-      return false;
     }
 
-    private void appendCharacters(char[] ch, int start, int length)
+    appendTail(result, matcher);
+    result.append("</font>");
+
+    return result.toString();
+  }
+
+  public static void handleAttributes(StringBuffer result, String tag)
+  {
+    Matcher matcher = ATTRIBUTE_PATTERN.matcher(tag);
+    while (matcher.find())
     {
-      for (int i = start; length > 0; i++, length--)
+      append(result, matcher);
+      result.append("</font><font color=\"#000080\">");
+      int index = result.length();
+      result.append(matcher.group());
+      replace(result, index);
+      result.append("<font color=\"#0000e1\">");
+    }
+
+    appendTail(result, matcher);
+  }
+
+  private static void append(StringBuffer result, Matcher matcher)
+  {
+    int index = result.length();
+    matcher.appendReplacement(result, "");
+    replace(result, index);
+  }
+
+  private static void appendTail(StringBuffer result, Matcher matcher)
+  {
+    int index = result.length();
+    matcher.appendTail(result);
+    replace(result, index);
+  }
+
+  private static void replace(StringBuffer result, int start)
+  {
+    for (int i = result.length(); --i >= start;)
+    {
+      char character = result.charAt(i);
+      if (character == ' ')
       {
-        String c = convert(ch[i]);
-        builder.append(c);
+        result.replace(i, i + 1, "&nbsp;");
       }
-    }
-
-    private String convert(char c)
-    {
-      switch (c)
+      else if (character == '\t')
       {
-        case '&':
-          return "&amp;";
-
-        case '<':
-          return "&lt;";
-
-        case '>':
-          return "&gt;";
-
-        case ' ':
-          return "&nbsp;";
-
-        case '\n':
-          return "<br/>" + NL;
+        result.replace(i, i + 1, "&nbsp;&nbsp;");
       }
-
-      return new String(new char[] { c });
+      else if (character == '<')
+      {
+        result.replace(i, i + 1, "&lt;");
+      }
+      else if (character == '>')
+      {
+        result.replace(i, i + 1, "&gt;");
+      }
+      else if (character == '\r')
+      {
+        result.delete(i, i + 1);
+      }
+      else if (character == '\n')
+      {
+        result.replace(i, i + 1, "<br/>" + NL);
+      }
     }
+  }
 
-    public void startDTD(String name, String publicId, String systemId) throws SAXException
-    {
-    }
-
-    public void endDTD() throws SAXException
-    {
-    }
-
-    public void startEntity(String name) throws SAXException
-    {
-    }
-
-    public void endEntity(String name) throws SAXException
-    {
-    }
-
-    public void startCDATA() throws SAXException
-    {
-    }
-
-    public void endCDATA() throws SAXException
-    {
-    }
+  private static String getContents(URI uri, String encoding) throws IOException
+  {
+    BufferedInputStream bufferedInputStream = new BufferedInputStream(URIConverter.INSTANCE.createInputStream(uri));
+    byte[] input = new byte[bufferedInputStream.available()];
+    bufferedInputStream.read(input);
+    bufferedInputStream.close();
+    return encoding == null ? new String(input) : new String(input, encoding);
   }
 
 } // XmlFormatterImpl
