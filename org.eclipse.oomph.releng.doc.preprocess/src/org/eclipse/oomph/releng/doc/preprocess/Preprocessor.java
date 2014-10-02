@@ -125,10 +125,9 @@ public class Preprocessor
           Pattern.MULTILINE);
 
   // {{
-  private static Pattern IMAGE_PATTERN = Pattern.compile("@[ \t]*image[ \t]+([^ \t\n\r}]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n}]", Pattern.MULTILINE);
+  private static Pattern IMAGE_PATTERN = Pattern.compile("@[ \t]*image[ \t]+([^ \t\n\r}]+)[ \t]+([^\n\r]*?)[ \t]*[\r\n}]", Pattern.MULTILINE);
 
-  private static Pattern DIAGRAM_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+diagram[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]*?)?[ \t]*[\r\n]",
-      Pattern.MULTILINE);
+  private static Pattern XML_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+xml[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]+?)[ \t]*[\r\n]", Pattern.MULTILINE);
 
   private static final Object BLANK = ArticlePlugin.INSTANCE.getImage("full/obj16/Blank");
 
@@ -273,6 +272,7 @@ public class Preprocessor
           {
             try
             {
+              visitXMLs(uri, comment);
               visitImages(uri, comment);
               visitTrees(uri, comment);
             }
@@ -514,6 +514,21 @@ public class Preprocessor
     }
   }
 
+  private void visitXMLs(URI uri, String contents) throws IOException
+  {
+    for (Matcher matcher = XML_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+    {
+      String target = matcher.group(1);
+      String source = matcher.group(2);
+
+      targetURI = resolve(uri, URI.createURI(target));
+      URI sourceURI = URI.createURI(source);
+
+      Resource resource = resourceSet.getResource(sourceURI, true);
+      resource.save(resourceSet.getURIConverter().createOutputStream(targetURI), null);
+    }
+  }
+
   private String getQualifiedName(JAbstractType type)
   {
     JNode parent = type.getParent();
@@ -532,171 +547,168 @@ public class Preprocessor
       String target = matcher.group(1);
       String source = matcher.group(2);
 
-      if (source != null && source.length() != 0)
+      targetURI = resolve(uri, URI.createURI(target));
+      URI sourceURI = resolve(uri, URI.createURI(source));
+
+      if ("invoke".equals(sourceURI.scheme()))
       {
-        targetURI = resolve(uri, URI.createURI(target));
-        URI sourceURI = resolve(uri, URI.createURI(source));
-
-        if ("invoke".equals(sourceURI.scheme()))
+        String typeName = sourceURI.authority();
+        if (StringUtil.isEmpty(typeName))
         {
-          String typeName = sourceURI.authority();
-          if (StringUtil.isEmpty(typeName))
-          {
-            typeName = getQualifiedName(type);
-          }
+          typeName = getQualifiedName(type);
+        }
 
-          String methodName;
-          if (sourceURI.segmentCount() == 0)
-          {
-            methodName = method.getName();
-          }
-          else
-          {
-            methodName = sourceURI.segment(0);
-          }
-
-          try
-          {
-            Class<?> invocationClass = loadClass(typeName);
-            Method method = invocationClass.getMethod(methodName);
-
-            EarlyStartup.closeShell = false;
-            Image image = (Image)method.invoke(null);
-            saveImage(image);
-            image.dispose();
-            EarlyStartup.closeShell = true;
-          }
-          catch (Exception ex)
-          {
-            ex.printStackTrace();
-          }
+        String methodName;
+        if (sourceURI.segmentCount() == 0)
+        {
+          methodName = method.getName();
         }
         else
         {
-          IViewPart view = getView(sourceURI);
-          if (view != null)
+          methodName = sourceURI.segment(0);
+        }
+
+        try
+        {
+          Class<?> invocationClass = loadClass(typeName);
+          Method method = invocationClass.getMethod(methodName);
+
+          EarlyStartup.closeShell = false;
+          Image image = (Image)method.invoke(null);
+          saveImage(image);
+          image.dispose();
+          EarlyStartup.closeShell = true;
+        }
+        catch (Exception ex)
+        {
+          ex.printStackTrace();
+        }
+      }
+      else
+      {
+        IViewPart view = getView(sourceURI);
+        if (view != null)
+        {
+          Control partControl = getPartControl(display.getFocusControl());
+          capture(partControl);
+        }
+        else
+        {
+          IEditorPart editor = getEditor(sourceURI);
+          if (editor != null)
           {
-            Control partControl = getPartControl(display.getFocusControl());
-            capture(partControl);
-          }
-          else
-          {
-            IEditorPart editor = getEditor(sourceURI);
-            if (editor != null)
+            URI queryURI = URI.createURI(sourceURI.query());
+            if ("diagram".equals(queryURI.query()))
             {
-              URI queryURI = URI.createURI(sourceURI.query());
-              if ("diagram".equals(queryURI.query()))
+              Class<?> saveAsImageFileAction = loadClass("org.eclipse.sirius.diagram.ui:org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
+              try
               {
-                Class<?> saveAsImageFileAction = loadClass("org.eclipse.sirius.diagram.ui:org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
-                try
+                IAction action = (IAction)saveAsImageFileAction.newInstance();
+                EarlyStartup.closeShell = false;
+
+                final Listener displayListener = new Listener()
                 {
-                  IAction action = (IAction)saveAsImageFileAction.newInstance();
-                  EarlyStartup.closeShell = false;
+                  private boolean outputVisited;
 
-                  final Listener displayListener = new Listener()
+                  private String type;
+
                   {
-                    private boolean outputVisited;
-
-                    private String type;
-
+                    String fileExtension = targetURI.fileExtension();
+                    if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
                     {
-                      String fileExtension = targetURI.fileExtension();
-                      if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
+                      type = "JPG";
+                    }
+                    else if ("svg".equalsIgnoreCase(fileExtension))
+                    {
+                      type = "SVG";
+                    }
+                    else if ("bmp".equalsIgnoreCase(fileExtension))
+                    {
+                      type = "BMP";
+                    }
+                    else if ("gif".equalsIgnoreCase(fileExtension))
+                    {
+                      type = "GIF";
+                    }
+                    else
+                    {
+                      type = "PNG";
+                    }
+                  }
+
+                  public void handleEvent(final Event event)
+                  {
+                    if (event.widget instanceof Shell)
+                    {
+                      display.removeListener(SWT.Skin, this);
+                      Shell shell = (Shell)event.widget;
+                      updateDialogSettings(shell);
+
+                      busyWait();
+
+                      display.asyncExec(new Runnable()
                       {
-                        type = "JPG";
-                      }
-                      else if ("svg".equalsIgnoreCase(fileExtension))
+                        public void run()
+                        {
+                          try
+                          {
+                            ReflectUtil.getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
+                            // editor.dispose();
+                            EarlyStartup.closeShell = true;
+                          }
+                          catch (Exception ex)
+                          {
+                            ex.printStackTrace();
+                          }
+                        }
+                      });
+
+                    }
+                  }
+
+                  private void updateDialogSettings(Control control)
+                  {
+                    if (control instanceof Combo)
+                    {
+                      Combo combo = (Combo)control;
+                      if (outputVisited)
                       {
-                        type = "SVG";
-                      }
-                      else if ("bmp".equalsIgnoreCase(fileExtension))
-                      {
-                        type = "BMP";
-                      }
-                      else if ("gif".equalsIgnoreCase(fileExtension))
-                      {
-                        type = "GIF";
+                        combo.setText(type);
                       }
                       else
                       {
-                        type = "PNG";
+                        combo.setText(targetURI.toFileString());
                       }
+
+                      return;
                     }
 
-                    public void handleEvent(final Event event)
+                    if (control instanceof Composite)
                     {
-                      if (event.widget instanceof Shell)
+                      Composite composite = (Composite)control;
+                      for (Control child : composite.getChildren())
                       {
-                        display.removeListener(SWT.Skin, this);
-                        Shell shell = (Shell)event.widget;
-                        updateDialogSettings(shell);
-
-                        busyWait();
-
-                        display.asyncExec(new Runnable()
-                        {
-                          public void run()
-                          {
-                            try
-                            {
-                              ReflectUtil.getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
-                              // editor.dispose();
-                              EarlyStartup.closeShell = true;
-                            }
-                            catch (Exception ex)
-                            {
-                              ex.printStackTrace();
-                            }
-                          }
-                        });
-
+                        updateDialogSettings(child);
                       }
                     }
+                  }
+                };
+                display.addListener(SWT.Skin, displayListener);
 
-                    private void updateDialogSettings(Control control)
-                    {
-                      if (control instanceof Combo)
-                      {
-                        Combo combo = (Combo)control;
-                        if (outputVisited)
-                        {
-                          combo.setText(type);
-                        }
-                        else
-                        {
-                          combo.setText(targetURI.toFileString());
-                        }
-
-                        return;
-                      }
-
-                      if (control instanceof Composite)
-                      {
-                        Composite composite = (Composite)control;
-                        for (Control child : composite.getChildren())
-                        {
-                          updateDialogSettings(child);
-                        }
-                      }
-                    }
-                  };
-                  display.addListener(SWT.Skin, displayListener);
-
-                  action.run();
-                }
-                catch (Exception exception)
-                {
-
-                }
+                action.run();
               }
-              else
+              catch (Exception exception)
               {
-                Control partControl = getPartControl(display.getFocusControl());
-                capture(partControl);
-              }
 
-              // editor.dispose();
+              }
             }
+            else
+            {
+              Control partControl = getPartControl(display.getFocusControl());
+              capture(partControl);
+            }
+
+            // editor.dispose();
           }
         }
       }

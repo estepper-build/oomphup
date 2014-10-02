@@ -15,6 +15,9 @@ import org.eclipse.oomph.releng.doc.article.Context;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 
+import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.xmi.impl.XMLContentHandlerImpl;
+
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
 
@@ -197,5 +200,6 @@ public class ArticleDoclet
   static
   {
     ArticlePackage.eINSTANCE.eClass();
+    URIConverter.INSTANCE.getContentHandlers().add(new XMLContentHandlerImpl());
   }
 }
