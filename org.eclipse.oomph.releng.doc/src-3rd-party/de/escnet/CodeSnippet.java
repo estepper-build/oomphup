@@ -10,6 +10,9 @@
  */
 package de.escnet;
 
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
 
 import de.java2html.Java2Html;
@@ -88,6 +91,15 @@ public final class CodeSnippet
       in = new FileReader(file);
       BufferedReader reader = new BufferedReader(in);
       String code = getSnippetText(reader, snippetDoc.position().line(), includeSignature);
+
+      if (includeSignature && snippetDoc.isClass() && ((ClassDoc)snippetDoc).isPackagePrivate())
+      {
+        String modifiers = ArticleUtil.getTagText(snippetDoc, "@modifiers");
+        if (modifiers != null && modifiers.length() != 0)
+        {
+          code = modifiers.trim() + " " + code;
+        }
+      }
 
       return convertToHtml(code, !includeSignature);
     }

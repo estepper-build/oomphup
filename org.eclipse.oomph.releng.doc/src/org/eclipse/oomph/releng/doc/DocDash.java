@@ -501,140 +501,156 @@ public class DocDash extends ViewPart
 
   private void generate() throws Exception
   {
-    final boolean preprocess = preprocessButton.getSelection();
-    final boolean generate = javaButton.getSelection() || schemaButton.getSelection() || articleButton.getSelection();
-
-    final Set<IResource> resourcesToRefresh = initResourcesToRefresh();
-    final String tpClasspathFile = new TargetPlatformClasspathFile().resolveValue(null, null);
-    final StringBuilder preprocessorProjects = new StringBuilder("");
-    final StringBuilder generatorArguments = new StringBuilder("-Dtp.classpath.file=" + tpClasspathFile + " -Dplugins.dir=" + plugins
-        + " -Dhelpcenter.project=" + helpcenter + " -Dreleng.project=" + releng + " -Dskip.assemble.scripts=true");
-
-    if (!javaButton.getSelection())
+    try
     {
-      generatorArguments.append(" -Dskip.javadoc=true");
-    }
+      generateButton.setEnabled(false);
 
-    if (!schemaButton.getSelection())
-    {
-      generatorArguments.append(" -Dskip.schemadoc=true");
-    }
+      final boolean preprocess = preprocessButton.getSelection();
+      final boolean generate = javaButton.getSelection() || schemaButton.getSelection() || articleButton.getSelection();
 
-    if (!articleButton.getSelection())
-    {
-      generatorArguments.append(" -Dskip.articledoc=true");
-    }
+      final Set<IResource> resourcesToRefresh = initResourcesToRefresh();
+      final String tpClasspathFile = new TargetPlatformClasspathFile().resolveValue(null, null);
+      final StringBuilder preprocessorProjects = new StringBuilder("");
+      final StringBuilder generatorArguments = new StringBuilder("-Dtp.classpath.file=" + tpClasspathFile + " -Dplugins.dir=" + plugins
+          + " -Dhelpcenter.project=" + helpcenter + " -Dreleng.project=" + releng + " -Dskip.assemble.scripts=true");
 
-    for (JavaDoc javaDoc : antLib.getJavaDocs())
-    {
-      String project = javaDoc.getProject().getName();
-      if (treeViewer.getChecked(javaDoc))
+      if (!javaButton.getSelection())
       {
-        resourcesToRefresh.add(ROOT.getProject(project));
-
-        if (preprocessorProjects.length() != 0)
-        {
-          preprocessorProjects.append(";");
-        }
-
-        preprocessorProjects.append("${resource_loc:/" + project + "}");
+        generatorArguments.append(" -Dskip.javadoc=true");
       }
-      else
+
+      if (!schemaButton.getSelection())
       {
-        generatorArguments.append(" -Dskip." + project + "=true");
+        generatorArguments.append(" -Dskip.schemadoc=true");
       }
-    }
 
-    new Job("Doc Dash")
-    {
-      @Override
-      protected IStatus run(IProgressMonitor monitor)
+      if (!articleButton.getSelection())
       {
-        try
-        {
-          ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+        generatorArguments.append(" -Dskip.articledoc=true");
+      }
 
-          if (preprocess)
+      for (JavaDoc javaDoc : antLib.getJavaDocs())
+      {
+        String project = javaDoc.getProject().getName();
+        if (treeViewer.getChecked(javaDoc))
+        {
+          resourcesToRefresh.add(ROOT.getProject(project));
+
+          if (preprocessorProjects.length() != 0)
           {
-            ILaunchConfigurationType type = launchManager.getLaunchConfigurationType("org.eclipse.pde.ui.RuntimeWorkbench");
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Preprocess Documentation"));
-            configurePreprocessor(wc, preprocessorProjects);
-
-            ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
-            waitForLaunch(launch);
+            preprocessorProjects.append(";");
           }
 
-          if (generate)
-          {
-            ILaunchConfigurationType type = launchManager.getLaunchConfigurationType("org.eclipse.ant.AntLaunchConfigurationType");
-            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Generate Documentation"));
-            configureGenerator(wc, generatorArguments);
-
-            ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
-            waitForLaunch(launch);
-          }
+          preprocessorProjects.append("${resource_loc:/" + project + "}");
         }
-        catch (CoreException ex)
+        else
         {
-          return ex.getStatus();
+          generatorArguments.append(" -Dskip." + project + "=true");
         }
-        finally
-        {
-          refreshResources(resourcesToRefresh);
-        }
-
-        return Status.OK_STATUS;
       }
 
-      private void waitForLaunch(final ILaunch launch)
+      new Job("Doc Dash")
       {
-        while (launch != null && !launch.isTerminated())
+        @Override
+        protected IStatus run(IProgressMonitor monitor)
         {
           try
           {
-            Thread.sleep(200);
-          }
-          catch (InterruptedException ex)
-          {
-            throw new RuntimeException(ex);
-          }
-        }
-      }
+            ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 
-      private void refresh(final Set<IResource> resources, IProgressMonitor monitor)
-      {
-        try
-        {
-          if (!resources.isEmpty())
-          {
-            ROOT.getWorkspace().run(new IWorkspaceRunnable()
+            if (preprocess)
             {
-              public void run(IProgressMonitor monitor) throws CoreException
-              {
-                monitor.beginTask("", resources.size());
-                for (IResource resource : resources)
-                {
-                  try
-                  {
-                    resource.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
-                  }
-                  catch (Exception ex)
-                  {
-                    ArticlePlugin.INSTANCE.log(ex);
-                  }
-                }
+              ILaunchConfigurationType type = launchManager.getLaunchConfigurationType("org.eclipse.pde.ui.RuntimeWorkbench");
+              ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Preprocess Documentation"));
+              configurePreprocessor(wc, preprocessorProjects);
 
-                monitor.done();
-              }
-            }, monitor);
+              ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
+              waitForLaunch(launch);
+            }
+
+            if (generate)
+            {
+              ILaunchConfigurationType type = launchManager.getLaunchConfigurationType("org.eclipse.ant.AntLaunchConfigurationType");
+              ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Generate Documentation"));
+              configureGenerator(wc, generatorArguments);
+
+              ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
+              waitForLaunch(launch);
+            }
+          }
+          catch (CoreException ex)
+          {
+            return ex.getStatus();
+          }
+          finally
+          {
+            generateButton.setEnabled(true);
+            refreshResources(resourcesToRefresh);
+          }
+
+          return Status.OK_STATUS;
+        }
+
+        private void waitForLaunch(final ILaunch launch)
+        {
+          while (launch != null && !launch.isTerminated())
+          {
+            try
+            {
+              Thread.sleep(200);
+            }
+            catch (InterruptedException ex)
+            {
+              throw new RuntimeException(ex);
+            }
           }
         }
-        catch (CoreException ex)
+
+        private void refresh(final Set<IResource> resources, IProgressMonitor monitor)
         {
-          ArticlePlugin.INSTANCE.log(ex);
+          try
+          {
+            if (!resources.isEmpty())
+            {
+              ROOT.getWorkspace().run(new IWorkspaceRunnable()
+              {
+                public void run(IProgressMonitor monitor) throws CoreException
+                {
+                  monitor.beginTask("", resources.size());
+                  for (IResource resource : resources)
+                  {
+                    try
+                    {
+                      resource.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
+                    }
+                    catch (Exception ex)
+                    {
+                      ArticlePlugin.INSTANCE.log(ex);
+                    }
+                  }
+
+                  monitor.done();
+                }
+              }, monitor);
+            }
+          }
+          catch (CoreException ex)
+          {
+            ArticlePlugin.INSTANCE.log(ex);
+          }
         }
-      }
-    }.schedule();
+      }.schedule();
+    }
+    catch (Error ex)
+    {
+      generateButton.setEnabled(true);
+      throw ex;
+    }
+    catch (Exception ex)
+    {
+      generateButton.setEnabled(true);
+      throw ex;
+    }
   }
 
   private void configureGenerator(ILaunchConfigurationWorkingCopy wc, final StringBuilder generatorArguments)

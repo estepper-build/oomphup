@@ -114,7 +114,9 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
   public Documentation getDocumentation()
   {
     if (eContainerFeatureID() != ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION)
+    {
       return null;
+    }
     return (Documentation)eInternalContainer();
   }
 
@@ -134,21 +136,31 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
    */
   public void setDocumentation(Documentation newDocumentation)
   {
-    if (newDocumentation != eInternalContainer() || (eContainerFeatureID() != ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION && newDocumentation != null))
+    if (newDocumentation != eInternalContainer() || eContainerFeatureID() != ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION && newDocumentation != null)
     {
       if (EcoreUtil.isAncestor(this, newDocumentation))
+      {
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+      }
       NotificationChain msgs = null;
       if (eInternalContainer() != null)
+      {
         msgs = eBasicRemoveFromContainer(msgs);
+      }
       if (newDocumentation != null)
+      {
         msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, ArticlePackage.DOCUMENTATION__EMBEDDABLE_ELEMENTS, Documentation.class, msgs);
+      }
       msgs = basicSetDocumentation(newDocumentation, msgs);
       if (msgs != null)
+      {
         msgs.dispatch();
+      }
     }
     else if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION, newDocumentation, newDocumentation));
+    }
   }
 
   /**
@@ -172,7 +184,9 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
     {
       case ArticlePackage.EMBEDDABLE_ELEMENT__DOCUMENTATION:
         if (eInternalContainer() != null)
+        {
           msgs = eBasicRemoveFromContainer(msgs);
+        }
         return basicSetDocumentation((Documentation)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);

@@ -281,6 +281,24 @@ public interface ArticleFactory extends EFactory
   ImageFactory createImageFactory();
 
   /**
+   * Returns a new object of class '<em>Key</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Key</em>'.
+   * @generated
+   */
+  Key createKey();
+
+  /**
+   * Returns a new object of class '<em>Selection</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Selection</em>'.
+   * @generated
+   */
+  Selection createSelection();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return the package supported by this factory.

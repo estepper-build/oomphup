@@ -31,11 +31,13 @@ import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
 import org.eclipse.oomph.releng.doc.article.Javadoc;
+import org.eclipse.oomph.releng.doc.article.Key;
 import org.eclipse.oomph.releng.doc.article.Link;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
 import org.eclipse.oomph.releng.doc.article.Section;
+import org.eclipse.oomph.releng.doc.article.Selection;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.Text;
@@ -163,6 +165,10 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createTreeNodeProperty();
       case ArticlePackage.IMAGE_FACTORY:
         return createImageFactory();
+      case ArticlePackage.KEY:
+        return createKey();
+      case ArticlePackage.SELECTION:
+        return createSelection();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -513,6 +519,28 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     ImageFactoryImpl imageFactory = new ImageFactoryImpl();
     return imageFactory;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Key createKey()
+  {
+    KeyImpl key = new KeyImpl();
+    return key;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Selection createSelection()
+  {
+    SelectionImpl selection = new SelectionImpl();
+    return selection;
   }
 
   /**

@@ -150,5 +150,7 @@
     <genClasses ecoreClass="article.ecore#//ImageFactory">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//ImageFactory/file"/>
     </genClasses>
+    <genClasses ecoreClass="article.ecore#//Key"/>
+    <genClasses ecoreClass="article.ecore#//Selection"/>
   </genPackages>
 </genmodel:GenModel>

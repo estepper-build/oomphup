@@ -2453,13 +2453,87 @@ public interface ArticlePackage extends EPackage
   int IMAGE_FACTORY_FEATURE_COUNT = FACTORY_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.KeyImpl <em>Key</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.KeyImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getKey()
+   * @generated
+   */
+  int KEY = 40;
+
+  /**
+   * The feature id for the '<em><b>Container</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int KEY__CONTAINER = BODY_ELEMENT__CONTAINER;
+
+  /**
+   * The feature id for the '<em><b>Tag</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int KEY__TAG = BODY_ELEMENT__TAG;
+
+  /**
+   * The number of structural features of the '<em>Key</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int KEY_FEATURE_COUNT = BODY_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.SelectionImpl <em>Selection</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.SelectionImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getSelection()
+   * @generated
+   */
+  int SELECTION = 41;
+
+  /**
+   * The feature id for the '<em><b>Container</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SELECTION__CONTAINER = BODY_ELEMENT__CONTAINER;
+
+  /**
+   * The feature id for the '<em><b>Tag</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SELECTION__TAG = BODY_ELEMENT__TAG;
+
+  /**
+   * The number of structural features of the '<em>Selection</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SELECTION_FEATURE_COUNT = BODY_ELEMENT_FEATURE_COUNT + 0;
+
+  /**
    * The meta object id for the '<em>Root Doc</em>' data type.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see com.sun.javadoc.RootDoc
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 40;
+  int ROOT_DOC = 42;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2468,7 +2542,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 41;
+  int FILE = 43;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2477,7 +2551,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 42;
+  int DOC = 44;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2486,7 +2560,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 43;
+  int TAG = 45;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -3536,6 +3610,26 @@ public interface ArticlePackage extends EPackage
   EAttribute getImageFactory_File();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Key <em>Key</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Key</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Key
+   * @generated
+   */
+  EClass getKey();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Selection <em>Selection</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Selection</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Selection
+   * @generated
+   */
+  EClass getSelection();
+
+  /**
    * Returns the meta object for data type '{@link com.sun.javadoc.RootDoc <em>Root Doc</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4460,6 +4554,26 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EAttribute IMAGE_FACTORY__FILE = eINSTANCE.getImageFactory_File();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.KeyImpl <em>Key</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.KeyImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getKey()
+     * @generated
+     */
+    EClass KEY = eINSTANCE.getKey();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.SelectionImpl <em>Selection</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.SelectionImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getSelection()
+     * @generated
+     */
+    EClass SELECTION = eINSTANCE.getSelection();
 
     /**
      * The meta object literal for the '<em>Root Doc</em>' data type.

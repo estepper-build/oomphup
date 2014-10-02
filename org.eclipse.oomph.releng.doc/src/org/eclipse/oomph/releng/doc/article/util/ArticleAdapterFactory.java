@@ -37,12 +37,14 @@ import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
 import org.eclipse.oomph.releng.doc.article.Javadoc;
+import org.eclipse.oomph.releng.doc.article.Key;
 import org.eclipse.oomph.releng.doc.article.Link;
 import org.eclipse.oomph.releng.doc.article.LinkTarget;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
 import org.eclipse.oomph.releng.doc.article.Section;
+import org.eclipse.oomph.releng.doc.article.Selection;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.SourceCode;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
@@ -353,6 +355,18 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseImageFactory(ImageFactory object)
     {
       return createImageFactoryAdapter();
+    }
+
+    @Override
+    public Adapter caseKey(Key object)
+    {
+      return createKeyAdapter();
+    }
+
+    @Override
+    public Adapter caseSelection(Selection object)
+    {
+      return createSelectionAdapter();
     }
 
     @Override
@@ -904,6 +918,36 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createImageFactoryAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.Key <em>Key</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.Key
+   * @generated
+   */
+  public Adapter createKeyAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.Selection <em>Selection</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.Selection
+   * @generated
+   */
+  public Adapter createSelectionAdapter()
   {
     return null;
   }

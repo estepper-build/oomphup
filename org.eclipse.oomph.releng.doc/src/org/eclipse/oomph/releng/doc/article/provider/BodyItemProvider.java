@@ -170,6 +170,10 @@ public class BodyItemProvider extends StructuralElementItemProvider
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.BODY_ELEMENT_CONTAINER__ELEMENTS, ArticleFactory.eINSTANCE.createExcel()));
 
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.BODY_ELEMENT_CONTAINER__ELEMENTS, ArticleFactory.eINSTANCE.createImage()));
+
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.BODY_ELEMENT_CONTAINER__ELEMENTS, ArticleFactory.eINSTANCE.createKey()));
+
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.BODY_ELEMENT_CONTAINER__ELEMENTS, ArticleFactory.eINSTANCE.createSelection()));
   }
 
 }
