@@ -584,7 +584,7 @@ public class DocDash extends ViewPart
           }
           finally
           {
-            generateButton.setEnabled(true);
+            reenableGenerateButton();
             refreshResources(resourcesToRefresh);
           }
 
@@ -637,6 +637,20 @@ public class DocDash extends ViewPart
           catch (CoreException ex)
           {
             ArticlePlugin.INSTANCE.log(ex);
+          }
+        }
+
+        private void reenableGenerateButton()
+        {
+          if (!generateButton.isDisposed())
+          {
+            generateButton.getDisplay().syncExec(new Runnable()
+            {
+              public void run()
+              {
+                generateButton.setEnabled(true);
+              }
+            });
           }
         }
       }.schedule();
