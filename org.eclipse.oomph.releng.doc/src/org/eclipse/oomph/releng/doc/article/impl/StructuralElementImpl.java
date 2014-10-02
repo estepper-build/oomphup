@@ -604,25 +604,25 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
       file.getParentFile().mkdirs();
       out = new PrintWriter(file);
 
-      out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" + NL);
-      out.write("<HTML>" + NL);
+      out.write("<!doctype html public \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" + NL);
+      out.write("<html>" + NL);
       out.write("" + NL);
-      out.write("<HEAD>" + NL);
-      out.write("<TITLE>");
+      out.write("<head>" + NL);
+      out.write("<title>");
       out.write(title);
-      out.write("</TITLE>" + NL);
+      out.write("</title>" + NL);
       out.write("" + NL);
-      out.write("<LINK REL=\"STYLESHEET\" HREF=\"" + css + "\" CHARSET=\"ISO-8859-1\" TYPE=\"text/css\">" + NL);
+      out.write("<link rel=\"stylesheet\" href=\"" + css + "\" charset=\"ISO-8859-1\" type=\"text/css\">" + NL);
       out.write("" + NL);
-      out.write("<NOSCRIPT></NOSCRIPT>" + NL);
-      out.write("<SCRIPT type=\"text/javascript\">" + NL);
+      out.write("<noscript></noscript>" + NL);
+      out.write("<script type=\"text/javascript\">" + NL);
       out.write("function windowTitle()" + NL);
       out.write("{" + NL);
       out.write("    if (location.href.indexOf('is-external=true') == -1) {" + NL);
       out.write("        parent.document.title=\"" + title + "\";" + NL);
       out.write("    }" + NL);
       out.write("}" + NL);
-      out.write("</SCRIPT>" + NL);
+      out.write("</script>" + NL);
 
       Set<String> headers = new LinkedHashSet<String>();
       addHeaders(headers);
@@ -638,24 +638,18 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
         }
       }
 
-      out.write("</HEAD>" + NL);
+      out.write("</head>" + NL);
       out.write(NL);
-      out.write("<BODY BGCOLOR=\"white\" onload=\"windowTitle();\">" + NL);
+      out.write("<body bgcolor=\"white\" onload=\"windowTitle();\">" + NL);
 
-      out.write("<!-- ");
-      out.write("<div class=\"help_breadcrumbs\">");
-      generateBreadCrumbs(out, this);
-      out.write("</div>");
-      out.write(" -->" + NL);
-      out.write(NL);
-
+      generateBreadCrumbs(out, "top");
       generate(out);
+      generateBreadCrumbs(out, "bottom");
 
-      out.write("<HR>" + NL);
-      out.write("<small><i class=\"copyright\">Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.<br>All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html</i><small>"
+      out.write("<div class=\"copyright\">Copyright (c) 2014 Eike Stepper (Berlin, Germany) and others.<br>All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html</div>"
           + NL);
-      out.write("</BODY>" + NL);
-      out.write("</HTML>" + NL);
+      out.write("</body>" + NL);
+      out.write("</html>" + NL);
     }
     finally
     {
@@ -669,6 +663,16 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
     {
       child.addHeaders(headers);
     }
+  }
+
+  protected void generateBreadCrumbs(PrintWriter out, String position) throws IOException
+  {
+    out.write("<!-- ");
+    out.write("<div class=\"help_breadcrumbs breadcrumbs_" + position + "\">");
+    generateBreadCrumbs(out, this);
+    out.write("</div>");
+    out.write(" -->" + NL);
+    out.write(NL);
   }
 
   protected void generateBreadCrumbs(PrintWriter out, StructuralElement linkSource) throws IOException
