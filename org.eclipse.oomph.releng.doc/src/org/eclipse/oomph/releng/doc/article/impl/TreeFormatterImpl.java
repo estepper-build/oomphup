@@ -440,15 +440,14 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     return null;
   }
 
-  public String[] getSnippetHtml(Embedding embedder, String id, String title)
+  public String[] getSnippetHtml(Embedding embedder, String embeddingID, String title)
   {
-    int embeddingIndex = getEmbeddingIndex(embedder);
-    String selectionDiv = "selection_" + id + "_" + embeddingIndex;
+    String selectionDiv = "selection_" + embeddingID;
 
-    Builder pkBuilder = new PropertyKeysBuilder(embedder, embeddingIndex, null);
-    Builder pvBuilder = new PropertyValuesBuilder(embedder, embeddingIndex, null);
+    Builder pkBuilder = new PropertyKeysBuilder(embedder, embeddingID, null);
+    Builder pvBuilder = new PropertyValuesBuilder(embedder, embeddingID, null);
 
-    Builder builder = new Builder(embedder, embeddingIndex, selectionDiv);
+    Builder builder = new Builder(embedder, embeddingID, selectionDiv);
     TreeNode root = getRootNode(); // TODO What about multiple roots?
 
     int expandTo = getExpandTo();
@@ -472,55 +471,14 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
     generateTreeNode(builder, pkBuilder, pvBuilder, expandedNodes, selectedNode, root);
 
     String imagePath = builder.getImagePath();
-    String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + pkBuilder + "</td><td id=\"max_pv_" + id
+    String content = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>" + pkBuilder + "</td><td id=\"max_pv_" + embeddingID
         + "_properties\" width=\"100%\">" + pvBuilder + "</td></tr></table>";
-    String propertiesHtml = SnippetImpl.getEditorHtml(imagePath, id + "_properties", "Properties", imagePath + "formatter-tree-properties.gif", content, 600,
-        100);
+    String propertiesHtml = SnippetImpl.getEditorHtml(imagePath, embeddingID + "_properties", "Properties", imagePath + "formatter-tree-properties.gif",
+        content, 600, 100);
 
     String selectedNodeID = IDAdapter.getID(selectedNode);
     builder.append("          <div id=\"" + selectionDiv + "\" style=\"display:none;\">" + selectedNodeID + "</div>" + NL);
     return new String[] { builder.toString(), "          <br>" + NL + propertiesHtml };
-  }
-
-  private int getEmbeddingIndex(Embedding embedder)
-  {
-    int index = 0;
-
-    Body body = embedder.getBody();
-    for (BodyElement element : body.getElements())
-    {
-      if (element instanceof Embedding)
-      {
-        ++index;
-      }
-
-      if (element == embedder)
-      {
-        return index;
-      }
-    }
-
-    if (body instanceof Chapter)
-    {
-      Chapter chapter = (Chapter)body;
-      for (Section section : chapter.getSections())
-      {
-        for (BodyElement element : section.getElements())
-        {
-          if (element instanceof Embedding)
-          {
-            ++index;
-          }
-
-          if (element == embedder)
-          {
-            return index;
-          }
-        }
-      }
-    }
-
-    throw new ArticleException("Embedding not found: " + embedder.getTag().text());
   }
 
   private TreeNode getRootNode()
@@ -741,7 +699,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
     private int level;
 
-    public Builder(Embedding embedder, int embeddingIndex, String selectionDiv)
+    public Builder(Embedding embedder, String embeddingID, String selectionDiv)
     {
       this.embedder = embedder;
       this.selectionDiv = selectionDiv;
@@ -751,7 +709,7 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
 
       String path = body.getPath();
 
-      idPrefix = path.endsWith(".html") ? "node" : path + (embeddingIndex != 0 ? "_" + embeddingIndex : "");
+      idPrefix = "node_" + embeddingID + "_";
     }
 
     public Embedding getEmbedder()
@@ -899,9 +857,9 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
    */
   private static class PropertyKeysBuilder extends Builder
   {
-    public PropertyKeysBuilder(Embedding embedder, int embeddingIndex, String selectionDiv)
+    public PropertyKeysBuilder(Embedding embedder, String embeddingID, String selectionDiv)
     {
-      super(embedder, embeddingIndex, selectionDiv);
+      super(embedder, embeddingID, selectionDiv);
     }
 
     @Override
@@ -940,9 +898,9 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
    */
   private static class PropertyValuesBuilder extends Builder
   {
-    public PropertyValuesBuilder(Embedding embedder, int embeddingIndex, String selectionDiv)
+    public PropertyValuesBuilder(Embedding embedder, String embeddingID, String selectionDiv)
     {
-      super(embedder, embeddingIndex, selectionDiv);
+      super(embedder, embeddingID, selectionDiv);
     }
 
     @Override

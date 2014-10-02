@@ -82,10 +82,10 @@ public class JavaFormatterImpl extends FormatterImpl implements JavaFormatter
     return embedderTag == null ? null : embedderTag.text() + ".java";
   }
 
-  public String[] getSnippetHtml(Embedding embedder, String id, String title)
+  public String[] getSnippetHtml(Embedding embedder, String embeddingID, String title)
   {
     Map<String, Object> options = new HashMap<String, Object>();
-    options.put("id", id);
+    options.put("id", embeddingID);
     options.put("title", title);
     options.put("includeSignature", getDoc() instanceof ClassDoc);
 

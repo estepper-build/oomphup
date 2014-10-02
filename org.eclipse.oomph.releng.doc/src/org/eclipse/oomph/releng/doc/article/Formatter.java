@@ -69,7 +69,7 @@ public interface Formatter extends EObject
 
   String getTopLeftEditorIcon(String imagePath);
 
-  String[] getSnippetHtml(Embedding embedder, String id, String title);
+  String[] getSnippetHtml(Embedding embedder, String embeddingID, String title);
 
   String getCalloutMarker();
 

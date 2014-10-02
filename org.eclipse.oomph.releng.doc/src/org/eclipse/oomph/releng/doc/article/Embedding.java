@@ -45,4 +45,8 @@ public interface Embedding extends BodyElement
 
   SeeTag getTag();
 
+  String getEmbeddingID();
+
+  int getEmbeddingIndex();
+
 } // Embedding

@@ -211,7 +211,7 @@ public class XmlFormatterImpl extends FormatterImpl implements XmlFormatter
     return XmlFormatter.TYPE;
   }
 
-  public String[] getSnippetHtml(Embedding embedder, String id, String title)
+  public String[] getSnippetHtml(Embedding embedder, String embeddingID, String title)
   {
     XmlHandler handler = new XmlHandler();
 

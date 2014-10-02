@@ -11,10 +11,14 @@
 package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
+import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
+import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
 import org.eclipse.oomph.releng.doc.article.Embedding;
+import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -120,6 +124,52 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
   public BodyElement copy()
   {
     return new EmbeddingImpl(getTag(), element);
+  }
+
+  public String getEmbeddingID()
+  {
+    return getBody().getDoc().name() + "_" + getEmbeddingIndex();
+  }
+
+  public int getEmbeddingIndex()
+  {
+    int index = 0;
+
+    Body body = getBody();
+    for (BodyElement element : body.getElements())
+    {
+      if (element instanceof Embedding)
+      {
+        ++index;
+      }
+
+      if (element == this)
+      {
+        return index;
+      }
+    }
+
+    if (body instanceof Chapter)
+    {
+      Chapter chapter = (Chapter)body;
+      for (Section section : chapter.getSections())
+      {
+        for (BodyElement element : section.getElements())
+        {
+          if (element instanceof Embedding)
+          {
+            ++index;
+          }
+
+          if (element == this)
+          {
+            return index;
+          }
+        }
+      }
+    }
+
+    throw new ArticleException("Embedding not found: " + getTag().text());
   }
 
   @Override

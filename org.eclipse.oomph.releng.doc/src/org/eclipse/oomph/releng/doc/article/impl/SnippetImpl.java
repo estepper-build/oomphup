@@ -532,14 +532,8 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
 
   public void generate(PrintWriter out, Embedding embedder) throws IOException
   {
+    String embeddingID = embedder.getEmbeddingID();
     Formatter formatter = getFormatter();
-
-    String snippetID = getDoc().name();
-    int lastDot = snippetID.lastIndexOf('.');
-    if (lastDot != -1)
-    {
-      snippetID = snippetID.substring(lastDot + 1);
-    }
 
     SeeTag embedderTag = embedder.getTag();
     String title = embedderTag == null ? null : embedderTag.label();
@@ -589,10 +583,10 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     out.write(NL);
     out.write(NL);
 
-    String[] snippets = formatter.getSnippetHtml(embedder, snippetID, title);
+    String[] snippets = formatter.getSnippetHtml(embedder, embeddingID, title);
     String html = snippets[0];
-    html = processCallouts(snippetID, html, imagePath);
-    html = getEditorHtml(imagePath, snippetID, title, editorIcon, html, 600, 300);
+    html = processCallouts(embeddingID, html, imagePath);
+    html = getEditorHtml(imagePath, embeddingID, title, editorIcon, html, 600, 300);
 
     out.write(html);
     for (int i = 1; i < snippets.length; i++)
@@ -607,7 +601,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       out.write("<p>" + NL);
       for (Callout callout : callouts)
       {
-        String image = getCalloutImage(imagePath, snippetID, callout.getIndex(), false, "Jump to snippet...");
+        String image = getCalloutImage(imagePath, embeddingID, callout.getIndex(), false, "Jump to snippet...");
         out.write("<div style=\"margin-left:24px;\">" + image + "&nbsp;");
 
         try
@@ -728,12 +722,12 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     throw new ArticleException("Nested embedding");
   }
 
-  public static String getEditorHtml(String imagePath, String id, String title, String editorIcon, String content, int contentWidth, int contentHeight)
+  public static String getEditorHtml(String imagePath, String embeddingID, String title, String editorIcon, String content, int contentWidth, int contentHeight)
   {
     StringBuilder builder = new StringBuilder();
 
     builder.append("<div class=\"snippet\" style=\"margin-left:24px;\" align=\"left\">" + NL);
-    builder.append("  <a name=\"snippet_" + id + "\"></a>" + NL);
+    builder.append("  <a name=\"snippet_" + embeddingID + "\"></a>" + NL);
     builder.append("  <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">" + NL);
     builder.append("    <tr>" + NL);
     builder.append("      <td width=\"25px\"><div style=\"position:relative;\"><img src=\"" + imagePath
@@ -744,15 +738,15 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-3.png\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"right\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"center\" width=\"16\">" //
-        + "<a href=\"javascript:maximize('" + id + "')\" id=\"max_" + id + "\" class=\"max\" title=\"Maximize\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
+        + "<a href=\"javascript:maximize('" + embeddingID + "')\" id=\"max_" + embeddingID + "\" class=\"max\" title=\"Maximize\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
     builder.append("      <td width=\"6px\"><img src=\"" + imagePath + "editor-5.png\"></td>" + NL);
     builder.append("    </tr>" + NL);
 
     builder.append("    <tr>" + NL);
     builder.append("      <td colspan=\"6\" align=\"left\" valign=\"top\" style=\"border:1px solid #a0a0a0; border-top:none;\" nowrap>" + NL);
-    builder.append("        <div id=\"editor_content_1_" + id + "\" class=\"ui-widget-content resizable\" style=\"width:" + contentWidth + "px; height:"
+    builder.append("        <div id=\"editor_content_1_" + embeddingID + "\" class=\"ui-widget-content resizable\" style=\"width:" + contentWidth + "px; height:"
         + contentHeight + "px; border:2px solid #99b4d1; border-top:none;\">" + NL);
-    builder.append("          <div id=\"editor_content_2_" + id + "\" style=\"overflow:scroll; width:100%; height:100%;\">" + NL);
+    builder.append("          <div id=\"editor_content_2_" + embeddingID + "\" style=\"overflow:scroll; width:100%; height:100%;\">" + NL);
     builder.append(content);
     builder.append("" + NL);
     builder.append("          </div>" + NL);
