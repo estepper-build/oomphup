@@ -13,6 +13,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JAbstractType;
 import org.eclipse.emf.codegen.merge.java.facade.JCompilationUnit;
 import org.eclipse.emf.codegen.merge.java.facade.JField;
 import org.eclipse.emf.codegen.merge.java.facade.JMethod;
+import org.eclipse.emf.codegen.merge.java.facade.JNode;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
 import org.eclipse.emf.common.CommonPlugin;
@@ -430,6 +431,8 @@ public class Preprocessor
                       pruned.add(segmentClass);
                     }
                   }
+
+                  sourceURI = sourceURI.trimQuery();
                 }
               }
 
@@ -511,6 +514,17 @@ public class Preprocessor
     }
   }
 
+  private String getQualifiedName(JAbstractType type)
+  {
+    JNode parent = type.getParent();
+    if (parent instanceof JAbstractType)
+    {
+      return getQualifiedName((JAbstractType)parent) + "$" + type.getName();
+    }
+
+    return type.getQualifiedName();
+  }
+
   private void visitImages(URI uri, String contents) throws IOException
   {
     for (Matcher matcher = IMAGE_PATTERN.matcher(contents); matcher.find();)
@@ -528,7 +542,7 @@ public class Preprocessor
           String typeName = sourceURI.authority();
           if (StringUtil.isEmpty(typeName))
           {
-            typeName = type.getQualifiedName();
+            typeName = getQualifiedName(type);
           }
 
           String methodName;
