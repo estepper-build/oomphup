@@ -128,7 +128,14 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
 
   public String getEmbeddingID()
   {
-    return getBody().getDoc().name() + "_" + getEmbeddingIndex();
+    String prefix = getBody().getDoc().name();
+    int lastDot = prefix.lastIndexOf('.');
+    if (lastDot != -1)
+    {
+      prefix = prefix.substring(lastDot + 1);
+    }
+
+    return prefix + "_" + getEmbeddingIndex();
   }
 
   public int getEmbeddingIndex()
