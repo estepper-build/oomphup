@@ -215,7 +215,7 @@ public class TocImpl extends BodyElementImpl implements Toc
       }
 
       int colspan = depth - level + 2;
-      out.write("&nbsp;</td><td colspan=\"" + colspan + "\">");
+      out.write("&nbsp;</td><td class=\"te\" colspan=\"" + colspan + "\">");
       element.generateLink(out, linkSource, null);
       out.write("</td></tr>" + NL);
     }
