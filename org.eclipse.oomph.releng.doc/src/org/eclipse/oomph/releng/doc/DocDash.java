@@ -253,7 +253,7 @@ public class DocDash extends ViewPart
           }
         }
 
-        check(element, event.getChecked());
+        checkTreeElement(element, event.getChecked());
 
         int sum = 0;
         Collection<JavaDoc> javaDocs = antLib.getJavaDocs();
@@ -271,15 +271,6 @@ public class DocDash extends ViewPart
 
         treeViewer.setChecked(antLib, sum == antLib.getJavaDocs().size());
         updateEnablement();
-      }
-
-      private void check(Object element, boolean checked)
-      {
-        treeViewer.setChecked(element, checked);
-        for (Object child : contentProvider.getChildren(element))
-        {
-          check(child, checked);
-        }
       }
     });
 
@@ -316,6 +307,15 @@ public class DocDash extends ViewPart
     }
 
     generateButton.setEnabled(enabled);
+  }
+
+  private void checkTreeElement(Object element, boolean checked)
+  {
+    treeViewer.setChecked(element, checked);
+    for (Object child : contentProvider.getChildren(element))
+    {
+      checkTreeElement(child, checked);
+    }
   }
 
   private void init()
@@ -402,12 +402,12 @@ public class DocDash extends ViewPart
       Collection<JavaDoc> javaDocs = antLib.getJavaDocs();
       for (JavaDoc javaDoc : javaDocs)
       {
-        String project1 = javaDoc.getProject().getName();
-        boolean checked = preferences.getBoolean(project1, true);
+        String project = javaDoc.getProject().getName();
+        boolean checked = preferences.getBoolean(project, true);
         sum += checked ? 1 : 0;
-        treeViewer.setChecked(javaDoc, checked);
+        checkTreeElement(javaDoc, checked);
 
-        resourcesToRefresh.add(ROOT.getProject(project1));
+        resourcesToRefresh.add(ROOT.getProject(project));
       }
 
       treeViewer.setChecked(antLib, sum == antLib.getJavaDocs().size());
