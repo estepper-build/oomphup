@@ -22,9 +22,33 @@ import java.util.List;
  */
 public class DocletTest
 {
-  private static final String RELENG = "D:/sandbox/oomph/git/oomphup/org.eclipse.oomph.releng.doc";
+  private static final String RELENG;
 
-  private static final String BASE = "D:/sandbox/oomph/git/org.eclipse.oomph";
+  static
+  {
+    try
+    {
+      RELENG = new File(System.getProperty("org.eclipse.oomph.releng.doc.releng")).getCanonicalPath();
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  private static final String BASE;
+
+  static
+  {
+    try
+    {
+      BASE = new File(System.getProperty("org.eclipse.oomph.releng.doc.base")).getCanonicalPath();
+    }
+    catch (IOException ex)
+    {
+      throw new RuntimeException(ex);
+    }
+  }
 
   private static final String PLUGINS = BASE + "/plugins";
 
@@ -42,7 +66,13 @@ public class DocletTest
     add("-externals http://download.oracle.com/javase/1.5.0/docs/api;http://help.eclipse.org/juno/topic/org.eclipse.platform.doc.isv/reference/api;http://download.eclipse.org/modeling/emf/emf/javadoc/2.7.0");
     add("-source 1.5");
 
-    addJavaFiles("org.eclipse.oomph.setup.doc");
+    for (File file : new File(PLUGINS).listFiles())
+    {
+      if (file.isDirectory() && file.toString().endsWith(".doc"))
+      {
+        addJavaFiles(file.getName());
+      }
+    }
 
     String[] array = arguments.toArray(new String[arguments.size()]);
     com.sun.tools.javadoc.Main.execute(DocletTest.class.getSimpleName(), ArticleDoclet.class.getName(), array);
