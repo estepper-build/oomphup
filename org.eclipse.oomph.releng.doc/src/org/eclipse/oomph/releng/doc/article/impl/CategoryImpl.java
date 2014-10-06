@@ -10,12 +10,12 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.Tag;

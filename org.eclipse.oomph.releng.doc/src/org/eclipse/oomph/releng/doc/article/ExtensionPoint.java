@@ -62,7 +62,7 @@ public interface ExtensionPoint extends EObject
    * description here...
    * </p>
    * <!-- end-user-doc -->
-   * 
+   *
    * @return the value of the '<em>Plugin</em>' container reference.
    * @see #setPlugin(Plugin)
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getExtensionPoint_Plugin()

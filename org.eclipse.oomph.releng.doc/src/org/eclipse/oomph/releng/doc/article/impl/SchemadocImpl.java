@@ -10,15 +10,15 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
 import org.eclipse.oomph.releng.doc.article.Plugin;
 import org.eclipse.oomph.releng.doc.article.Schemadoc;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.PackageDoc;
 

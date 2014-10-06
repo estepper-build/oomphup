@@ -16,6 +16,7 @@ import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.Tag;
@@ -124,7 +125,15 @@ public class ImageImpl extends BodyElementImpl implements Image
     File source = linkSource.getDoc().position().file().getParentFile();
     String link = ArticleUtil.createLink(source, file);
 
-    out.write("<img src=\"");
+    if ("svg".equals(URI.createFileURI(link).fileExtension()))
+    {
+      out.write("<embed src=\"");
+    }
+    else
+    {
+      out.write("<img src=\"");
+    }
+
     out.write(link);
     out.write("\">" + NL);
   }

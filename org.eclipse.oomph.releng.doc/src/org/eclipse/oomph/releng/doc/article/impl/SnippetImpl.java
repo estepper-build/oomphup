@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 
@@ -134,7 +135,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     super();
   }
 
-  SnippetImpl(Documentation documentation, Doc doc)
+  SnippetImpl(Documentation documentation, ProgramElementDoc doc)
   {
     super(documentation, doc);
     initFormatter(doc);
@@ -737,15 +738,17 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         + "</font></td>" + NL);
     builder.append("      <td width=\"1px\"><img src=\"" + imagePath + "editor-3.png\"></td>" + NL);
     builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"right\"></td>" + NL);
-    builder.append("      <td style=\"background-image:url(" + imagePath + "editor-4.png); background-repeat:repeat-x;\" align=\"center\" width=\"16\">" //
-        + "<a href=\"javascript:maximize('" + embeddingID + "')\" id=\"max_" + embeddingID + "\" class=\"max\" title=\"Maximize\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
+    builder.append("      <td style=\"background-image:url(" + imagePath
+        + "editor-4.png); background-repeat:repeat-x;\" align=\"center\" width=\"16\">" //
+        + "<a href=\"javascript:maximize('" + embeddingID + "')\" id=\"max_" + embeddingID
+        + "\" class=\"max\" title=\"Maximize\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>" + NL);
     builder.append("      <td width=\"6px\"><img src=\"" + imagePath + "editor-5.png\"></td>" + NL);
     builder.append("    </tr>" + NL);
 
     builder.append("    <tr>" + NL);
     builder.append("      <td colspan=\"6\" align=\"left\" valign=\"top\" style=\"border:1px solid #a0a0a0; border-top:none;\" nowrap>" + NL);
-    builder.append("        <div id=\"editor_content_1_" + embeddingID + "\" class=\"ui-widget-content resizable\" style=\"width:" + contentWidth + "px; height:"
-        + contentHeight + "px; border:2px solid #99b4d1; border-top:none;\">" + NL);
+    builder.append("        <div id=\"editor_content_1_" + embeddingID + "\" class=\"ui-widget-content resizable\" style=\"width:" + contentWidth
+        + "px; height:" + contentHeight + "px; border:2px solid #99b4d1; border-top:none;\">" + NL);
     builder.append("          <div id=\"editor_content_2_" + embeddingID + "\" style=\"overflow:scroll; width:100%; height:100%;\">" + NL);
     builder.append(content);
     builder.append("" + NL);

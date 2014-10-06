@@ -10,7 +10,7 @@
  */
 package org.eclipse.oomph.releng.doc.article;
 
-import com.sun.javadoc.Doc;
+import com.sun.javadoc.ProgramElementDoc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -68,10 +68,10 @@ public interface EmbeddableElement extends Identifiable
    * <!-- end-user-doc -->
    * @return the value of the '<em>Doc</em>' attribute.
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getEmbeddableElement_Doc()
-   * @model dataType="org.eclipse.oomph.releng.doc.article.Doc" required="true" transient="true" changeable="false" volatile="true"
+   * @model dataType="org.eclipse.oomph.releng.doc.article.ProgramElementDoc" required="true" transient="true" changeable="false" volatile="true"
    * @generated
    */
-  Doc getDoc();
+  ProgramElementDoc getDoc();
 
   String rewritePath(String path, Embedding embedder);
 

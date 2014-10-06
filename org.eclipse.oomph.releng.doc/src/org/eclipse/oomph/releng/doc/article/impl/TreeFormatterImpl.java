@@ -4,15 +4,11 @@ package org.eclipse.oomph.releng.doc.article.impl;
 
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Body;
-import org.eclipse.oomph.releng.doc.article.BodyElement;
-import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Embedding;
-import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.TreeFormatter;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
-import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;

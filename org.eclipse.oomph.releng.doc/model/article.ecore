@@ -79,10 +79,12 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="Doc" instanceClassName="com.sun.javadoc.Doc"
       serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="ProgramElementDoc" instanceClassName="com.sun.javadoc.ProgramElementDoc"
+      serializable="false"/>
   <eClassifiers xsi:type="ecore:EClass" name="EmbeddableElement" abstract="true" eSuperTypes="#//Identifiable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" lowerBound="1"
         eType="#//Documentation" resolveProxies="false" eOpposite="#//Documentation/embeddableElements"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" lowerBound="1" eType="#//Doc"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="doc" lowerBound="1" eType="#//ProgramElementDoc"
         changeable="false" volatile="true" transient="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExternalTarget" eSuperTypes="#//LinkTarget">

@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import com.sun.javadoc.Doc;
+import com.sun.javadoc.ProgramElementDoc;
 
 import java.io.File;
 
@@ -63,9 +63,9 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
    * @generated
    * @ordered
    */
-  protected static final Doc DOC_EDEFAULT = null;
+  protected static final ProgramElementDoc DOC_EDEFAULT = null;
 
-  private Doc doc;
+  private ProgramElementDoc doc;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -76,7 +76,7 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
     super();
   }
 
-  public EmbeddableElementImpl(Documentation documentation, Doc doc)
+  public EmbeddableElementImpl(Documentation documentation, ProgramElementDoc doc)
   {
     this.doc = doc;
     setDocumentation(documentation);
@@ -168,7 +168,7 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
    *
    * @generated NOT
    */
-  public Doc getDoc()
+  public ProgramElementDoc getDoc()
   {
     return doc;
   }
@@ -304,7 +304,22 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
     File target;
     if (pathURI.hasRelativePath())
     {
-      target = new File(pathURI.resolve(URI.createFileURI(getDoc().position().file().toString())).toFileString());
+      // Test if the relative path navigates outside of the package structure.
+      String name = getDoc().containingPackage().name();
+      URI packageURI = URI.createURI("package:/" + name.replace('.', '/'));
+      URI pathPackageURI = pathURI.resolve(packageURI);
+      if ("..".equals(pathPackageURI.segment(0)))
+      {
+        // If so, use the actual absolute location of the path.
+        target = new File(pathURI.resolve(URI.createFileURI(getDoc().position().file().toString())).toFileString());
+      }
+      else
+      {
+        // If not, use the actual location of the path as it will be when copied to the output folder.
+        File targetOutput = getDocumentation().getOutputFile();
+        URI targetDoc = URI.createFileURI(targetOutput.toString());
+        target = new File(pathURI.resolve(targetDoc).toFileString());
+      }
     }
     else
     {

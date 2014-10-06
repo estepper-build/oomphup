@@ -10,6 +10,7 @@ import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
@@ -221,9 +222,18 @@ public class ImageFactoryImpl extends FactoryImpl implements ImageFactory
   @Override
   public void generate(PrintWriter out, Embedding embedder) throws IOException
   {
-    String src = rewritePath(getFile().toString(), embedder);
+    String file = getFile().toString();
+    String src = rewritePath(file, embedder);
 
-    out.write("<img src=\"");
+    if ("svg".equals(URI.createFileURI(file).fileExtension()))
+    {
+      out.write("<embed src=\"");
+    }
+    else
+    {
+      out.write("<img src=\"");
+    }
+
     out.write(src);
     out.write("\">" + NL);
   }

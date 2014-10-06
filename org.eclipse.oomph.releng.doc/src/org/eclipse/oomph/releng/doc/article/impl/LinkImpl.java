@@ -10,15 +10,15 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
 import org.eclipse.oomph.releng.doc.article.Link;
 import org.eclipse.oomph.releng.doc.article.LinkTarget;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import com.sun.javadoc.SeeTag;
 
@@ -41,7 +41,7 @@ public class LinkImpl extends BodyElementImpl implements Link
   /**
    * The cached value of the '{@link #getTarget() <em>Target</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc
    * -->
-   * 
+   *
    * @see #getTarget()
    * @generated
    * @ordered
@@ -91,7 +91,9 @@ public class LinkImpl extends BodyElementImpl implements Link
     LinkTarget oldTarget = target;
     target = newTarget;
     if (eNotificationRequired())
+    {
       eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.LINK__TARGET, oldTarget, target));
+    }
   }
 
   /**

@@ -64,6 +64,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.Tag;
 
@@ -351,6 +352,13 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * @generated
    */
   private EDataType docEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType programElementDocEDataType = null;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1410,6 +1418,16 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getProgramElementDoc()
+  {
+    return programElementDocEDataType;
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -1598,6 +1616,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     rootDocEDataType = createEDataType(ROOT_DOC);
     fileEDataType = createEDataType(FILE);
     docEDataType = createEDataType(DOC);
+    programElementDocEDataType = createEDataType(PROGRAM_ELEMENT_DOC);
     tagEDataType = createEDataType(TAG);
   }
 
@@ -1746,8 +1765,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEReference(getEmbeddableElement_Documentation(), getDocumentation(), getDocumentation_EmbeddableElements(), "documentation", null, 1, 1,
         EmbeddableElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
         IS_ORDERED);
-    initEAttribute(getEmbeddableElement_Doc(), getDoc(), "doc", null, 1, 1, EmbeddableElement.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE,
-        !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEmbeddableElement_Doc(), getProgramElementDoc(), "doc", null, 1, 1, EmbeddableElement.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE,
+        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(externalTargetEClass, ExternalTarget.class, "ExternalTarget", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getExternalTarget_Url(), ecorePackage.getEString(), "url", null, 0, 1, ExternalTarget.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
@@ -1883,6 +1902,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEDataType(rootDocEDataType, RootDoc.class, "RootDoc", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(fileEDataType, File.class, "File", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(docEDataType, Doc.class, "Doc", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(programElementDocEDataType, ProgramElementDoc.class, "ProgramElementDoc", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tagEDataType, Tag.class, "Tag", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

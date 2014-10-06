@@ -33,7 +33,7 @@ public interface Toc extends BodyElement
    * If the meaning of the '<em>Levels</em>' attribute isn't clear, there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * 
+   *
    * @return the value of the '<em>Levels</em>' attribute.
    * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getToc_Levels()
    * @model default="-1" changeable="false" derived="true"

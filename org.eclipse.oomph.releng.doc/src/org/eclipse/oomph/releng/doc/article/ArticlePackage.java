@@ -2554,13 +2554,23 @@ public interface ArticlePackage extends EPackage
   int DOC = 44;
 
   /**
+   * The meta object id for the '<em>Program Element Doc</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see com.sun.javadoc.ProgramElementDoc
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getProgramElementDoc()
+   * @generated
+   */
+  int PROGRAM_ELEMENT_DOC = 45;
+
+  /**
    * The meta object id for the '<em>Tag</em>' data type.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see com.sun.javadoc.Tag
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 45;
+  int TAG = 46;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -3663,6 +3673,17 @@ public interface ArticlePackage extends EPackage
   EDataType getDoc();
 
   /**
+   * Returns the meta object for data type '{@link com.sun.javadoc.ProgramElementDoc <em>Program Element Doc</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Program Element Doc</em>'.
+   * @see com.sun.javadoc.ProgramElementDoc
+   * @model instanceClass="com.sun.javadoc.ProgramElementDoc" serializeable="false"
+   * @generated
+   */
+  EDataType getProgramElementDoc();
+
+  /**
    * Returns the meta object for data type '{@link com.sun.javadoc.Tag <em>Tag</em>}'.
    * <!-- begin-user-doc --> <!--
    * end-user-doc -->
@@ -4601,6 +4622,16 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EDataType DOC = eINSTANCE.getDoc();
+
+    /**
+     * The meta object literal for the '<em>Program Element Doc</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.sun.javadoc.ProgramElementDoc
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getProgramElementDoc()
+     * @generated
+     */
+    EDataType PROGRAM_ELEMENT_DOC = eINSTANCE.getProgramElementDoc();
 
     /**
      * The meta object literal for the '<em>Tag</em>' data type.

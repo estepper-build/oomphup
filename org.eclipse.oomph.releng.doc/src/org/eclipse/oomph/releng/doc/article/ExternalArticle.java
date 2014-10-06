@@ -19,7 +19,7 @@ package org.eclipse.oomph.releng.doc.article;
  * <li>{@link org.eclipse.oomph.releng.doc.article.ExternalArticle#getUrl <em>Url</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getExternalArticle()
  * @model
  * @generated

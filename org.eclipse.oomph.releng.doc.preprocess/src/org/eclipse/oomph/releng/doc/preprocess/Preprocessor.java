@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
@@ -40,9 +41,12 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.provider.DiagnosticDecorator;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -52,6 +56,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
@@ -93,6 +98,9 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -150,9 +158,11 @@ public class Preprocessor
     FAMILY_MODEL_LOAD = loadFamily;
   }
 
-  private static final IWorkbench workbench = PlatformUI.getWorkbench();
+  private static final IWorkbench WORKBENCH = PlatformUI.getWorkbench();
 
-  private static final Display display = PlatformUI.getWorkbench().getDisplay();
+  private static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
+
+  private static final Preferences PROJECT_PREFERENCES_NODE = Platform.getPreferencesService().getRootNode().node("project");
 
   private final ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
 
@@ -175,6 +185,8 @@ public class Preprocessor
 
   private URI imageFolder;
 
+  private Preferences preferences;
+
   private String bundleID;
 
   private JAbstractType type;
@@ -194,6 +206,8 @@ public class Preprocessor
   private ViewerFilter[] filters;
 
   private Map<String, String> replacements = new HashMap<String, String>();
+
+  private URI projectURI;
 
   public Preprocessor()
   {
@@ -230,27 +244,59 @@ public class Preprocessor
 
   public void visitProject(File project)
   {
-    URI projectURI = URI.createFileURI(project.getPath());
-    bundleID = projectURI.lastSegment();
+    bundleID = URI.createFileURI(project.getPath()).lastSegment();
+    preferences = PROJECT_PREFERENCES_NODE.node(bundleID).node("org.eclipse.oomph.releng.doc.preprocess");
+
+    projectURI = URI.createPlatformResourceURI(bundleID, true);
     imageFolder = projectURI.appendSegment("images").appendSegment("trees");
-    visit(project);
+    projectURI = projectURI.appendSegment("");
+
+    try
+    {
+      URIConverter uriConverter = resourceSet.getURIConverter();
+      for (String key : preferences.keys())
+      {
+        URI targetURI = URI.createURI(key).resolve(projectURI);
+        try
+        {
+          if (uriConverter.exists(targetURI, null))
+          {
+            uriConverter.delete(targetURI, null);
+          }
+        }
+        catch (Exception ex)
+        {
+          ex.printStackTrace();
+        }
+
+        preferences.remove(key);
+      }
+
+      visit(workspaceRoot.getProject(bundleID));
+
+      preferences.flush();
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+    }
   }
 
-  private void visit(File file)
+  private void visit(IContainer container) throws CoreException
   {
-    if (file.isDirectory())
+    for (IResource resource : container.members())
     {
-      for (File child : file.listFiles())
+      if (resource.getType() == IResource.FOLDER)
       {
-        visit(child);
+        visit((IFolder)resource);
       }
-    }
-    else if (file.isFile())
-    {
-      URI uri = URI.createFileURI(file.getPath());
-      if ("java".equals(uri.fileExtension()))
+      else
       {
-        visitJava(uri);
+        URI uri = URI.createPlatformResourceURI(resource.getFullPath().toString());
+        if ("java".equals(uri.fileExtension()))
+        {
+          visitJava(uri);
+        }
       }
     }
   }
@@ -372,7 +418,7 @@ public class Preprocessor
           {
             try
             {
-              visitTree(treeNodes, treeNodeMap, getTreeViewer(display.getFocusControl()));
+              visitTree(treeNodes, treeNodeMap, getTreeViewer(DISPLAY.getFocusControl()));
             }
             catch (PartInitException ex)
             {
@@ -396,7 +442,7 @@ public class Preprocessor
                   {
                     ContentOutline contentOutline = (ContentOutline)getWorkbenchPage().showView("org.eclipse.ui.views.ContentOutline");
                     contentOutline.setFocus();
-                    visitTree(treeNodes, treeNodeMap, getTreeViewer(display.getFocusControl()));
+                    visitTree(treeNodes, treeNodeMap, getTreeViewer(DISPLAY.getFocusControl()));
                   }
                   else if (viewer instanceof TreeViewer)
                   {
@@ -508,6 +554,7 @@ public class Preprocessor
             }
           }
 
+          recordSynthesizedTargetURI();
           treeResource.save(null);
         }
       }
@@ -525,6 +572,7 @@ public class Preprocessor
       URI sourceURI = resolve(uri, URI.createURI(source));
 
       Resource resource = resourceSet.getResource(sourceURI, true);
+      recordSynthesizedTargetURI();
       resource.save(resourceSet.getURIConverter().createOutputStream(targetURI), null);
     }
   }
@@ -589,7 +637,7 @@ public class Preprocessor
         IViewPart view = getView(sourceURI);
         if (view != null)
         {
-          Control partControl = getPartControl(display.getFocusControl());
+          Control partControl = getPartControl(DISPLAY.getFocusControl());
           capture(partControl);
         }
         else
@@ -640,13 +688,13 @@ public class Preprocessor
                   {
                     if (event.widget instanceof Shell)
                     {
-                      display.removeListener(SWT.Skin, this);
+                      DISPLAY.removeListener(SWT.Skin, this);
                       Shell shell = (Shell)event.widget;
                       updateDialogSettings(shell);
 
                       busyWait();
 
-                      display.asyncExec(new Runnable()
+                      DISPLAY.asyncExec(new Runnable()
                       {
                         public void run()
                         {
@@ -674,10 +722,39 @@ public class Preprocessor
                       if (outputVisited)
                       {
                         combo.setText(type);
+                        int count = 0;
+                        for (String item : combo.getItems())
+                        {
+                          if (type.equals(item))
+                          {
+                            combo.select(count);
+                            break;
+                          }
+                          ++count;
+                        }
+                        Event event = new Event();
+                        event.widget = combo;
+                        event.type = SWT.Selection;
+                        combo.notifyListeners(SWT.Selection, event);
                       }
                       else
                       {
-                        combo.setText(targetURI.toFileString());
+                        IFile file = workspaceRoot.getFile(new Path(targetURI.toPlatformString(true)));
+                        if (file.exists())
+                        {
+                          try
+                          {
+                            file.refreshLocal(1, new NullProgressMonitor());
+                          }
+                          catch (CoreException ex)
+                          {
+                            ex.printStackTrace();
+                          }
+                        }
+
+                        String location = file.getLocation().toOSString();
+                        combo.setText(location);
+                        outputVisited = true;
                       }
 
                       return;
@@ -693,18 +770,20 @@ public class Preprocessor
                     }
                   }
                 };
-                display.addListener(SWT.Skin, displayListener);
+                DISPLAY.addListener(SWT.Skin, displayListener);
 
                 action.run();
-              }
-              catch (Exception exception)
-              {
 
+                recordSynthesizedTargetURI();
+              }
+              catch (Exception ex)
+              {
+                ex.printStackTrace();
               }
             }
             else
             {
-              Control partControl = getPartControl(display.getFocusControl());
+              Control partControl = getPartControl(DISPLAY.getFocusControl());
               capture(partControl);
             }
 
@@ -812,7 +891,7 @@ public class Preprocessor
       }
     }
 
-    return workbench.getEditorRegistry().getDefaultEditor(sourceURI.lastSegment()).getId();
+    return WORKBENCH.getEditorRegistry().getDefaultEditor(sourceURI.lastSegment()).getId();
   }
 
   private void visit(Control control)
@@ -1094,6 +1173,8 @@ public class Preprocessor
         imageOutputStream.write(bytes);
         imageOutputStream.close();
 
+        recordSynthesizedURI(imageURI);
+
         result = imageURI.deresolve(targetURI, true, true, false).toString();
         imageURLs.put(image, result);
       }
@@ -1111,6 +1192,26 @@ public class Preprocessor
     Image image = AccessUtil.captureControl(control);
     saveImage(image);
     image.dispose();
+  }
+
+  private void recordSynthesizedTargetURI()
+  {
+    recordSynthesizedURI(targetURI);
+  }
+
+  private void recordSynthesizedURI(URI uri)
+  {
+    URI relativeURI = uri.deresolve(projectURI, true, true, false);
+    preferences.put(relativeURI.toString(), "");
+
+    try
+    {
+      preferences.flush();
+    }
+    catch (BackingStoreException ex)
+    {
+      ex.printStackTrace();
+    }
   }
 
   private void saveImage(Image image) throws IOException
@@ -1146,6 +1247,7 @@ public class Preprocessor
       type = SWT.IMAGE_PNG;
     }
 
+    recordSynthesizedTargetURI();
     imageLoader.save(out, type);
     out.close();
   }
@@ -1231,6 +1333,10 @@ public class Preprocessor
             projectDescription.setLocation(new Path(locationURI.toFileString()));
             project.create(projectDescription, null);
             project.open(null);
+          }
+          else
+          {
+            project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
           }
         }
         catch (IOException ex)
@@ -1331,11 +1437,11 @@ public class Preprocessor
             Job.getJobManager().join(FAMILY_MODEL_LOAD, new NullProgressMonitor());
 
             // Wait 2 more seconds.
-            display.asyncExec(new Runnable()
+            DISPLAY.asyncExec(new Runnable()
             {
               public void run()
               {
-                display.timerExec(2000, new Runnable()
+                DISPLAY.timerExec(2000, new Runnable()
                 {
                   public void run()
                   {
@@ -1353,11 +1459,11 @@ public class Preprocessor
         }
       }.start();
 
-      while (!display.isDisposed() && !done.get())
+      while (!DISPLAY.isDisposed() && !done.get())
       {
-        if (!display.readAndDispatch())
+        if (!DISPLAY.readAndDispatch())
         {
-          display.sleep();
+          DISPLAY.sleep();
         }
       }
     }
@@ -1365,7 +1471,7 @@ public class Preprocessor
 
   private IWorkbenchPage getWorkbenchPage()
   {
-    IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+    IWorkbenchWindow workbenchWindow = WORKBENCH.getActiveWorkbenchWindow();
     return workbenchWindow.getActivePage();
   }
 

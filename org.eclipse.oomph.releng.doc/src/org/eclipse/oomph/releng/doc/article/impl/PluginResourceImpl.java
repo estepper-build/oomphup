@@ -10,13 +10,13 @@
  */
 package org.eclipse.oomph.releng.doc.article.impl;
 
-import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.PluginResource;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.impl.DocumentationImpl.TocWriter;
 import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
+
+import org.eclipse.emf.ecore.EClass;
 
 import com.sun.javadoc.ClassDoc;
 
@@ -28,7 +28,7 @@ import java.io.IOException;
  * -->
  * <p>
  * </p>
- * 
+ *
  * @generated
  */
 public class PluginResourceImpl extends ExternalArticleImpl implements PluginResource
