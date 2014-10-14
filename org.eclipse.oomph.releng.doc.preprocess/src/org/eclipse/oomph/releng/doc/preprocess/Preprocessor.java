@@ -26,7 +26,6 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
@@ -44,16 +43,11 @@ import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -68,9 +62,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerColumn;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osgi.service.resolver.BundleDescription;
-import org.eclipse.pde.core.plugin.IPluginModelBase;
-import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
@@ -177,7 +168,7 @@ public class Preprocessor
 
   private final IWorkspace workspace = workspaceRoot.getWorkspace();
 
-  private final ResourceSet resourceSet = createResourceSet();
+  private final ResourceSet resourceSet = EarlyStartup.createResourceSet();
 
   private final Map<Object, String> imageURLs = new HashMap<Object, String>();
 
@@ -211,8 +202,6 @@ public class Preprocessor
 
   public Preprocessor()
   {
-    computeTargetPlatform();
-
     for (Map.Entry<Object, Object> entry : System.getProperties().entrySet())
     {
       Object key = entry.getKey();
@@ -1250,107 +1239,6 @@ public class Preprocessor
     recordSynthesizedTargetURI();
     imageLoader.save(out, type);
     out.close();
-  }
-
-  private ResourceSet createResourceSet()
-  {
-    try
-    {
-      Class<?> setupUtilClass = CommonPlugin.loadClass("org.eclipse.oomph.setup.core", "org.eclipse.oomph.setup.internal.core.util.SetupUtil");
-      Method createResourceSetMethod = setupUtilClass.getMethod("createResourceSet");
-      return (ResourceSet)createResourceSetMethod.invoke(null);
-    }
-    catch (Exception ex)
-    {
-      return new ResourceSetImpl();
-    }
-  }
-
-  private void computeTargetPlatform()
-  {
-    IWorkspaceDescription description = workspace.getDescription();
-    description.setAutoBuilding(false);
-
-    try
-    {
-      workspace.setDescription(description);
-      workspace.run(new IWorkspaceRunnable()
-      {
-        public void run(IProgressMonitor monitor) throws CoreException
-        {
-          Map<URI, URI> uriMap = resourceSet.getURIConverter().getURIMap();
-
-          IPluginModelBase[] activeModels = PluginRegistry.getActiveModels(false);
-          for (IPluginModelBase activeModel : activeModels)
-          {
-            BundleDescription bundleDescription = activeModel.getBundleDescription();
-            String symbolicName = bundleDescription.getSymbolicName();
-            String installLocation = activeModel.getInstallLocation();
-            if (installLocation != null)
-            {
-              URI locationURI = createProject(installLocation);
-              uriMap.put(URI.createPlatformResourceURI(symbolicName, false).appendSegment(""), locationURI);
-            }
-          }
-
-          String preprocessorWorkspace = System.getProperty("preprocessor.workspace");
-          if (preprocessorWorkspace != null)
-          {
-            for (String installLocation : preprocessorWorkspace.split(";"))
-            {
-              createProject(installLocation);
-            }
-          }
-        }
-      }, null);
-    }
-    catch (CoreException ex2)
-    {
-      ex2.printStackTrace();
-    }
-  }
-
-  private URI createProject(String installLocation)
-  {
-    URI locationURI = URI.createFileURI(installLocation);
-    File locationFile = new File(installLocation);
-    if (locationFile.isFile())
-    {
-      locationURI = URI.createURI("archive:" + locationURI + "!/");
-    }
-    else
-    {
-      URI projectURI = locationURI.appendSegment(".project");
-      locationURI = locationURI.appendSegment("");
-      if (resourceSet.getURIConverter().exists(projectURI, null))
-      {
-        try
-        {
-          IProjectDescription projectDescription = workspace.loadProjectDescription(resourceSet.getURIConverter().createInputStream(projectURI));
-          IProject project = workspaceRoot.getProject(projectDescription.getName());
-          if (!project.exists())
-          {
-            projectDescription.setLocation(new Path(locationURI.toFileString()));
-            project.create(projectDescription, null);
-            project.open(null);
-          }
-          else
-          {
-            project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-          }
-        }
-        catch (IOException ex)
-        {
-          ex.printStackTrace();
-        }
-        catch (CoreException ex)
-        {
-          ex.printStackTrace();
-        }
-      }
-    }
-
-    return locationURI;
   }
 
   private static IEditorInput getEditorInput(final URI uri)

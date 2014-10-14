@@ -56,7 +56,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -703,7 +705,8 @@ public class DocDash extends ViewPart
         "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7");
     wc.setAttribute("org.eclipse.jdt.launching.PROGRAM_ARGUMENTS", "-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog");
     wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.pde.ui.workbenchClasspathProvider");
-    wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Dpreprocessor.projects=" + preprocessorProjects);
+    wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Doomph.setup.skip=true -Dpreprocessor.projects="
+        + preprocessorProjects);
     wc.setAttribute("pde.version", "3.3");
     wc.setAttribute("product", "org.eclipse.sdk.ide");
     wc.setAttribute("show_selected_only", false);
@@ -713,6 +716,10 @@ public class DocDash extends ViewPart
     wc.setAttribute("useDefaultConfig", true);
     wc.setAttribute("useDefaultConfigArea", true);
     wc.setAttribute("useProduct", true);
+
+    Map<String, String> environmentVariables = new LinkedHashMap<String, String>();
+    environmentVariables.put("preprocessor.workspace.project.locations", "${workspace_project_locations}");
+    wc.setAttribute("org.eclipse.debug.core.environmentVariables", environmentVariables);
   }
 
   /**
