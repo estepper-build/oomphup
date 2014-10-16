@@ -64,9 +64,11 @@ import org.eclipse.jface.viewers.ViewerColumn;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -343,10 +345,40 @@ public class Preprocessor
         @Override
         protected boolean visit(JAbstractType abstractType)
         {
-          type = abstractType;
-          visitComment(abstractType.getComment());
-          type = abstractType;
-          return super.visit(abstractType);
+          JAbstractType parentType = type;
+          try
+          {
+            type = abstractType;
+            visitComment(abstractType.getComment());
+            return super.visit(abstractType);
+          }
+          finally
+          {
+            type = parentType;
+          }
+        }
+
+        @Override
+        protected void visitChildren(JNode node)
+        {
+          if (node instanceof JAbstractType)
+          {
+            JAbstractType abstractType = (JAbstractType)node;
+            JAbstractType parentType = type;
+            try
+            {
+              type = abstractType;
+              super.visitChildren(node);
+            }
+            finally
+            {
+              type = parentType;
+            }
+          }
+          else
+          {
+            super.visitChildren(node);
+          }
         }
       }.start(compilationUnit);
     }
@@ -1205,8 +1237,23 @@ public class Preprocessor
 
   private void saveImage(Image image) throws IOException
   {
+    ImageData imageData = image.getImageData();
+    Rectangle bounds = getBounds(imageData);
+    if (bounds.x != 0 || bounds.y != 0 || bounds.width != imageData.width || bounds.height != imageData.height)
+    {
+      Image clippedImage = new Image(image.getDevice(), bounds.width, bounds.height);
+      GC gc = new GC(clippedImage);
+      gc.setBackground(image.getDevice().getSystemColor(SWT.COLOR_WHITE));
+      gc.setForeground(image.getDevice().getSystemColor(SWT.COLOR_WHITE));
+      gc.drawRectangle(0, 0, bounds.width, bounds.height);
+      gc.drawImage(image, bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height);
+      gc.dispose();
+      imageData = clippedImage.getImageData();
+      clippedImage.dispose();
+    }
+
     ImageLoader imageLoader = new ImageLoader();
-    imageLoader.data = new ImageData[] { image.getImageData() };
+    imageLoader.data = new ImageData[] { imageData };
     OutputStream out = resourceSet.getURIConverter().createOutputStream(targetURI);
 
     int type;
@@ -1239,6 +1286,56 @@ public class Preprocessor
     recordSynthesizedTargetURI();
     imageLoader.save(out, type);
     out.close();
+  }
+
+  private Rectangle getBounds(ImageData imageData)
+  {
+    int left = imageData.width / 2;
+    int right = imageData.width - left;
+    int top = imageData.height / 2;
+    int bottom = imageData.height - top;
+    int type = imageData.getTransparencyType();
+    if (type == SWT.TRANSPARENCY_ALPHA)
+    {
+      for (int i = 0; i < imageData.height; ++i)
+      {
+        for (int j = 0; j < imageData.width; ++j)
+        {
+          int alpha = imageData.getAlpha(j, i);
+          boolean transparent = alpha < 10 ? true : false;
+          if (!transparent)
+          {
+            left = Math.min(left, j);
+            right = Math.max(right, j);
+            top = Math.min(top, i);
+            bottom = Math.max(bottom, i);
+          }
+          System.err.print(transparent ? "0" : "1");
+        }
+
+        System.err.println();
+      }
+    }
+    else if (type == SWT.TRANSPARENCY_MASK || type == SWT.TRANSPARENCY_PIXEL)
+    {
+      ImageData transparencyMask = imageData.getTransparencyMask();
+      for (int i = 0; i < transparencyMask.height; ++i)
+      {
+        for (int j = 0; j < transparencyMask.width; ++j)
+        {
+          boolean alpha = transparencyMask.getPixel(j, i) == 0 ? false : true;
+          System.err.print(alpha ? "0" : "1");
+        }
+
+        System.err.println();
+      }
+    }
+    else
+    {
+      return new Rectangle(0, 0, imageData.width, imageData.height);
+    }
+
+    return new Rectangle(left, top, right - left + 1, bottom - top + 1);
   }
 
   private static IEditorInput getEditorInput(final URI uri)
@@ -1465,7 +1562,9 @@ public class Preprocessor
 
     try
     {
-      return CommonPlugin.loadClass(pluginID, className);
+      Class<?> loadedClass = CommonPlugin.loadClass(pluginID, className);
+      loadedClass.getMethods();
+      return loadedClass;
     }
     catch (ClassNotFoundException ex)
     {
