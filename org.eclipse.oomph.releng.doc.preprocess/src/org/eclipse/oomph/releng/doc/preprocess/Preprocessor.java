@@ -1,10 +1,12 @@
 package org.eclipse.oomph.releng.doc.preprocess;
 
 import org.eclipse.oomph.internal.ui.AccessUtil;
+import org.eclipse.oomph.internal.ui.WorkUnit;
 import org.eclipse.oomph.releng.doc.article.ArticleFactory;
 import org.eclipse.oomph.releng.doc.article.ArticlePlugin;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
+import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.ReflectUtil;
 import org.eclipse.oomph.util.StringUtil;
 
@@ -64,11 +66,9 @@ import org.eclipse.jface.viewers.ViewerColumn;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -640,13 +640,26 @@ public class Preprocessor
         try
         {
           Class<?> invocationClass = loadClass(typeName);
-          Method method = invocationClass.getMethod(methodName);
+          final Method method = invocationClass.getMethod(methodName);
 
           EarlyStartup.closeShell = false;
           Image image = (Image)method.invoke(null);
           saveImage(image);
           image.dispose();
           EarlyStartup.closeShell = true;
+
+          // new WorkUnit.Void<Exception>(Exception.class)
+          // {
+          // @Override
+          // protected void doProcess() throws Exception
+          // {
+          // EarlyStartup.closeShell = false;
+          // Image image = (Image)method.invoke(null);
+          // saveImage(image);
+          // image.dispose();
+          // EarlyStartup.closeShell = true;
+          // }
+          // }.process();
         }
         catch (Exception ex)
         {
@@ -658,8 +671,15 @@ public class Preprocessor
         IViewPart view = getView(sourceURI);
         if (view != null)
         {
-          Control partControl = getPartControl(DISPLAY.getFocusControl());
-          capture(partControl);
+          new WorkUnit.Void<IOException>(IOException.class)
+          {
+            @Override
+            protected void doProcess() throws IOException
+            {
+              Control partControl = getPartControl(DISPLAY.getFocusControl());
+              capture(partControl);
+            }
+          }.process();
         }
         else
         {
@@ -669,133 +689,140 @@ public class Preprocessor
             URI queryURI = URI.createURI(sourceURI.query());
             if ("diagram".equals(queryURI.query()))
             {
-              Class<?> saveAsImageFileAction = loadClass("org.eclipse.sirius.diagram.ui:org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
+              final Class<?> saveAsImageFileAction = loadClass("org.eclipse.sirius.diagram.ui:org.eclipse.sirius.diagram.ui.tools.internal.actions.SaveAsImageFileAction");
               try
               {
-                IAction action = (IAction)saveAsImageFileAction.newInstance();
-                EarlyStartup.closeShell = false;
-
-                final Listener displayListener = new Listener()
+                new WorkUnit.Void<Exception>(Exception.class)
                 {
-                  private boolean outputVisited;
-
-                  private String type;
-
+                  @Override
+                  protected void doProcess() throws Exception
                   {
-                    String fileExtension = targetURI.fileExtension();
-                    if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
-                    {
-                      type = "JPG";
-                    }
-                    else if ("svg".equalsIgnoreCase(fileExtension))
-                    {
-                      type = "SVG";
-                    }
-                    else if ("bmp".equalsIgnoreCase(fileExtension))
-                    {
-                      type = "BMP";
-                    }
-                    else if ("gif".equalsIgnoreCase(fileExtension))
-                    {
-                      type = "GIF";
-                    }
-                    else
-                    {
-                      type = "PNG";
-                    }
-                  }
+                    IAction action = (IAction)saveAsImageFileAction.newInstance();
+                    EarlyStartup.closeShell = false;
 
-                  public void handleEvent(final Event event)
-                  {
-                    if (event.widget instanceof Shell)
+                    final Listener displayListener = new Listener()
                     {
-                      DISPLAY.removeListener(SWT.Skin, this);
-                      Shell shell = (Shell)event.widget;
-                      updateDialogSettings(shell);
+                      private boolean outputVisited;
 
-                      busyWait();
+                      private String type;
 
-                      DISPLAY.asyncExec(new Runnable()
                       {
-                        public void run()
+                        String fileExtension = targetURI.fileExtension();
+                        if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
                         {
-                          try
-                          {
-                            ReflectUtil.getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
-                            // editor.dispose();
-                            EarlyStartup.closeShell = true;
-                          }
-                          catch (Exception ex)
-                          {
-                            ex.printStackTrace();
-                          }
+                          type = "JPG";
                         }
-                      });
-
-                    }
-                  }
-
-                  private void updateDialogSettings(Control control)
-                  {
-                    if (control instanceof Combo)
-                    {
-                      Combo combo = (Combo)control;
-                      if (outputVisited)
-                      {
-                        combo.setText(type);
-                        int count = 0;
-                        for (String item : combo.getItems())
+                        else if ("svg".equalsIgnoreCase(fileExtension))
                         {
-                          if (type.equals(item))
-                          {
-                            combo.select(count);
-                            break;
-                          }
-                          ++count;
+                          type = "SVG";
                         }
-                        Event event = new Event();
-                        event.widget = combo;
-                        event.type = SWT.Selection;
-                        combo.notifyListeners(SWT.Selection, event);
-                      }
-                      else
-                      {
-                        IFile file = workspaceRoot.getFile(new Path(targetURI.toPlatformString(true)));
-                        if (file.exists())
+                        else if ("bmp".equalsIgnoreCase(fileExtension))
                         {
-                          try
-                          {
-                            file.refreshLocal(1, new NullProgressMonitor());
-                          }
-                          catch (CoreException ex)
-                          {
-                            ex.printStackTrace();
-                          }
+                          type = "BMP";
                         }
-
-                        String location = file.getLocation().toOSString();
-                        combo.setText(location);
-                        outputVisited = true;
+                        else if ("gif".equalsIgnoreCase(fileExtension))
+                        {
+                          type = "GIF";
+                        }
+                        else
+                        {
+                          type = "PNG";
+                        }
                       }
 
-                      return;
-                    }
-
-                    if (control instanceof Composite)
-                    {
-                      Composite composite = (Composite)control;
-                      for (Control child : composite.getChildren())
+                      public void handleEvent(final Event event)
                       {
-                        updateDialogSettings(child);
+                        if (event.widget instanceof Shell)
+                        {
+                          DISPLAY.removeListener(SWT.Skin, this);
+                          Shell shell = (Shell)event.widget;
+                          updateDialogSettings(shell);
+
+                          busyWait();
+
+                          DISPLAY.asyncExec(new Runnable()
+                          {
+                            public void run()
+                            {
+                              try
+                              {
+                                ReflectUtil.getMethod(Dialog.class, "okPressed").invoke(event.widget.getData());
+                                // editor.dispose();
+                                EarlyStartup.closeShell = true;
+                              }
+                              catch (Exception ex)
+                              {
+                                ex.printStackTrace();
+                              }
+                            }
+                          });
+
+                        }
                       }
-                    }
+
+                      private void updateDialogSettings(Control control)
+                      {
+                        if (control instanceof Combo)
+                        {
+                          Combo combo = (Combo)control;
+                          if (outputVisited)
+                          {
+                            combo.setText(type);
+                            int count = 0;
+                            for (String item : combo.getItems())
+                            {
+                              if (type.equals(item))
+                              {
+                                combo.select(count);
+                                break;
+                              }
+                              ++count;
+                            }
+                            Event event = new Event();
+                            event.widget = combo;
+                            event.type = SWT.Selection;
+                            combo.notifyListeners(SWT.Selection, event);
+                          }
+                          else
+                          {
+                            IFile file = workspaceRoot.getFile(new Path(targetURI.toPlatformString(true)));
+                            if (file.exists())
+                            {
+                              try
+                              {
+                                file.refreshLocal(1, new NullProgressMonitor());
+                              }
+                              catch (CoreException ex)
+                              {
+                                ex.printStackTrace();
+                              }
+                            }
+
+                            String location = file.getLocation().toOSString();
+                            combo.setText(location);
+                            outputVisited = true;
+                          }
+
+                          return;
+                        }
+
+                        if (control instanceof Composite)
+                        {
+                          Composite composite = (Composite)control;
+                          for (Control child : composite.getChildren())
+                          {
+                            updateDialogSettings(child);
+                          }
+                        }
+                      }
+                    };
+                    DISPLAY.addListener(SWT.Skin, displayListener);
+
+                    action.run();
+
+                    recordSynthesizedTargetURI();
                   }
-                };
-                DISPLAY.addListener(SWT.Skin, displayListener);
-
-                action.run();
-
-                recordSynthesizedTargetURI();
+                }.process();
               }
               catch (Exception ex)
               {
@@ -804,11 +831,16 @@ public class Preprocessor
             }
             else
             {
-              Control partControl = getPartControl(DISPLAY.getFocusControl());
-              capture(partControl);
+              new WorkUnit.Void<IOException>(IOException.class)
+              {
+                @Override
+                protected void doProcess() throws IOException
+                {
+                  Control partControl = getPartControl(DISPLAY.getFocusControl());
+                  capture(partControl);
+                }
+              }.process();
             }
-
-            // editor.dispose();
           }
         }
       }
@@ -834,10 +866,7 @@ public class Preprocessor
           }
         }
 
-        IViewPart view = getWorkbenchPage().showView(sourceURI.authority());
-        busyWait();
-        view.setFocus();
-        return view;
+        return getView(sourceURI.authority());
       }
       catch (PartInitException ex)
       {
@@ -846,6 +875,20 @@ public class Preprocessor
     }
 
     return null;
+  }
+
+  private IViewPart getView(final String viewID) throws PartInitException
+  {
+    return new WorkUnit<IViewPart, PartInitException>(PartInitException.class)
+    {
+      @Override
+      protected IViewPart doExecute() throws PartInitException
+      {
+        IViewPart view = getWorkbenchPage().showView(viewID);
+        view.setFocus();
+        return view;
+      }
+    }.execute();
   }
 
   private IEditorPart getEditor(URI sourceURI)
@@ -862,8 +905,6 @@ public class Preprocessor
           String editorID = getEditorID(sourceURI);
           try
           {
-            IEditorPart editor = getWorkbenchPage().openEditor(editorInput, editorID);
-
             String editorQuery = queryURI.query();
             if (editorQuery != null)
             {
@@ -881,8 +922,7 @@ public class Preprocessor
               }
             }
 
-            busyWait();
-            editor.setFocus();
+            IEditorPart editor = getEditor(editorInput, editorID);
             return editor;
           }
           catch (PartInitException ex)
@@ -894,6 +934,20 @@ public class Preprocessor
     }
 
     return null;
+  }
+
+  private IEditorPart getEditor(final IEditorInput editorInput, final String editorID) throws PartInitException
+  {
+    return new WorkUnit<IEditorPart, PartInitException>(PartInitException.class)
+    {
+      @Override
+      protected IEditorPart doExecute() throws PartInitException
+      {
+        IEditorPart editor = getWorkbenchPage().openEditor(editorInput, editorID);
+        editor.setFocus();
+        return editor;
+      }
+    }.execute();
   }
 
   private String getEditorID(URI sourceURI)
@@ -1210,7 +1264,7 @@ public class Preprocessor
 
   private void capture(Control control) throws IOException
   {
-    Image image = AccessUtil.captureControl(control);
+    Image image = AccessUtil.capture(control);
     saveImage(image);
     image.dispose();
   }
@@ -1235,107 +1289,20 @@ public class Preprocessor
     }
   }
 
-  private void saveImage(Image image) throws IOException
+  private void saveImage(final Image image) throws IOException
   {
-    ImageData imageData = image.getImageData();
-    Rectangle bounds = getBounds(imageData);
-    if (bounds.x != 0 || bounds.y != 0 || bounds.width != imageData.width || bounds.height != imageData.height)
-    {
-      Image clippedImage = new Image(image.getDevice(), bounds.width, bounds.height);
-      GC gc = new GC(clippedImage);
-      gc.setBackground(image.getDevice().getSystemColor(SWT.COLOR_WHITE));
-      gc.setForeground(image.getDevice().getSystemColor(SWT.COLOR_WHITE));
-      gc.drawRectangle(0, 0, bounds.width, bounds.height);
-      gc.drawImage(image, bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height);
-      gc.dispose();
-      imageData = clippedImage.getImageData();
-      clippedImage.dispose();
-    }
+    OutputStream out = null;
 
-    ImageLoader imageLoader = new ImageLoader();
-    imageLoader.data = new ImageData[] { imageData };
-    OutputStream out = resourceSet.getURIConverter().createOutputStream(targetURI);
-
-    int type;
-    String fileExtension = targetURI.fileExtension();
-    if ("jpg".equalsIgnoreCase(fileExtension) || "jpeg".equalsIgnoreCase(fileExtension))
+    try
     {
-      type = SWT.IMAGE_JPEG;
+      out = resourceSet.getURIConverter().createOutputStream(targetURI);
+      AccessUtil.save(out, image, AccessUtil.getImageType(targetURI.fileExtension()));
+      recordSynthesizedTargetURI();
     }
-    else if ("ico".equalsIgnoreCase(fileExtension))
+    finally
     {
-      type = SWT.IMAGE_ICO;
+      IOUtil.close(out);
     }
-    else if ("bmp".equalsIgnoreCase(fileExtension))
-    {
-      type = SWT.IMAGE_BMP;
-    }
-    else if ("gif".equalsIgnoreCase(fileExtension))
-    {
-      type = SWT.IMAGE_GIF;
-    }
-    else if ("tiff".equalsIgnoreCase(fileExtension))
-    {
-      type = SWT.IMAGE_TIFF;
-    }
-    else
-    {
-      type = SWT.IMAGE_PNG;
-    }
-
-    recordSynthesizedTargetURI();
-    imageLoader.save(out, type);
-    out.close();
-  }
-
-  private Rectangle getBounds(ImageData imageData)
-  {
-    int left = imageData.width / 2;
-    int right = imageData.width - left;
-    int top = imageData.height / 2;
-    int bottom = imageData.height - top;
-    int type = imageData.getTransparencyType();
-    if (type == SWT.TRANSPARENCY_ALPHA)
-    {
-      for (int i = 0; i < imageData.height; ++i)
-      {
-        for (int j = 0; j < imageData.width; ++j)
-        {
-          int alpha = imageData.getAlpha(j, i);
-          boolean transparent = alpha < 10 ? true : false;
-          if (!transparent)
-          {
-            left = Math.min(left, j);
-            right = Math.max(right, j);
-            top = Math.min(top, i);
-            bottom = Math.max(bottom, i);
-          }
-          System.err.print(transparent ? "0" : "1");
-        }
-
-        System.err.println();
-      }
-    }
-    else if (type == SWT.TRANSPARENCY_MASK || type == SWT.TRANSPARENCY_PIXEL)
-    {
-      ImageData transparencyMask = imageData.getTransparencyMask();
-      for (int i = 0; i < transparencyMask.height; ++i)
-      {
-        for (int j = 0; j < transparencyMask.width; ++j)
-        {
-          boolean alpha = transparencyMask.getPixel(j, i) == 0 ? false : true;
-          System.err.print(alpha ? "0" : "1");
-        }
-
-        System.err.println();
-      }
-    }
-    else
-    {
-      return new Rectangle(0, 0, imageData.width, imageData.height);
-    }
-
-    return new Rectangle(left, top, right - left + 1, bottom - top + 1);
   }
 
   private static IEditorInput getEditorInput(final URI uri)
@@ -1456,8 +1423,15 @@ public class Preprocessor
 
   private IWorkbenchPage getWorkbenchPage()
   {
-    IWorkbenchWindow workbenchWindow = WORKBENCH.getActiveWorkbenchWindow();
-    return workbenchWindow.getActivePage();
+    return new WorkUnit<IWorkbenchPage, RuntimeException>()
+    {
+      @Override
+      protected IWorkbenchPage doExecute() throws RuntimeException
+      {
+        IWorkbenchWindow workbenchWindow = WORKBENCH.getActiveWorkbenchWindow();
+        return workbenchWindow.getActivePage();
+      }
+    }.execute();
   }
 
   private Control getPartControl(Control control)

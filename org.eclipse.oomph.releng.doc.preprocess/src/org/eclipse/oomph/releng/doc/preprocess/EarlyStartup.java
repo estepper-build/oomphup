@@ -1,5 +1,7 @@
 package org.eclipse.oomph.releng.doc.preprocess;
 
+import org.eclipse.oomph.ui.UIUtil;
+
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
@@ -31,7 +33,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.UIJob;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,10 +117,10 @@ public class EarlyStartup implements IStartup
               protected IStatus run(IProgressMonitor monitor)
               {
                 final Preprocessor preprocessApplication = new Preprocessor();
-                Job job = new UIJob(workbench.getDisplay(), "Preprocessing")
+                Job job = new Job("Preprocessing")
                 {
                   @Override
-                  public IStatus runInUIThread(IProgressMonitor monitor)
+                  public IStatus run(IProgressMonitor monitor)
                   {
                     String projects = System.getProperty("preprocessor.projects");
                     if (projects != null)
@@ -143,7 +144,13 @@ public class EarlyStartup implements IStartup
                       }
                     }
 
-                    display.removeListener(SWT.Skin, displayListener);
+                    UIUtil.asyncExec(new Runnable()
+                    {
+                      public void run()
+                      {
+                        display.removeListener(SWT.Skin, displayListener);
+                      }
+                    });
                     System.exit(0);
                     return Status.OK_STATUS;
                   }
