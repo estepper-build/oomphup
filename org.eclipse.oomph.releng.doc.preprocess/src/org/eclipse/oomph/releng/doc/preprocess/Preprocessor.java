@@ -6,6 +6,7 @@ import org.eclipse.oomph.releng.doc.article.ArticleFactory;
 import org.eclipse.oomph.releng.doc.article.ArticlePlugin;
 import org.eclipse.oomph.releng.doc.article.TreeNode;
 import org.eclipse.oomph.releng.doc.article.TreeNodeProperty;
+import org.eclipse.oomph.ui.UIUtil;
 import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.ReflectUtil;
 import org.eclipse.oomph.util.StringUtil;
@@ -130,6 +131,8 @@ public class Preprocessor
 
   private static Pattern XML_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+xml[ \t]+([^ \t\n\r]+)[ \t]+([^\n\r]+?)[ \t]*[\r\n]", Pattern.MULTILINE);
 
+  private static Pattern IMAGE_SNIPPET_PATTERN = Pattern.compile("@[ \t]*snippet[ \t]+image[ \t]+([^ \t\n\r]+)[ \t]*[\r\n]", Pattern.MULTILINE);
+
   private static final Object BLANK = ArticlePlugin.INSTANCE.getImage("full/obj16/Blank");
 
   private static final Object FAMILY_MODEL_LOAD;
@@ -172,7 +175,48 @@ public class Preprocessor
 
   private final ResourceSet resourceSet = EarlyStartup.createResourceSet();
 
-  private final Map<Object, String> imageURLs = new HashMap<Object, String>();
+  private final Map<Object, URI> imageURLs = new HashMap<Object, URI>()
+  {
+    final class Key
+    {
+      private final Object key;
+
+      private Key(Object key)
+      {
+        this.key = key;
+      }
+
+      @Override
+      public int hashCode()
+      {
+        return key instanceof Image ? System.identityHashCode(key) : key.hashCode();
+      }
+
+      @Override
+      public boolean equals(Object that)
+      {
+        Key thatKey = (Key)that;
+        return thatKey.key == key || key.equals(thatKey.key);
+      }
+    }
+
+    private Object key(final Object key)
+    {
+      return new Key(key);
+    }
+
+    @Override
+    public URI get(Object key)
+    {
+      return super.get(key(key));
+    }
+
+    @Override
+    public URI put(Object key, URI value)
+    {
+      return super.put(key(key), value);
+    }
+  };
 
   private final Set<Class> pruned = new HashSet<Class>();
 
@@ -202,6 +246,8 @@ public class Preprocessor
 
   private URI projectURI;
 
+  private URI javaURI;
+
   public Preprocessor()
   {
     for (Map.Entry<Object, Object> entry : System.getProperties().entrySet())
@@ -216,15 +262,7 @@ public class Preprocessor
           File file = new File(value);
           if (file.isAbsolute() && file.exists())
           {
-            try
-            {
-              File x = file.getCanonicalFile();
-              value = URI.createURI(".").resolve(URI.createFileURI(value)).trimSegments(2).toFileString();
-            }
-            catch (IOException ex)
-            {
-              ex.printStackTrace();
-            }
+            value = URI.createURI(".").resolve(URI.createFileURI(value)).trimSegments(2).toFileString();
           }
 
           replacements.put(value, "${" + property.substring(PREPROCESSOR_REPLACEMENT.length()) + "}");
@@ -283,7 +321,7 @@ public class Preprocessor
       }
       else
       {
-        URI uri = URI.createPlatformResourceURI(resource.getFullPath().toString());
+        URI uri = URI.createPlatformResourceURI(resource.getFullPath().toString(), true);
         if ("java".equals(uri.fileExtension()))
         {
           visitJava(uri);
@@ -294,6 +332,8 @@ public class Preprocessor
 
   private void visitJava(final URI uri)
   {
+    javaURI = uri;
+
     try
     {
       String contents = getContents(uri, "UTF-8");
@@ -309,9 +349,10 @@ public class Preprocessor
           {
             try
             {
-              visitXMLs(uri, comment);
               visitImages(uri, comment);
-              visitTrees(uri, comment);
+              visitImageSnippets(uri, comment);
+              visitXMLSnippets(uri, comment);
+              visitTreeSnippets(uri, comment);
             }
             catch (IOException ex)
             {
@@ -388,7 +429,7 @@ public class Preprocessor
     }
   }
 
-  private void visitTrees(URI uri, String contents) throws IOException
+  private void visitTreeSnippets(URI uri, String contents) throws IOException
   {
     for (Matcher matcher = TREE_SNIPPET_PATTERN.matcher(contents); matcher.find();)
     {
@@ -582,7 +623,7 @@ public class Preprocessor
     }
   }
 
-  private void visitXMLs(URI uri, String contents) throws IOException
+  private void visitXMLSnippets(URI uri, String contents) throws IOException
   {
     for (Matcher matcher = XML_SNIPPET_PATTERN.matcher(contents); matcher.find();)
     {
@@ -607,6 +648,51 @@ public class Preprocessor
     }
 
     return type.getQualifiedName();
+  }
+
+  private void visitImageSnippets(URI uri, String contents) throws IOException
+  {
+    for (Matcher matcher = IMAGE_SNIPPET_PATTERN.matcher(contents); matcher.find();)
+    {
+      String target = matcher.group(1);
+      targetURI = resolve(uri, URI.createURI(target));
+
+      try
+      {
+        Class<?> invocationClass = loadClass(getQualifiedName(type));
+        final Method method = invocationClass.getMethod(this.method.getName());
+
+        EarlyStartup.closeShell = false;
+        Image[] images = method.getReturnType().isArray() ? (Image[])method.invoke(null) : new Image[] { (Image)method.invoke(null) };
+        EarlyStartup.closeShell = true;
+
+        List<String> imageURLs = new ArrayList<String>();
+        int index = 0;
+        for (Image image : images)
+        {
+          URI imageURL = getImageURL(image);
+          if (imageURL == null)
+          {
+            imageURLs.add("");
+          }
+          else
+          {
+            imageURLs.add(imageURL.toString());
+            image.dispose();
+          }
+        }
+
+        OutputStream out = resourceSet.getURIConverter().createOutputStream(targetURI);
+        IOUtil.writeLines(out, "UTF-8", imageURLs);
+        out.close();
+
+        recordSynthesizedTargetURI();
+      }
+      catch (Exception ex)
+      {
+        ex.printStackTrace();
+      }
+    }
   }
 
   private void visitImages(URI uri, String contents) throws IOException
@@ -647,19 +733,6 @@ public class Preprocessor
           saveImage(image);
           image.dispose();
           EarlyStartup.closeShell = true;
-
-          // new WorkUnit.Void<Exception>(Exception.class)
-          // {
-          // @Override
-          // protected void doProcess() throws Exception
-          // {
-          // EarlyStartup.closeShell = false;
-          // Image image = (Image)method.invoke(null);
-          // saveImage(image);
-          // image.dispose();
-          // EarlyStartup.closeShell = true;
-          // }
-          // }.process();
         }
         catch (Exception ex)
         {
@@ -1009,7 +1082,11 @@ public class Preprocessor
     treeNodes.put(object, treeNode);
 
     Object image = labelProvider.getImage(object);
-    treeNode.setImage(getImageURL(image));
+    URI imageURL = getImageURL(image);
+    if (imageURL != null)
+    {
+      treeNode.setImage(imageURL.toString());
+    }
 
     String text = labelProvider.getText(object);
     treeNode.setLabel(filter(text));
@@ -1024,7 +1101,7 @@ public class Preprocessor
         String category = entry.getKey();
         TreeNodeProperty treeNodeProperty = ArticleFactory.eINSTANCE.createTreeNodeProperty();
         treeNodeProperty.setKey(category == null ? "Other" : category);
-        treeNodeProperty.setValueImage(getImageURL(BLANK));
+        treeNodeProperty.setValueImage(getImageURL(BLANK).toString());
         treeNodeProperty.getProperties().addAll(entry.getValue());
         properties.add(treeNodeProperty);
       }
@@ -1065,7 +1142,7 @@ public class Preprocessor
 
   private TreeNode createEllipses()
   {
-    String imageURL = getImageURL(ArticlePlugin.INSTANCE.getImage("ellipses"));
+    String imageURL = getImageURL(ArticlePlugin.INSTANCE.getImage("ellipses")).toString();
     TreeNode treeNode = ArticleFactory.eINSTANCE.createTreeNode();
     treeNode.setImage(imageURL);
     treeNode.setLabel("...");
@@ -1108,7 +1185,7 @@ public class Preprocessor
           propertyValueText = labelProvider.getText(propertyValue);
         }
 
-        treeNodeProperty.setValueImage(getImageURL(propertyValueImage));
+        treeNodeProperty.setValueImage(getImageURL(propertyValueImage).toString());
         treeNodeProperty.setValue(filter(propertyValueText));
 
         properties.add(treeNodeProperty);
@@ -1144,7 +1221,7 @@ public class Preprocessor
         propertyValueImage = BLANK;
       }
 
-      treeNodeProperty.setValueImage(getImageURL(propertyValueImage));
+      treeNodeProperty.setValueImage(getImageURL(propertyValueImage).toString());
 
       String propertyValueText = entry.getValueAsString();
       treeNodeProperty.setValue(filter(propertyValueText));
@@ -1217,14 +1294,14 @@ public class Preprocessor
     return value == null ? null : DiagnosticDecorator.escapeContent(value);
   }
 
-  private String getImageURL(Object image)
+  private URI getImageURL(final Object image)
   {
     if (image == null)
     {
       return null;
     }
 
-    String result = imageURLs.get(image);
+    URI result = imageURLs.get(image);
     if (result == null)
     {
       Image swtImage = ExtendedImageRegistry.INSTANCE.getImage(image);
@@ -1250,8 +1327,9 @@ public class Preprocessor
 
         recordSynthesizedURI(imageURI);
 
-        result = imageURI.deresolve(targetURI, true, true, false).toString();
-        imageURLs.put(image, result);
+        imageURLs.put(image, imageURI);
+
+        result = imageURI;
       }
       catch (Exception ex)
       {
@@ -1259,7 +1337,7 @@ public class Preprocessor
       }
     }
 
-    return result;
+    return result.deresolve(targetURI, true, true, false);
   }
 
   private void capture(Control control) throws IOException
@@ -1291,13 +1369,31 @@ public class Preprocessor
 
   private void saveImage(final Image image) throws IOException
   {
-    OutputStream out = null;
+    saveImage(targetURI, image);
+  }
 
+  private void saveImage(URI uri, Image image) throws IOException
+  {
+    OutputStream out = null;
     try
     {
-      out = resourceSet.getURIConverter().createOutputStream(targetURI);
-      AccessUtil.save(out, image, AccessUtil.getImageType(targetURI.fileExtension()));
-      recordSynthesizedTargetURI();
+      out = resourceSet.getURIConverter().createOutputStream(uri);
+      if (image.isDisposed())
+      {
+        URI imageURI = imageURLs.get(image);
+        ImageLoader imageLoader = new ImageLoader();
+        ImageData[] imageData = imageLoader.load(resourceSet.getURIConverter().createInputStream(imageURI));
+        image = new Image(UIUtil.getDisplay(), imageData[0]);
+        AccessUtil.save(out, image, AccessUtil.getImageType(uri.fileExtension()));
+        image.dispose();
+      }
+      else
+      {
+        AccessUtil.save(out, image, AccessUtil.getImageType(uri.fileExtension()));
+        imageURLs.put(image, uri);
+      }
+
+      recordSynthesizedURI(uri);
     }
     finally
     {
