@@ -898,6 +898,56 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
   }
 
   /**
+   * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.ImageFormatter} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected ImageFormatterItemProvider imageFormatterItemProvider;
+
+  /**
+   * This creates an adapter for a {@link org.eclipse.oomph.releng.doc.article.ImageFormatter}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createImageFormatterAdapter()
+  {
+    if (imageFormatterItemProvider == null)
+    {
+      imageFormatterItemProvider = new ImageFormatterItemProvider(this);
+    }
+
+    return imageFormatterItemProvider;
+  }
+
+  /**
+   * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.Description} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected DescriptionItemProvider descriptionItemProvider;
+
+  /**
+   * This creates an adapter for a {@link org.eclipse.oomph.releng.doc.article.Description}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createDescriptionAdapter()
+  {
+    if (descriptionItemProvider == null)
+    {
+      descriptionItemProvider = new DescriptionItemProvider(this);
+    }
+
+    return descriptionItemProvider;
+  }
+
+  /**
    * This returns the root adapter factory that contains this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1139,6 +1189,14 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
     if (selectionItemProvider != null)
     {
       selectionItemProvider.dispose();
+    }
+    if (imageFormatterItemProvider != null)
+    {
+      imageFormatterItemProvider.dispose();
+    }
+    if (descriptionItemProvider != null)
+    {
+      descriptionItemProvider.dispose();
     }
   }
 

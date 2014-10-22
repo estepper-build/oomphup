@@ -71,6 +71,14 @@ public interface Formatter extends EObject
 
   String[] getSnippetHtml(Embedding embedder, String embeddingID, String title);
 
+  String[] getCalloutGroupHtml(Embedding embedder, String embeddingID, String title);
+
+  String[] getCalloutItemHtml(Embedding embedder, String embeddingID, int index);
+
+  String getCalloutImageHtml(Embedding embedder, String embeddingID, int index);
+
+  String[] getCalloutBodyHtml(Embedding embedder, String embeddingID, int index);
+
   String getCalloutMarker();
 
 } // Formatter

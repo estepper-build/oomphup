@@ -18,6 +18,7 @@ import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.Diagram;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.Embedding;
@@ -27,6 +28,7 @@ import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
+import org.eclipse.oomph.releng.doc.article.ImageFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -169,6 +171,10 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createKey();
       case ArticlePackage.SELECTION:
         return createSelection();
+      case ArticlePackage.IMAGE_FORMATTER:
+        return createImageFormatter();
+      case ArticlePackage.DESCRIPTION:
+        return createDescription();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -541,6 +547,28 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     SelectionImpl selection = new SelectionImpl();
     return selection;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ImageFormatter createImageFormatter()
+  {
+    ImageFormatterImpl imageFormatter = new ImageFormatterImpl();
+    return imageFormatter;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Description createDescription()
+  {
+    DescriptionImpl description = new DescriptionImpl();
+    return description;
   }
 
   /**

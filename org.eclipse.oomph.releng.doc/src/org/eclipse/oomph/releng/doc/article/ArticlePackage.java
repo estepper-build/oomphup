@@ -930,12 +930,21 @@ public interface ArticlePackage extends EPackage
   int SNIPPET__TITLE_IMAGE = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 3;
 
   /**
+   * The feature id for the '<em><b>Description</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SNIPPET__DESCRIPTION = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 4;
+
+  /**
    * The number of structural features of the '<em>Snippet</em>' class.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SNIPPET_FEATURE_COUNT = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 4;
+  int SNIPPET_FEATURE_COUNT = EMBEDDABLE_ELEMENT_FEATURE_COUNT + 5;
 
   /**
    * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.BodyElementImpl <em>Body Element</em>}' class.
@@ -2527,13 +2536,87 @@ public interface ArticlePackage extends EPackage
   int SELECTION_FEATURE_COUNT = BODY_ELEMENT_FEATURE_COUNT + 0;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.ImageFormatterImpl <em>Image Formatter</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.ImageFormatterImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getImageFormatter()
+   * @generated
+   */
+  int IMAGE_FORMATTER = 42;
+
+  /**
+   * The feature id for the '<em><b>Snippet</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FORMATTER__SNIPPET = FORMATTER__SNIPPET;
+
+  /**
+   * The feature id for the '<em><b>File</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FORMATTER__FILE = FORMATTER_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Image Formatter</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IMAGE_FORMATTER_FEATURE_COUNT = FORMATTER_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.DescriptionImpl <em>Description</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.DescriptionImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDescription()
+   * @generated
+   */
+  int DESCRIPTION = 43;
+
+  /**
+   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DESCRIPTION__ELEMENTS = BODY_ELEMENT_CONTAINER__ELEMENTS;
+
+  /**
+   * The feature id for the '<em><b>Snippet</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DESCRIPTION__SNIPPET = BODY_ELEMENT_CONTAINER_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Description</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DESCRIPTION_FEATURE_COUNT = BODY_ELEMENT_CONTAINER_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '<em>Root Doc</em>' data type.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see com.sun.javadoc.RootDoc
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 42;
+  int ROOT_DOC = 44;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2542,7 +2625,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 43;
+  int FILE = 45;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2551,7 +2634,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 44;
+  int DOC = 46;
 
   /**
    * The meta object id for the '<em>Program Element Doc</em>' data type.
@@ -2561,7 +2644,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getProgramElementDoc()
    * @generated
    */
-  int PROGRAM_ELEMENT_DOC = 45;
+  int PROGRAM_ELEMENT_DOC = 47;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2570,7 +2653,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 46;
+  int TAG = 48;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -2791,6 +2874,17 @@ public interface ArticlePackage extends EPackage
    * @generated
    */
   EAttribute getSnippet_TitleImage();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.oomph.releng.doc.article.Snippet#getDescription <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Description</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Snippet#getDescription()
+   * @see #getSnippet()
+   * @generated
+   */
+  EReference getSnippet_Description();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Diagram <em>Diagram</em>}'. <!--
@@ -3640,6 +3734,48 @@ public interface ArticlePackage extends EPackage
   EClass getSelection();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.ImageFormatter <em>Image Formatter</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Image Formatter</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.ImageFormatter
+   * @generated
+   */
+  EClass getImageFormatter();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.ImageFormatter#getFile <em>File</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.ImageFormatter#getFile()
+   * @see #getImageFormatter()
+   * @generated
+   */
+  EAttribute getImageFormatter_File();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Description <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Description</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Description
+   * @generated
+   */
+  EClass getDescription();
+
+  /**
+   * Returns the meta object for the container reference '{@link org.eclipse.oomph.releng.doc.article.Description#getSnippet <em>Snippet</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the container reference '<em>Snippet</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.Description#getSnippet()
+   * @see #getDescription()
+   * @generated
+   */
+  EReference getDescription_Snippet();
+
+  /**
    * Returns the meta object for data type '{@link com.sun.javadoc.RootDoc <em>Root Doc</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3888,6 +4024,14 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EAttribute SNIPPET__TITLE_IMAGE = eINSTANCE.getSnippet_TitleImage();
+
+    /**
+     * The meta object literal for the '<em><b>Description</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference SNIPPET__DESCRIPTION = eINSTANCE.getSnippet_Description();
 
     /**
      * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.DiagramImpl <em>Diagram</em>}' class.
@@ -4595,6 +4739,42 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EClass SELECTION = eINSTANCE.getSelection();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.ImageFormatterImpl <em>Image Formatter</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.ImageFormatterImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getImageFormatter()
+     * @generated
+     */
+    EClass IMAGE_FORMATTER = eINSTANCE.getImageFormatter();
+
+    /**
+     * The meta object literal for the '<em><b>File</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute IMAGE_FORMATTER__FILE = eINSTANCE.getImageFormatter_File();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.DescriptionImpl <em>Description</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.DescriptionImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDescription()
+     * @generated
+     */
+    EClass DESCRIPTION = eINSTANCE.getDescription();
+
+    /**
+     * The meta object literal for the '<em><b>Snippet</b></em>' container reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference DESCRIPTION__SNIPPET = eINSTANCE.getDescription_Snippet();
 
     /**
      * The meta object literal for the '<em>Root Doc</em>' data type.

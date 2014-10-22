@@ -299,6 +299,24 @@ public interface ArticleFactory extends EFactory
   Selection createSelection();
 
   /**
+   * Returns a new object of class '<em>Image Formatter</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Image Formatter</em>'.
+   * @generated
+   */
+  ImageFormatter createImageFormatter();
+
+  /**
+   * Returns a new object of class '<em>Description</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Description</em>'.
+   * @generated
+   */
+  Description createDescription();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return the package supported by this factory.

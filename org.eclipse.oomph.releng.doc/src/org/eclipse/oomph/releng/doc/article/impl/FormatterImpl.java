@@ -280,4 +280,23 @@ public abstract class FormatterImpl extends EObjectImpl implements Formatter
     }
   }
 
+  public String[] getCalloutGroupHtml(Embedding embedder, String embeddingID, String title)
+  {
+    return new String[] { "<p>", "</p>" };
+  }
+
+  public String[] getCalloutItemHtml(Embedding embedder, String embeddingID, int index)
+  {
+    return new String[] { "<div style=\"margin-left:24px;\">", "</div>" };
+  }
+
+  public String getCalloutImageHtml(Embedding embedder, String embeddingID, int index)
+  {
+    return null;
+  }
+
+  public String[] getCalloutBodyHtml(Embedding embedder, String embeddingID, int index)
+  {
+    return null;
+  }
 } // FormatterImpl

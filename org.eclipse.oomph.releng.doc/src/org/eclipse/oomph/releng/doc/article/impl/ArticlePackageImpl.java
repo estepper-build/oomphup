@@ -20,6 +20,7 @@ import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.Diagram;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
@@ -33,6 +34,7 @@ import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
+import org.eclipse.oomph.releng.doc.article.ImageFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -336,6 +338,20 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   private EClass selectionEClass = null;
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass imageFormatterEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass descriptionEClass = null;
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -619,6 +635,16 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   public EAttribute getSnippet_TitleImage()
   {
     return (EAttribute)snippetEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getSnippet_Description()
+  {
+    return (EReference)snippetEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1391,6 +1417,46 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getImageFormatter()
+  {
+    return imageFormatterEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getImageFormatter_File()
+  {
+    return (EAttribute)imageFormatterEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDescription()
+  {
+    return descriptionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getDescription_Snippet()
+  {
+    return (EReference)descriptionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -1492,6 +1558,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     createEReference(snippetEClass, SNIPPET__FORMATTER);
     createEAttribute(snippetEClass, SNIPPET__TITLE);
     createEAttribute(snippetEClass, SNIPPET__TITLE_IMAGE);
+    createEReference(snippetEClass, SNIPPET__DESCRIPTION);
 
     diagramEClass = createEClass(DIAGRAM);
 
@@ -1612,6 +1679,12 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
 
     selectionEClass = createEClass(SELECTION);
 
+    imageFormatterEClass = createEClass(IMAGE_FORMATTER);
+    createEAttribute(imageFormatterEClass, IMAGE_FORMATTER__FILE);
+
+    descriptionEClass = createEClass(DESCRIPTION);
+    createEReference(descriptionEClass, DESCRIPTION__SNIPPET);
+
     // Create data types
     rootDocEDataType = createEDataType(ROOT_DOC);
     fileEDataType = createEDataType(FILE);
@@ -1684,6 +1757,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     imageFactoryEClass.getESuperTypes().add(getFactory());
     keyEClass.getESuperTypes().add(getBodyElement());
     selectionEClass.getESuperTypes().add(getBodyElement());
+    imageFormatterEClass.getESuperTypes().add(getFormatter());
+    descriptionEClass.getESuperTypes().add(getBodyElementContainer());
 
     // Initialize classes and features; add operations and parameters
     initEClass(documentationEClass, Documentation.class, "Documentation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1727,6 +1802,8 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getSnippet_TitleImage(), ecorePackage.getEString(), "titleImage", null, 0, 1, Snippet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getSnippet_Description(), getDescription(), getDescription_Snippet(), "description", null, 0, 1, Snippet.class, !IS_TRANSIENT, !IS_VOLATILE,
+        IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(diagramEClass, Diagram.class, "Diagram", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1897,6 +1974,14 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEClass(keyEClass, Key.class, "Key", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(selectionEClass, Selection.class, "Selection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(imageFormatterEClass, ImageFormatter.class, "ImageFormatter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getImageFormatter_File(), getFile(), "file", null, 0, 1, ImageFormatter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+        !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(descriptionEClass, Description.class, "Description", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getDescription_Snippet(), getSnippet(), getSnippet_Description(), "snippet", null, 1, 1, Description.class, !IS_TRANSIENT, !IS_VOLATILE,
+        IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize data types
     initEDataType(rootDocEDataType, RootDoc.class, "RootDoc", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

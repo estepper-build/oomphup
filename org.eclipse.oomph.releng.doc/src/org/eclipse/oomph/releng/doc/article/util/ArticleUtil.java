@@ -19,6 +19,7 @@ import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.SourcePosition;
 import com.sun.javadoc.Tag;
 
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -205,6 +207,43 @@ public final class ArticleUtil
     {
       close(reader);
     }
+  }
+
+  public static List<String> readLines(File file, String charsetName)
+  {
+    List<String> lines = new ArrayList<String>();
+
+    if (file.exists())
+    {
+      InputStream in = null;
+      Reader reader = null;
+      BufferedReader bufferedReader = null;
+
+      try
+      {
+        in = new FileInputStream(file);
+        reader = charsetName == null ? new InputStreamReader(in) : new InputStreamReader(in, charsetName);
+        bufferedReader = new BufferedReader(reader);
+
+        String line;
+        while ((line = bufferedReader.readLine()) != null)
+        {
+          lines.add(line);
+        }
+      }
+      catch (IOException ex)
+      {
+        throw new RuntimeException(ex);
+      }
+      finally
+      {
+        close(bufferedReader);
+        close(reader);
+        close(in);
+      }
+    }
+
+    return lines;
   }
 
   public static void copyFile(File source, File target)

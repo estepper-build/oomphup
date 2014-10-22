@@ -20,6 +20,7 @@ import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.Diagram;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
@@ -33,6 +34,7 @@ import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
+import org.eclipse.oomph.releng.doc.article.ImageFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -886,6 +888,34 @@ public class ArticleSwitch<T>
         }
         return result;
       }
+      case ArticlePackage.IMAGE_FORMATTER:
+      {
+        ImageFormatter imageFormatter = (ImageFormatter)theEObject;
+        T result = caseImageFormatter(imageFormatter);
+        if (result == null)
+        {
+          result = caseFormatter(imageFormatter);
+        }
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
+      case ArticlePackage.DESCRIPTION:
+      {
+        Description description = (Description)theEObject;
+        T result = caseDescription(description);
+        if (result == null)
+        {
+          result = caseBodyElementContainer(description);
+        }
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
       default:
         return defaultCase(theEObject);
     }
@@ -1491,6 +1521,38 @@ public class ArticleSwitch<T>
    * @generated
    */
   public T caseSelection(Selection object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Image Formatter</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Image Formatter</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseImageFormatter(ImageFormatter object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Description</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Description</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDescription(Description object)
   {
     return null;
   }

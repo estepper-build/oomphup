@@ -13,6 +13,7 @@
     <genDataTypes ecoreDataType="article.ecore#//RootDoc"/>
     <genDataTypes ecoreDataType="article.ecore#//File"/>
     <genDataTypes ecoreDataType="article.ecore#//Doc"/>
+    <genDataTypes ecoreDataType="article.ecore#//ProgramElementDoc"/>
     <genDataTypes ecoreDataType="article.ecore#//Tag"/>
     <genClasses ecoreClass="article.ecore#//Documentation">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference article.ecore#//Documentation/context"/>
@@ -38,6 +39,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference article.ecore#//Snippet/formatter"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//Snippet/title"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//Snippet/titleImage"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference article.ecore#//Snippet/description"/>
     </genClasses>
     <genClasses ecoreClass="article.ecore#//Diagram"/>
     <genClasses ecoreClass="article.ecore#//Factory"/>
@@ -152,5 +154,11 @@
     </genClasses>
     <genClasses ecoreClass="article.ecore#//Key"/>
     <genClasses ecoreClass="article.ecore#//Selection"/>
+    <genClasses ecoreClass="article.ecore#//ImageFormatter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute article.ecore#//ImageFormatter/file"/>
+    </genClasses>
+    <genClasses ecoreClass="article.ecore#//Description">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference article.ecore#//Description/snippet"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

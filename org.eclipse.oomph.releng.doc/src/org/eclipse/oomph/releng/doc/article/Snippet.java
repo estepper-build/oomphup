@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getFormatter <em>Formatter</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitle <em>Title</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getTitleImage <em>Title Image</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.Snippet#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *
@@ -127,5 +128,33 @@ public interface Snippet extends EmbeddableElement
    * @generated
    */
   void setTitleImage(String value);
+
+  /**
+   * Returns the value of the '<em><b>Description</b></em>' containment reference.
+   * It is bidirectional and its opposite is '{@link org.eclipse.oomph.releng.doc.article.Description#getSnippet <em>Snippet</em>}'.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Description</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Description</em>' containment reference.
+   * @see #setDescription(Description)
+   * @see org.eclipse.oomph.releng.doc.article.ArticlePackage#getSnippet_Description()
+   * @see org.eclipse.oomph.releng.doc.article.Description#getSnippet
+   * @model opposite="snippet" containment="true"
+   * @generated
+   */
+  Description getDescription();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.releng.doc.article.Snippet#getDescription <em>Description</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Description</em>' containment reference.
+   * @see #getDescription()
+   * @generated
+   */
+  void setDescription(Description value);
 
 } // Snippet

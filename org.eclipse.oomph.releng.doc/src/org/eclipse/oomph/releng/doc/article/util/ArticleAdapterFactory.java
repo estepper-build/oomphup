@@ -20,6 +20,7 @@ import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Category;
 import org.eclipse.oomph.releng.doc.article.Chapter;
 import org.eclipse.oomph.releng.doc.article.Context;
+import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.Diagram;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
@@ -33,6 +34,7 @@ import org.eclipse.oomph.releng.doc.article.Formatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
+import org.eclipse.oomph.releng.doc.article.ImageFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaElement;
 import org.eclipse.oomph.releng.doc.article.JavaFormatter;
 import org.eclipse.oomph.releng.doc.article.JavaPackage;
@@ -367,6 +369,18 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseSelection(Selection object)
     {
       return createSelectionAdapter();
+    }
+
+    @Override
+    public Adapter caseImageFormatter(ImageFormatter object)
+    {
+      return createImageFormatterAdapter();
+    }
+
+    @Override
+    public Adapter caseDescription(Description object)
+    {
+      return createDescriptionAdapter();
     }
 
     @Override
@@ -948,6 +962,36 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createSelectionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.ImageFormatter <em>Image Formatter</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.ImageFormatter
+   * @generated
+   */
+  public Adapter createImageFormatterAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.Description <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.Description
+   * @generated
+   */
+  public Adapter createDescriptionAdapter()
   {
     return null;
   }

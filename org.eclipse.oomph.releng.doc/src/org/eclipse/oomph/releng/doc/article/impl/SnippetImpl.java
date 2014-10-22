@@ -14,9 +14,11 @@ import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
 import org.eclipse.oomph.releng.doc.article.Callout;
+import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.ImageFormatter;
 import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
@@ -55,6 +57,7 @@ import java.util.regex.Pattern;
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getFormatter <em>Formatter</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getTitle <em>Title</em>}</li>
  *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getTitleImage <em>Title Image</em>}</li>
+ *   <li>{@link org.eclipse.oomph.releng.doc.article.impl.SnippetImpl#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *
@@ -127,6 +130,16 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
   protected String titleImage = TITLE_IMAGE_EDEFAULT;
 
   /**
+   * The cached value of the '{@link #getDescription() <em>Description</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDescription()
+   * @generated
+   * @ordered
+   */
+  protected Description description;
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -139,6 +152,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
   {
     super(documentation, doc);
     initFormatter(doc);
+    initDescription(doc);
     initCallouts(doc);
 
     setTitle(ArticleUtil.getTagText(doc, "@title"));
@@ -176,11 +190,24 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       {
         new TreeFormatterImpl(this, args);
       }
+      else if (format.equals(ImageFormatter.TYPE))
+      {
+        new ImageFormatterImpl(this, args);
+      }
     }
 
     if (getFormatter() == null)
     {
       new JavaFormatterImpl(this);
+    }
+  }
+
+  private void initDescription(Doc doc)
+  {
+    Tag description = ArticleUtil.getTag(doc, "@description");
+    if (description != null)
+    {
+      new DescriptionImpl(this, description);
     }
   }
 
@@ -328,6 +355,70 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Description getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetDescription(Description newDescription, NotificationChain msgs)
+  {
+    Description oldDescription = description;
+    description = newDescription;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ArticlePackage.SNIPPET__DESCRIPTION, oldDescription, newDescription);
+      if (msgs == null)
+      {
+        msgs = notification;
+      }
+      else
+      {
+        msgs.add(notification);
+      }
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDescription(Description newDescription)
+  {
+    if (newDescription != description)
+    {
+      NotificationChain msgs = null;
+      if (description != null)
+      {
+        msgs = ((InternalEObject)description).eInverseRemove(this, ArticlePackage.DESCRIPTION__SNIPPET, Description.class, msgs);
+      }
+      if (newDescription != null)
+      {
+        msgs = ((InternalEObject)newDescription).eInverseAdd(this, ArticlePackage.DESCRIPTION__SNIPPET, Description.class, msgs);
+      }
+      msgs = basicSetDescription(newDescription, msgs);
+      if (msgs != null)
+      {
+        msgs.dispatch();
+      }
+    }
+    else if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, ArticlePackage.SNIPPET__DESCRIPTION, newDescription, newDescription));
+    }
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -345,6 +436,12 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
           msgs = ((InternalEObject)formatter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ArticlePackage.SNIPPET__FORMATTER, null, msgs);
         }
         return basicSetFormatter((Formatter)otherEnd, msgs);
+      case ArticlePackage.SNIPPET__DESCRIPTION:
+        if (description != null)
+        {
+          msgs = ((InternalEObject)description).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ArticlePackage.SNIPPET__DESCRIPTION, null, msgs);
+        }
+        return basicSetDescription((Description)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -362,6 +459,8 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         return ((InternalEList<?>)getCallouts()).basicRemove(otherEnd, msgs);
       case ArticlePackage.SNIPPET__FORMATTER:
         return basicSetFormatter(null, msgs);
+      case ArticlePackage.SNIPPET__DESCRIPTION:
+        return basicSetDescription(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -383,6 +482,8 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         return getTitle();
       case ArticlePackage.SNIPPET__TITLE_IMAGE:
         return getTitleImage();
+      case ArticlePackage.SNIPPET__DESCRIPTION:
+        return getDescription();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -410,6 +511,9 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       case ArticlePackage.SNIPPET__TITLE_IMAGE:
         setTitleImage((String)newValue);
         return;
+      case ArticlePackage.SNIPPET__DESCRIPTION:
+        setDescription((Description)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -435,6 +539,9 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       case ArticlePackage.SNIPPET__TITLE_IMAGE:
         setTitleImage(TITLE_IMAGE_EDEFAULT);
         return;
+      case ArticlePackage.SNIPPET__DESCRIPTION:
+        setDescription((Description)null);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -456,6 +563,8 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
         return TITLE_EDEFAULT == null ? title != null : !TITLE_EDEFAULT.equals(title);
       case ArticlePackage.SNIPPET__TITLE_IMAGE:
         return TITLE_IMAGE_EDEFAULT == null ? titleImage != null : !TITLE_IMAGE_EDEFAULT.equals(titleImage);
+      case ArticlePackage.SNIPPET__DESCRIPTION:
+        return description != null;
     }
     return super.eIsSet(featureID);
   }
@@ -551,59 +660,90 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     StructuralElement structuralElement = getStructuralElement(embedder);
     String imagePath = structuralElement.getImagePath() + "/";
 
-    String editorIcon = getTitleImage();
-    if (editorIcon == null || editorIcon.length() == 0)
-    {
-      int dot = title.lastIndexOf('.');
-      if (dot != -1)
-      {
-        String icon = title.substring(dot + 1);
-        if (icon.length() != 0)
-        {
-          icon += ".gif";
-          String iconPath = imagePath + "editors/" + icon;
-
-          File iconFile = new File(structuralElement.getOutputFile().getParentFile(), iconPath);
-          if (iconFile.isFile())
-          {
-            editorIcon = iconPath;
-          }
-        }
-      }
-
-      if (editorIcon == null || editorIcon.length() == 0)
-      {
-        editorIcon = formatter.getTopLeftEditorIcon(imagePath);
-      }
-    }
-    else
-    {
-      editorIcon = rewritePath(editorIcon, embedder);
-    }
-
     out.write(NL);
     out.write(NL);
 
     String[] snippets = formatter.getSnippetHtml(embedder, embeddingID, title);
     String html = snippets[0];
-    html = processCallouts(embeddingID, html, imagePath);
-    html = getEditorHtml(imagePath, embeddingID, title, editorIcon, html, 600, 300);
+    if (html != null)
+    {
+      html = processCallouts(embeddingID, html, imagePath);
 
-    out.write(html);
+      String editorIcon = getTitleImage();
+      if (editorIcon == null || editorIcon.length() == 0)
+      {
+        int dot = title.lastIndexOf('.');
+        if (dot != -1)
+        {
+          String icon = title.substring(dot + 1);
+          if (icon.length() != 0)
+          {
+            icon += ".gif";
+            String iconPath = imagePath + "editors/" + icon;
+
+            File iconFile = new File(structuralElement.getOutputFile().getParentFile(), iconPath);
+            if (iconFile.isFile())
+            {
+              editorIcon = iconPath;
+            }
+          }
+        }
+
+        if (editorIcon == null || editorIcon.length() == 0)
+        {
+          editorIcon = formatter.getTopLeftEditorIcon(imagePath);
+        }
+      }
+      else
+      {
+        editorIcon = rewritePath(editorIcon, embedder);
+      }
+
+      html = getEditorHtml(imagePath, embeddingID, title, editorIcon, html, 600, 300);
+      out.write(html);
+    }
+
     for (int i = 1; i < snippets.length; i++)
     {
       String extraSnippet = snippets[i];
       out.write(extraSnippet);
+      out.write(NL);
+    }
+
+    Description description = getDescription();
+    if (description != null)
+    {
+      out.write("<p>" + NL);
+      BodyElementContainerImpl.generate(out, structuralElement, description.getElements());
     }
 
     EList<Callout> callouts = getCallouts();
     if (!callouts.isEmpty())
     {
-      out.write("<p>" + NL);
+      String[] calloutGroupHtml = formatter.getCalloutGroupHtml(embedder, embeddingID, title);
+      out.write(calloutGroupHtml[0] + NL);
       for (Callout callout : callouts)
       {
-        String image = getCalloutImage(imagePath, embeddingID, callout.getIndex(), false, "Jump to snippet...");
-        out.write("<div style=\"margin-left:24px;\">" + image + "&nbsp;");
+        int index = callout.getIndex();
+        String[] calloutItemHtml = formatter.getCalloutItemHtml(embedder, embeddingID, index);
+        out.write(calloutItemHtml[0] + NL);
+
+        String image = formatter.getCalloutImageHtml(embedder, embeddingID, index);
+        if (image == null)
+        {
+          image = getCalloutImage(imagePath, embeddingID, index, false, "Jump to snippet...");
+          out.write(image + "&nbsp;");
+        }
+        else
+        {
+          out.write(image + NL);
+        }
+
+        String[] calloutBodyHtml = formatter.getCalloutBodyHtml(embedder, embeddingID, index);
+        if (calloutBodyHtml != null)
+        {
+          out.write(calloutBodyHtml[0] + NL);
+        }
 
         try
         {
@@ -614,8 +754,15 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
           ex.printStackTrace();
         }
 
-        out.write("</div>" + NL);
+        if (calloutBodyHtml != null)
+        {
+          out.write(calloutBodyHtml[1] + NL);
+        }
+
+        out.write(calloutItemHtml[1] + NL);
       }
+
+      out.write(calloutGroupHtml[1] + NL);
     }
 
     out.write("<p>" + NL);
@@ -681,7 +828,7 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     return html;
   }
 
-  private static String getCalloutImage(String imagePath, String prefix, int number, boolean code, String alt)
+  static String getCalloutImage(String imagePath, String prefix, int number, boolean code, String alt)
   {
     String name = "callout_" + prefix + "_" + number;
     String nameSuffix = code ? "_code" : "";

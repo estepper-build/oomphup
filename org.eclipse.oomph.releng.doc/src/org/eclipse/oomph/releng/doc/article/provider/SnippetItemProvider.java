@@ -97,6 +97,7 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
       super.getChildrenFeatures(object);
       childrenFeatures.add(ArticlePackage.Literals.SNIPPET__CALLOUTS);
       childrenFeatures.add(ArticlePackage.Literals.SNIPPET__FORMATTER);
+      childrenFeatures.add(ArticlePackage.Literals.SNIPPET__DESCRIPTION);
     }
     return childrenFeatures;
   }
@@ -172,6 +173,7 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
         return;
       case ArticlePackage.SNIPPET__CALLOUTS:
       case ArticlePackage.SNIPPET__FORMATTER:
+      case ArticlePackage.SNIPPET__DESCRIPTION:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
         return;
     }
@@ -197,6 +199,10 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createXmlFormatter()));
 
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createTreeFormatter()));
+
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createImageFormatter()));
+
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__DESCRIPTION, ArticleFactory.eINSTANCE.createDescription()));
   }
 
 }
