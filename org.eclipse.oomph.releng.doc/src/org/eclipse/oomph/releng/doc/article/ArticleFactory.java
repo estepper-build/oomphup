@@ -317,6 +317,15 @@ public interface ArticleFactory extends EFactory
   Description createDescription();
 
   /**
+   * Returns a new object of class '<em>Html Formatter</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Html Formatter</em>'.
+   * @generated
+   */
+  HtmlFormatter createHtmlFormatter();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @return the package supported by this factory.

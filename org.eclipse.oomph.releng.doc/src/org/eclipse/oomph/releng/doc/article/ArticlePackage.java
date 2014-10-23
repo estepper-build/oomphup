@@ -2610,13 +2610,50 @@ public interface ArticlePackage extends EPackage
   int DESCRIPTION_FEATURE_COUNT = BODY_ELEMENT_CONTAINER_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.oomph.releng.doc.article.impl.HtmlFormatterImpl <em>Html Formatter</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.oomph.releng.doc.article.impl.HtmlFormatterImpl
+   * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getHtmlFormatter()
+   * @generated
+   */
+  int HTML_FORMATTER = 44;
+
+  /**
+   * The feature id for the '<em><b>Snippet</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int HTML_FORMATTER__SNIPPET = FORMATTER__SNIPPET;
+
+  /**
+   * The feature id for the '<em><b>File</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int HTML_FORMATTER__FILE = FORMATTER_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Html Formatter</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int HTML_FORMATTER_FEATURE_COUNT = FORMATTER_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '<em>Root Doc</em>' data type.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see com.sun.javadoc.RootDoc
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getRootDoc()
    * @generated
    */
-  int ROOT_DOC = 44;
+  int ROOT_DOC = 45;
 
   /**
    * The meta object id for the '<em>File</em>' data type.
@@ -2625,7 +2662,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getFile()
    * @generated
    */
-  int FILE = 45;
+  int FILE = 46;
 
   /**
    * The meta object id for the '<em>Doc</em>' data type.
@@ -2634,7 +2671,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getDoc()
    * @generated
    */
-  int DOC = 46;
+  int DOC = 47;
 
   /**
    * The meta object id for the '<em>Program Element Doc</em>' data type.
@@ -2644,7 +2681,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getProgramElementDoc()
    * @generated
    */
-  int PROGRAM_ELEMENT_DOC = 47;
+  int PROGRAM_ELEMENT_DOC = 48;
 
   /**
    * The meta object id for the '<em>Tag</em>' data type.
@@ -2653,7 +2690,7 @@ public interface ArticlePackage extends EPackage
    * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getTag()
    * @generated
    */
-  int TAG = 48;
+  int TAG = 49;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.Documentation <em>Documentation</em>}'.
@@ -3776,6 +3813,27 @@ public interface ArticlePackage extends EPackage
   EReference getDescription_Snippet();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.oomph.releng.doc.article.HtmlFormatter <em>Html Formatter</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Html Formatter</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.HtmlFormatter
+   * @generated
+   */
+  EClass getHtmlFormatter();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.releng.doc.article.HtmlFormatter#getFile <em>File</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File</em>'.
+   * @see org.eclipse.oomph.releng.doc.article.HtmlFormatter#getFile()
+   * @see #getHtmlFormatter()
+   * @generated
+   */
+  EAttribute getHtmlFormatter_File();
+
+  /**
    * Returns the meta object for data type '{@link com.sun.javadoc.RootDoc <em>Root Doc</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4775,6 +4833,24 @@ public interface ArticlePackage extends EPackage
      * @generated
      */
     EReference DESCRIPTION__SNIPPET = eINSTANCE.getDescription_Snippet();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.oomph.releng.doc.article.impl.HtmlFormatterImpl <em>Html Formatter</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.oomph.releng.doc.article.impl.HtmlFormatterImpl
+     * @see org.eclipse.oomph.releng.doc.article.impl.ArticlePackageImpl#getHtmlFormatter()
+     * @generated
+     */
+    EClass HTML_FORMATTER = eINSTANCE.getHtmlFormatter();
+
+    /**
+     * The meta object literal for the '<em><b>File</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute HTML_FORMATTER__FILE = eINSTANCE.getHtmlFormatter_File();
 
     /**
      * The meta object literal for the '<em>Root Doc</em>' data type.

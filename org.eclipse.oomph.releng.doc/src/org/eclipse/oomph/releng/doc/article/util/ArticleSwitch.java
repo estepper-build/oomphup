@@ -31,6 +31,7 @@ import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
 import org.eclipse.oomph.releng.doc.article.Factory;
 import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.HtmlFormatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
@@ -916,6 +917,20 @@ public class ArticleSwitch<T>
         }
         return result;
       }
+      case ArticlePackage.HTML_FORMATTER:
+      {
+        HtmlFormatter htmlFormatter = (HtmlFormatter)theEObject;
+        T result = caseHtmlFormatter(htmlFormatter);
+        if (result == null)
+        {
+          result = caseFormatter(htmlFormatter);
+        }
+        if (result == null)
+        {
+          result = defaultCase(theEObject);
+        }
+        return result;
+      }
       default:
         return defaultCase(theEObject);
     }
@@ -1553,6 +1568,22 @@ public class ArticleSwitch<T>
    * @generated
    */
   public T caseDescription(Description object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Html Formatter</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Html Formatter</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseHtmlFormatter(HtmlFormatter object)
   {
     return null;
   }

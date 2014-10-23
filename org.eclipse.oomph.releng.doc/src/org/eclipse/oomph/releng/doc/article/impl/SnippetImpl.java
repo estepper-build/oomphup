@@ -16,8 +16,10 @@ import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
 import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.Documentation;
+import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.HtmlFormatter;
 import org.eclipse.oomph.releng.doc.article.ImageFormatter;
 import org.eclipse.oomph.releng.doc.article.Section;
 import org.eclipse.oomph.releng.doc.article.Snippet;
@@ -31,6 +33,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
@@ -193,6 +196,10 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       else if (format.equals(ImageFormatter.TYPE))
       {
         new ImageFormatterImpl(this, args);
+      }
+      else if (format.equals(HtmlFormatter.TYPE))
+      {
+        new HtmlFormatterImpl(this, args);
       }
     }
 
@@ -713,7 +720,11 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     Description description = getDescription();
     if (description != null)
     {
-      out.write("<p>" + NL);
+      if (snippets.length > 1 || snippets[0] != null)
+      {
+        out.write("<p>" + NL);
+      }
+
       BodyElementContainerImpl.generate(out, structuralElement, description.getElements());
     }
 
@@ -853,6 +864,14 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
     if (container instanceof Section)
     {
       return ((Section)container).getChapter();
+    }
+
+    EObject eContainer = container.eContainer();
+    if (eContainer instanceof EmbeddableElement)
+    {
+      EmbeddableElement embeddableElement = (EmbeddableElement)eContainer;
+      Embedding embedding = embeddableElement.getEmbedding();
+      return getStructuralElement(embedding);
     }
 
     SeeTag embedderTag = embedder.getTag();

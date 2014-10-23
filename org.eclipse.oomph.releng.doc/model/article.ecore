@@ -206,4 +206,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="snippet" lowerBound="1"
         eType="#//Snippet" eOpposite="#//Snippet/description"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HtmlFormatter" eSuperTypes="#//Formatter">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="#//File"/>
+  </eClassifiers>
 </ecore:EPackage>

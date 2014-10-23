@@ -26,6 +26,7 @@ import org.eclipse.oomph.releng.doc.article.Excel;
 import org.eclipse.oomph.releng.doc.article.ExtensionPoint;
 import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
+import org.eclipse.oomph.releng.doc.article.HtmlFormatter;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
 import org.eclipse.oomph.releng.doc.article.ImageFormatter;
@@ -175,6 +176,8 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
         return createImageFormatter();
       case ArticlePackage.DESCRIPTION:
         return createDescription();
+      case ArticlePackage.HTML_FORMATTER:
+        return createHtmlFormatter();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -569,6 +572,17 @@ public class ArticleFactoryImpl extends EFactoryImpl implements ArticleFactory
   {
     DescriptionImpl description = new DescriptionImpl();
     return description;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public HtmlFormatter createHtmlFormatter()
+  {
+    HtmlFormatterImpl htmlFormatter = new HtmlFormatterImpl();
+    return htmlFormatter;
   }
 
   /**

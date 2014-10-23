@@ -31,6 +31,7 @@ import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
 import org.eclipse.oomph.releng.doc.article.Factory;
 import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.HtmlFormatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
@@ -350,6 +351,13 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
    * @generated
    */
   private EClass descriptionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass htmlFormatterEClass = null;
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1457,6 +1465,26 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
   }
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getHtmlFormatter()
+  {
+    return htmlFormatterEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getHtmlFormatter_File()
+  {
+    return (EAttribute)htmlFormatterEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -1685,6 +1713,9 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     descriptionEClass = createEClass(DESCRIPTION);
     createEReference(descriptionEClass, DESCRIPTION__SNIPPET);
 
+    htmlFormatterEClass = createEClass(HTML_FORMATTER);
+    createEAttribute(htmlFormatterEClass, HTML_FORMATTER__FILE);
+
     // Create data types
     rootDocEDataType = createEDataType(ROOT_DOC);
     fileEDataType = createEDataType(FILE);
@@ -1759,6 +1790,7 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     selectionEClass.getESuperTypes().add(getBodyElement());
     imageFormatterEClass.getESuperTypes().add(getFormatter());
     descriptionEClass.getESuperTypes().add(getBodyElementContainer());
+    htmlFormatterEClass.getESuperTypes().add(getFormatter());
 
     // Initialize classes and features; add operations and parameters
     initEClass(documentationEClass, Documentation.class, "Documentation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1982,6 +2014,10 @@ public class ArticlePackageImpl extends EPackageImpl implements ArticlePackage
     initEClass(descriptionEClass, Description.class, "Description", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getDescription_Snippet(), getSnippet(), getSnippet_Description(), "snippet", null, 1, 1, Description.class, !IS_TRANSIENT, !IS_VOLATILE,
         IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(htmlFormatterEClass, HtmlFormatter.class, "HtmlFormatter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getHtmlFormatter_File(), getFile(), "file", null, 0, 1, HtmlFormatter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+        !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize data types
     initEDataType(rootDocEDataType, RootDoc.class, "RootDoc", !IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

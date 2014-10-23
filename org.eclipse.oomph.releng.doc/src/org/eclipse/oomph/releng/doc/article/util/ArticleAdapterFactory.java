@@ -31,6 +31,7 @@ import org.eclipse.oomph.releng.doc.article.ExternalArticle;
 import org.eclipse.oomph.releng.doc.article.ExternalTarget;
 import org.eclipse.oomph.releng.doc.article.Factory;
 import org.eclipse.oomph.releng.doc.article.Formatter;
+import org.eclipse.oomph.releng.doc.article.HtmlFormatter;
 import org.eclipse.oomph.releng.doc.article.Identifiable;
 import org.eclipse.oomph.releng.doc.article.Image;
 import org.eclipse.oomph.releng.doc.article.ImageFactory;
@@ -381,6 +382,12 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
     public Adapter caseDescription(Description object)
     {
       return createDescriptionAdapter();
+    }
+
+    @Override
+    public Adapter caseHtmlFormatter(HtmlFormatter object)
+    {
+      return createHtmlFormatterAdapter();
     }
 
     @Override
@@ -992,6 +999,21 @@ public class ArticleAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDescriptionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.oomph.releng.doc.article.HtmlFormatter <em>Html Formatter</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.oomph.releng.doc.article.HtmlFormatter
+   * @generated
+   */
+  public Adapter createHtmlFormatterAdapter()
   {
     return null;
   }

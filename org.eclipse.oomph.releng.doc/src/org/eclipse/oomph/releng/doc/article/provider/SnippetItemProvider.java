@@ -202,6 +202,8 @@ public class SnippetItemProvider extends EmbeddableElementItemProvider
 
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createImageFormatter()));
 
+    newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__FORMATTER, ArticleFactory.eINSTANCE.createHtmlFormatter()));
+
     newChildDescriptors.add(createChildParameter(ArticlePackage.Literals.SNIPPET__DESCRIPTION, ArticleFactory.eINSTANCE.createDescription()));
   }
 

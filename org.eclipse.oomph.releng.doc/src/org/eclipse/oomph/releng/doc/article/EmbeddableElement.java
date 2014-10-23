@@ -79,4 +79,8 @@ public interface EmbeddableElement extends Identifiable
 
   void generate(PrintWriter out, Embedding embedder) throws IOException;
 
+  Embedding getEmbedding();
+
+  void setEmbedding(Embedding embedding);
+
 } // EmbeddableElement

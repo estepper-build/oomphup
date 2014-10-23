@@ -67,6 +67,8 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
 
   private ProgramElementDoc doc;
 
+  private Embedding embedding;
+
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
@@ -290,6 +292,16 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
         return DOC_EDEFAULT == null ? getDoc() != null : !DOC_EDEFAULT.equals(getDoc());
     }
     return super.eIsSet(featureID);
+  }
+
+  public Embedding getEmbedding()
+  {
+    return embedding;
+  }
+
+  public void setEmbedding(Embedding embedding)
+  {
+    this.embedding = embedding;
   }
 
   public String rewritePath(String path, Embedding embedder)

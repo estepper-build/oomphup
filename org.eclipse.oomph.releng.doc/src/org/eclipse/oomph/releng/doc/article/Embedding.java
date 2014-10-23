@@ -47,6 +47,4 @@ public interface Embedding extends BodyElement
 
   String getEmbeddingID();
 
-  int getEmbeddingIndex();
-
 } // Embedding

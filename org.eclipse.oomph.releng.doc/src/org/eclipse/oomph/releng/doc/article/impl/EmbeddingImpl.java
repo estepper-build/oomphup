@@ -13,14 +13,19 @@ package org.eclipse.oomph.releng.doc.article.impl;
 import org.eclipse.oomph.releng.doc.article.ArticlePackage;
 import org.eclipse.oomph.releng.doc.article.Body;
 import org.eclipse.oomph.releng.doc.article.BodyElement;
+import org.eclipse.oomph.releng.doc.article.BodyElementContainer;
+import org.eclipse.oomph.releng.doc.article.Callout;
 import org.eclipse.oomph.releng.doc.article.Chapter;
+import org.eclipse.oomph.releng.doc.article.Description;
 import org.eclipse.oomph.releng.doc.article.EmbeddableElement;
 import org.eclipse.oomph.releng.doc.article.Embedding;
 import org.eclipse.oomph.releng.doc.article.Section;
+import org.eclipse.oomph.releng.doc.article.Snippet;
 import org.eclipse.oomph.releng.doc.article.StructuralElement;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 
 import com.sun.javadoc.SeeTag;
 
@@ -116,6 +121,36 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
   }
 
   @Override
+  public Body getBody()
+  {
+    BodyElementContainer container = getContainer();
+    if (container instanceof Body)
+    {
+      Body body = (Body)container;
+      return body;
+    }
+
+    if (container instanceof Section)
+    {
+      Chapter chapter = ((Section)container).getChapter();
+      return chapter;
+    }
+
+    EObject eContainer = container.eContainer();
+    if (eContainer instanceof EmbeddableElement)
+    {
+      EmbeddableElement embeddableElement = (EmbeddableElement)eContainer;
+      Embedding embedding = embeddableElement.getEmbedding();
+      if (embedding != null)
+      {
+        return embedding.getBody();
+      }
+    }
+
+    return null;
+  }
+
+  @Override
   public SeeTag getTag()
   {
     return (SeeTag)super.getTag();
@@ -128,21 +163,84 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
 
   public String getEmbeddingID()
   {
-    String prefix = getBody().getDoc().name();
+    BodyElementContainer container = getContainer();
+    if (container instanceof Body)
+    {
+      Body body = (Body)container;
+      return getEmbeddingPrefix(body) + getEmbeddingPrefix(body);
+    }
+
+    if (container instanceof Section)
+    {
+      Chapter chapter = ((Section)container).getChapter();
+      return getEmbeddingPrefix(chapter) + getEmbeddingPrefix(chapter);
+    }
+
+    EObject eContainer = container.eContainer();
+    if (eContainer instanceof EmbeddableElement)
+    {
+      EmbeddableElement embeddableElement = (EmbeddableElement)eContainer;
+      Embedding embedding = embeddableElement.getEmbedding();
+      String prefix = embedding.getEmbeddingID();
+      if (embeddableElement instanceof Snippet)
+      {
+        Snippet snippet = (Snippet)embeddableElement;
+        int index = 0;
+        Description description = snippet.getDescription();
+        if (description != null)
+        {
+          for (BodyElement element : description.getElements())
+          {
+            if (element instanceof Embedding)
+            {
+              ++index;
+            }
+
+            if (element == this)
+            {
+              return prefix + "_" + index;
+            }
+          }
+        }
+
+        for (Callout callout : snippet.getCallouts())
+        {
+          for (BodyElement element : callout.getElements())
+          {
+            if (element instanceof Embedding)
+            {
+              ++index;
+            }
+
+            if (element == this)
+            {
+              return prefix + "_" + index;
+            }
+          }
+        }
+      }
+
+      return prefix;
+    }
+
+    throw new ArticleException("Nested embedding");
+  }
+
+  private String getEmbeddingPrefix(Body body)
+  {
+    String prefix = body.getDoc().name();
     int lastDot = prefix.lastIndexOf('.');
     if (lastDot != -1)
     {
       prefix = prefix.substring(lastDot + 1);
     }
 
-    return prefix + "_" + getEmbeddingIndex();
+    return prefix;
   }
 
-  public int getEmbeddingIndex()
+  private int getEmbeddingIndex(Body body)
   {
     int index = 0;
-
-    Body body = getBody();
     for (BodyElement element : body.getElements())
     {
       if (element instanceof Embedding)
@@ -182,12 +280,26 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
   @Override
   public void addHeaders(Set<String> headers, StructuralElement linkSource)
   {
+    if (element.getEmbedding() != null)
+    {
+      throw new ArticleException("Nested embedding");
+    }
+
+    element.setEmbedding(this);
     element.addHeaders(headers, this);
+    element.setEmbedding(null);
   }
 
   public void generate(PrintWriter out, StructuralElement linkSource) throws IOException
   {
+    if (element.getEmbedding() != null)
+    {
+      throw new ArticleException("Nested embedding");
+    }
+
+    element.setEmbedding(this);
     element.generate(out, this);
+    element.setEmbedding(null);
   }
 
 } // EmbeddingImpl

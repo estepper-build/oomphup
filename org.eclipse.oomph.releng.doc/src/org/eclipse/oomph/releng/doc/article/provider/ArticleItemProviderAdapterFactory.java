@@ -948,6 +948,31 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
   }
 
   /**
+   * This keeps track of the one adapter used for all {@link org.eclipse.oomph.releng.doc.article.HtmlFormatter} instances.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected HtmlFormatterItemProvider htmlFormatterItemProvider;
+
+  /**
+   * This creates an adapter for a {@link org.eclipse.oomph.releng.doc.article.HtmlFormatter}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Adapter createHtmlFormatterAdapter()
+  {
+    if (htmlFormatterItemProvider == null)
+    {
+      htmlFormatterItemProvider = new HtmlFormatterItemProvider(this);
+    }
+
+    return htmlFormatterItemProvider;
+  }
+
+  /**
    * This returns the root adapter factory that contains this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1197,6 +1222,10 @@ public class ArticleItemProviderAdapterFactory extends ArticleAdapterFactory imp
     if (descriptionItemProvider != null)
     {
       descriptionItemProvider.dispose();
+    }
+    if (htmlFormatterItemProvider != null)
+    {
+      htmlFormatterItemProvider.dispose();
     }
   }
 
