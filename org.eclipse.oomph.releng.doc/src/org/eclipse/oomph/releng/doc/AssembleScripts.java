@@ -96,16 +96,19 @@ public class AssembleScripts
 
   public AntLib run() throws Exception
   {
-    for (File plugin : plugins.listFiles())
+    if (plugins != null)
     {
-      if (plugin.isDirectory())
+      for (File plugin : plugins.listFiles())
       {
-        Properties buildProperties = getProperties(new File(plugin, "build.properties"));
-        String javadocProject = buildProperties.getProperty("doc.project");
-        if (javadocProject != null)
+        if (plugin.isDirectory())
         {
-          Set<String> excludedPackages = getExcludedPackages(buildProperties);
-          assembleJavaDocOptions(plugin, javadocProject, excludedPackages);
+          Properties buildProperties = getProperties(new File(plugin, "build.properties"));
+          String javadocProject = buildProperties.getProperty("doc.project");
+          if (javadocProject != null)
+          {
+            Set<String> excludedPackages = getExcludedPackages(buildProperties);
+            assembleJavaDocOptions(plugin, javadocProject, excludedPackages);
+          }
         }
       }
     }
@@ -119,9 +122,13 @@ public class AssembleScripts
     }
 
     logger.info("");
-    antLib.generate();
-    antLib.generateDebug();
-    antLib.generateDocsTxt();
+    if (helpcenter != null)
+    {
+      antLib.generate();
+      antLib.generateDebug();
+      antLib.generateDocsTxt();
+    }
+
     logger.info("");
 
     for (JavaDoc javaDoc : antLib.getJavaDocs())

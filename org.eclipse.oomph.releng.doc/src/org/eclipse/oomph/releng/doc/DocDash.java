@@ -107,6 +107,8 @@ public class DocDash extends ViewPart
 
   private AntLib antLib;
 
+  private boolean debugPreprocessor;
+
   public DocDash()
   {
   }
@@ -280,6 +282,20 @@ public class DocDash extends ViewPart
     tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
     IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+
+    toolbarManager.add(new Action("Debug", Action.AS_CHECK_BOX)
+    {
+      {
+        setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(RELENG_NAME, "icons/debug.gif"));
+      }
+
+      @Override
+      public void run()
+      {
+        debugPreprocessor = isEnabled();
+      }
+    });
+
     toolbarManager.add(new Action("Refresh", AbstractUIPlugin.imageDescriptorFromPlugin(RELENG_NAME, "icons/refresh.gif"))
     {
       @Override
@@ -426,7 +442,11 @@ public class DocDash extends ViewPart
   private Set<IResource> initResourcesToRefresh()
   {
     Set<IResource> resourcesToRefresh = new HashSet<IResource>();
-    resourcesToRefresh.add(ROOT.getProject(helpcenter.getName()));
+    if (helpcenter != null)
+    {
+      resourcesToRefresh.add(ROOT.getProject(helpcenter.getName()));
+    }
+
     return resourcesToRefresh;
   }
 
@@ -566,7 +586,7 @@ public class DocDash extends ViewPart
               ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager.generateLaunchConfigurationName("Preprocess Documentation"));
               configurePreprocessor(wc, preprocessorProjects);
 
-              ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
+              ILaunch launch = wc.launch(debugPreprocessor ? ILaunchManager.DEBUG_MODE : ILaunchManager.RUN_MODE, null);
               waitForLaunch(launch);
             }
 
@@ -697,6 +717,7 @@ public class DocDash extends ViewPart
     wc.setAttribute("clearwslog", false);
     wc.setAttribute("configLocation", "${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Preprocess Documentation");
     wc.setAttribute("default", true);
+    wc.setAttribute("generateProfile", true);
     wc.setAttribute("includeOptional", true);
     wc.setAttribute("location", "${workspace_loc}/preprocessor-workspace");
     wc.setAttribute("org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING", "UTF-8");
@@ -705,8 +726,9 @@ public class DocDash extends ViewPart
         "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7");
     wc.setAttribute("org.eclipse.jdt.launching.PROGRAM_ARGUMENTS", "-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog");
     wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.pde.ui.workbenchClasspathProvider");
-    wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Doomph.setup.skip=true -Dpreprocessor.projects="
-        + preprocessorProjects);
+    wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS",
+        "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Doomph.setup.skip=true -Dpreprocessor.workspace=${workspace_loc} -Dpreprocessor.projects="
+            + preprocessorProjects);
     wc.setAttribute("pde.version", "3.3");
     wc.setAttribute("product", "org.eclipse.sdk.ide");
     wc.setAttribute("show_selected_only", false);
@@ -1013,7 +1035,7 @@ public class DocDash extends ViewPart
     {
       if (element instanceof AntLib)
       {
-        return helpcenter.getName();
+        return helpcenter == null ? "<helpcenter>" : helpcenter.getName();
       }
 
       return super.getText(element);

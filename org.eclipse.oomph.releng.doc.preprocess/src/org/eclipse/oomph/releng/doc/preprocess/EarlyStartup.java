@@ -1,5 +1,6 @@
 package org.eclipse.oomph.releng.doc.preprocess;
 
+import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 import org.eclipse.oomph.ui.UIUtil;
 
 import org.eclipse.emf.common.CommonPlugin;
@@ -203,9 +204,20 @@ public class EarlyStartup implements IStartup
         }
       }, null);
     }
-    catch (CoreException ex2)
+    catch (CoreException ex)
     {
-      ex2.printStackTrace();
+      ex.printStackTrace();
+    }
+
+    final String workspace = System.getProperty("preprocessor.workspace");
+    if (workspace != null)
+    {
+      String setupPath = ".metadata/.plugins/org.eclipse.oomph.setup/workspace.setup";
+      File workspaceSetup = new File(workspace, setupPath);
+      if (workspaceSetup.exists())
+      {
+        ArticleUtil.copyFile(workspaceSetup, new File(WORKSPACE_ROOT.getLocation().toOSString(), setupPath));
+      }
     }
   }
 
