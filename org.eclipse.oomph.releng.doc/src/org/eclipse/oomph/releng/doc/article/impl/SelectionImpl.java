@@ -65,7 +65,7 @@ public class SelectionImpl extends BodyElementImpl implements Selection
     StringTokenizer tokenizer = new StringTokenizer(text, "|");
     while (tokenizer.hasMoreTokens())
     {
-      String token = tokenizer.nextToken().trim().replace(" ", "&nbsp;");
+      String token = tokenizer.nextToken().trim().replace(" ", "&nbsp;").replace("...", "&hellip;");
 
       if (first)
       {

@@ -328,9 +328,7 @@ public abstract class EmbeddableElementImpl extends EObjectImpl implements Embed
       else
       {
         // If not, use the actual location of the path as it will be when copied to the output folder.
-        File targetOutput = getDocumentation().getOutputFile();
-        URI targetDoc = URI.createFileURI(targetOutput.toString());
-        target = new File(pathURI.resolve(targetDoc).toFileString());
+        target = new File(pathURI.resolve(URI.createFileURI(source.toString())).toFileString());
       }
     }
     else

@@ -3491,7 +3491,7 @@
           <foregroundColor xmi:type="viewpoint:RGBValues" xmi:id="_rFvw81jhEeSKf8FGrwfVXg" red="155" green="199" blue="204"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_UZwrwFjiEeSKf8FGrwfVXg" name="file : File" tooltipText="&#xA;ERROR : The required feature 'eAttributeType' of 'org.eclipse.emf.ecore.impl.EAttributeImpl@4da7cc04{platform:/resource/org.eclipse.oomph.releng.doc/model/article.ecore#//ImageFormatter/newAttribute}' must be set&#xA;ERROR : The typed element must have a type">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_UZwrwFjiEeSKf8FGrwfVXg" name="file : File" tooltipText="">
           <target xmi:type="ecore:EAttribute" href="article.ecore#//ImageFormatter/file"/>
           <semanticElements xmi:type="ecore:EAttribute" href="article.ecore#//ImageFormatter/file"/>
           <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_VYPGMFjiEeSKf8FGrwfVXg" labelAlignment="LEFT">
@@ -3579,7 +3579,7 @@
           <foregroundColor xmi:type="viewpoint:RGBValues" xmi:id="_vKUG01nXEeSKf8FGrwfVXg" red="155" green="199" blue="204"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
-        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_xcfk0FnXEeSKf8FGrwfVXg" name="file : File" tooltipText="&#xA;ERROR : The required feature 'eAttributeType' of 'org.eclipse.emf.ecore.impl.EAttributeImpl@3cf3e4df{platform:/resource/org.eclipse.oomph.releng.doc/model/article.ecore#//HtmlFormatter/newAttribute}' must be set&#xA;ERROR : The typed element must have a type">
+        <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_xcfk0FnXEeSKf8FGrwfVXg" name="file : File" tooltipText="">
           <target xmi:type="ecore:EAttribute" href="article.ecore#//HtmlFormatter/file"/>
           <semanticElements xmi:type="ecore:EAttribute" href="article.ecore#//HtmlFormatter/file"/>
           <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_x_MCMFnXEeSKf8FGrwfVXg" labelAlignment="LEFT">

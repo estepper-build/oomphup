@@ -292,7 +292,7 @@ public class DocDash extends ViewPart
       @Override
       public void run()
       {
-        debugPreprocessor = isEnabled();
+        debugPreprocessor = isChecked();
       }
     });
 
