@@ -24,6 +24,7 @@ import org.eclipse.emf.common.util.EList;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
@@ -119,6 +120,16 @@ public class UnresolvedBodyElement extends BodyElementImpl
         target = resolveJavaElement(context, referencedClass, referencedMember);
       }
 
+      if (target != null)
+      {
+        return createBodyElements(context, seeTag, target);
+      }
+    }
+
+    PackageDoc referencedPackage = seeTag.referencedPackage();
+    if (referencedPackage != null)
+    {
+      Object target = context.lookup(referencedPackage);
       if (target != null)
       {
         return createBodyElements(context, seeTag, target);

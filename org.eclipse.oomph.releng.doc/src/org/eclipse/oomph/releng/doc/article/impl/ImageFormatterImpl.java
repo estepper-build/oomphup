@@ -255,8 +255,7 @@ public class ImageFormatterImpl extends FormatterImpl implements ImageFormatter
       }
 
       result.append("style=\"display: inline-block\"><img src=\"");
-      String path = snippet.rewritePath(titleURI, embedder);
-      result.append(path);
+      result.append(titleURI);
       result.append("\"/></div>");
     }
 
