@@ -727,7 +727,7 @@ public class DocDash extends ViewPart
     wc.setAttribute("org.eclipse.jdt.launching.PROGRAM_ARGUMENTS", "-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog");
     wc.setAttribute("org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER", "org.eclipse.pde.ui.workbenchClasspathProvider");
     wc.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS",
-        "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Doomph.setup.skip=true -Dpreprocessor.workspace=${workspace_loc} -Dpreprocessor.projects="
+        "-Xms1024m -Xmx2500m -XX:MaxPermSize=512m -Doomph.setup.skip=true -Doomph.setup.force=true -Dpreprocessor.workspace=${workspace_loc} -Dpreprocessor.projects="
             + preprocessorProjects);
     wc.setAttribute("pde.version", "3.3");
     wc.setAttribute("product", "org.eclipse.sdk.ide");
