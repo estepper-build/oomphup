@@ -58,7 +58,7 @@ public class DocletTest
   {
     add("-doclet org.eclipse.oomph.releng.doc.article.impl.ArticleDoclet");
     add("-docletpath $RELENG/bin;$RELENG/lib-test/org.eclipse.emf.common_2.11.0.v20140916-0346.jar;$RELENG/lib-test/org.eclipse.emf.ecore_2.11.0.v20140916-0346.jar");
-    add("-encoding ISO-8859-1");
+    add("-encoding UTF-8");
     add("-private");
     // add("-classpath /develop/ws/cdo/_target/plugins/com.db4o_7.4.155.v20110215-0651.jar");
     add("-basefolder $BASE");

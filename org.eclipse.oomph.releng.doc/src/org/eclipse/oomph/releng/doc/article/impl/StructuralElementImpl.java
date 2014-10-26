@@ -612,7 +612,7 @@ public abstract class StructuralElementImpl extends LinkTargetImpl implements St
       out.write(title);
       out.write("</title>" + NL);
       out.write("" + NL);
-      out.write("<link rel=\"stylesheet\" href=\"" + css + "\" charset=\"ISO-8859-1\" type=\"text/css\">" + NL);
+      out.write("<link rel=\"stylesheet\" href=\"" + css + "\" charset=\"UTF-8\" type=\"text/css\">" + NL);
       out.write("" + NL);
       out.write("<noscript></noscript>" + NL);
       out.write("<script type=\"text/javascript\">" + NL);
