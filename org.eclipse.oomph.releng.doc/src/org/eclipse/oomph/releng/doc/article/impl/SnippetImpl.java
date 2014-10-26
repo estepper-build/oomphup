@@ -776,7 +776,10 @@ public class SnippetImpl extends EmbeddableElementImpl implements Snippet
       out.write(calloutGroupHtml[1] + NL);
     }
 
-    out.write("<p>" + NL);
+    if (snippets.length > 2 || snippets[0] != null || !callouts.isEmpty())
+    {
+      out.write("<p>" + NL);
+    }
   }
 
   private String processCallouts(String snippetID, String html, String imagePath)
