@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <!-- begin-user-doc -->
@@ -35,6 +37,10 @@ import java.util.Set;
  */
 public class ImageFormatterImpl extends FormatterImpl implements ImageFormatter
 {
+  private static final Pattern IMAGE_REFERENCES = Pattern.compile("\\s*@[0-9]+(\\s+@[0-9]+)*\\s*");
+
+  private static final Pattern IMAGE_REFERENCE = Pattern.compile("@([0-9]+)");
+
   /**
    * The default value of the '{@link #getFile() <em>File</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -242,6 +248,25 @@ public class ImageFormatterImpl extends FormatterImpl implements ImageFormatter
         String path = snippet.rewritePath(uri.toFileString(), embedder);
         resolvedImageURIs.add(URI.createURI(path));
       }
+    }
+
+    if (IMAGE_REFERENCES.matcher(title).matches())
+    {
+      StringBuilder result = new StringBuilder();
+      for (Matcher matcher = IMAGE_REFERENCE.matcher(title); matcher.find();)
+      {
+        int index = Integer.parseInt(matcher.group(1));
+        if (result.length() > 0)
+        {
+          result.append(' ');
+        }
+
+        result.append("<img src=\"");
+        result.append(resolvedImageURIs.get(index));
+        result.append("\"/>");
+      }
+
+      return new String[] { null, result.toString() };
     }
 
     StringBuilder result = new StringBuilder();

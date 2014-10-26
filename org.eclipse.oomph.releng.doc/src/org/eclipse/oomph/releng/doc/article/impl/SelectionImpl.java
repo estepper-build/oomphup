@@ -73,7 +73,7 @@ public class SelectionImpl extends BodyElementImpl implements Selection
       }
       else
       {
-        out.print("&nbsp;&rarr;&nbsp;");
+        out.print("&nbsp;&rarr; ");
       }
 
       out.print("<span class=\"selectstep\">");
