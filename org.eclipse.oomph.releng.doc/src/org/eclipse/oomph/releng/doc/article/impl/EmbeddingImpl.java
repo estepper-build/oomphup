@@ -31,6 +31,7 @@ import com.sun.javadoc.SeeTag;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -167,13 +168,13 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
     if (container instanceof Body)
     {
       Body body = (Body)container;
-      return getEmbeddingPrefix(body) + getEmbeddingPrefix(body);
+      return getEmbeddingPrefix(body) + "_" + getEmbeddingIndex(body);
     }
 
     if (container instanceof Section)
     {
       Chapter chapter = ((Section)container).getChapter();
-      return getEmbeddingPrefix(chapter) + getEmbeddingPrefix(chapter);
+      return getEmbeddingPrefix(chapter) + "_" + getEmbeddingIndex(chapter);
     }
 
     EObject eContainer = container.eContainer();
@@ -189,34 +190,25 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
         Description description = snippet.getDescription();
         if (description != null)
         {
-          for (BodyElement element : description.getElements())
-          {
-            if (element instanceof Embedding)
-            {
-              ++index;
-            }
+          index = getEmbeddingIndex(description.getElements(), index);
 
-            if (element == this)
+        }
+
+        if (index <= 0)
+        {
+          for (Callout callout : snippet.getCallouts())
+          {
+            index = getEmbeddingIndex(callout.getElements(), index);
+            if (index > 0)
             {
-              return prefix + "_" + index;
+              break;
             }
           }
         }
 
-        for (Callout callout : snippet.getCallouts())
+        if (index > 0)
         {
-          for (BodyElement element : callout.getElements())
-          {
-            if (element instanceof Embedding)
-            {
-              ++index;
-            }
-
-            if (element == this)
-            {
-              return prefix + "_" + index;
-            }
-          }
+          return prefix + "_" + index;
         }
       }
 
@@ -224,6 +216,24 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
     }
 
     throw new ArticleException("Nested embedding");
+  }
+
+  private int getEmbeddingIndex(List<BodyElement> elements, int index)
+  {
+    for (BodyElement element : elements)
+    {
+      if (element instanceof Embedding)
+      {
+        --index;
+
+        if (element == this)
+        {
+          return -index;
+        }
+      }
+    }
+
+    return index;
   }
 
   private String getEmbeddingPrefix(Body body)
@@ -240,18 +250,10 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
 
   private int getEmbeddingIndex(Body body)
   {
-    int index = 0;
-    for (BodyElement element : body.getElements())
+    int index = getEmbeddingIndex(body.getElements(), 0);
+    if (index > 0)
     {
-      if (element instanceof Embedding)
-      {
-        ++index;
-      }
-
-      if (element == this)
-      {
-        return index;
-      }
+      return index;
     }
 
     if (body instanceof Chapter)
@@ -259,17 +261,10 @@ public class EmbeddingImpl extends BodyElementImpl implements Embedding
       Chapter chapter = (Chapter)body;
       for (Section section : chapter.getSections())
       {
-        for (BodyElement element : section.getElements())
+        index = getEmbeddingIndex(section.getElements(), index);
+        if (index > 0)
         {
-          if (element instanceof Embedding)
-          {
-            ++index;
-          }
-
-          if (element == this)
-          {
-            return index;
-          }
+          return index;
         }
       }
     }

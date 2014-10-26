@@ -265,7 +265,7 @@ public class ImageFormatterImpl extends FormatterImpl implements ImageFormatter
   @Override
   public String[] getCalloutGroupHtml(Embedding embedder, String embeddingID, String title)
   {
-    return new String[] { "<table class=\"bullets\">", "</table>" };
+    return new String[] { "<a id=\"" + embeddingID + "_table\"/><table class=\"bullets\">", "</table>" };
   }
 
   @Override
