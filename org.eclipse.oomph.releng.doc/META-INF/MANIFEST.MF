@@ -22,7 +22,7 @@ Require-Bundle: org.eclipse.osgi.util;bundle-version="[3.0.0,4.0.0)",
 Export-Package: org.eclipse.oomph.releng.doc;version="1.0.0";x-internal:=true,
  org.eclipse.oomph.releng.doc.article;version="1.0.0";x-internal:=true,
  org.eclipse.oomph.releng.doc.article.impl;version="1.0.0";x-internal:=true,
- org.eclipse.oomph.releng.doc.article.util;version="1.0.0";x-friends:="org.eclipse.oomph.releng.doc.preprocess",
+ org.eclipse.oomph.releng.doc.article.util;version="1.0.0";x-internal:=true,
  org.eclipse.oomph.releng.doc.java;version="1.0.0";x-internal:=true
 Bundle-ClassPath: org.eclipse.oomph.releng.doc.jar,
  lib/dom4j-1.6.1.jar,

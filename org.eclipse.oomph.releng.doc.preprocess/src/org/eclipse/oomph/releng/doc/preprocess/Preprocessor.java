@@ -116,7 +116,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("restriction")
 public class Preprocessor
 {
   private static final String PREPROCESSOR_REPLACEMENT = "preprocessor.replacement.";
