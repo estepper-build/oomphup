@@ -15,10 +15,6 @@ import org.eclipse.oomph.releng.doc.article.util.ArticleUtil;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
 
-import de.java2html.Java2Html;
-import de.java2html.options.JavaSourceConversionOptions;
-import de.java2html.options.JavaSourceStyleTable;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,6 +23,10 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.java2html.Java2Html;
+import de.java2html.options.JavaSourceConversionOptions;
+import de.java2html.options.JavaSourceStyleTable;
 
 /**
  * @author Eike Stepper
@@ -79,6 +79,16 @@ public final class CodeSnippet
 
     includeSignature = getOption(options, "includeSignature", false);
     imagePath = getOption(options, "imagePath", "");
+  }
+
+  public String getTitle()
+  {
+    return title;
+  }
+
+  public String getImagePath()
+  {
+    return imagePath;
   }
 
   public String getHtml()

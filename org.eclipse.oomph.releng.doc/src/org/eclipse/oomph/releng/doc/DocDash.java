@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -281,8 +282,10 @@ public class DocDash extends ViewPart
     Tree tree = treeViewer.getTree();
     tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-    IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+    IViewSite viewSite = getViewSite();
+    viewSite.setSelectionProvider(treeViewer);
 
+    IToolBarManager toolbarManager = viewSite.getActionBars().getToolBarManager();
     toolbarManager.add(new Action("Debug", Action.AS_CHECK_BOX)
     {
       {
@@ -487,37 +490,6 @@ public class DocDash extends ViewPart
 
         return Status.OK_STATUS;
       }
-
-      private void refresh(final Set<IResource> resources, IProgressMonitor monitor)
-      {
-        try
-        {
-          ROOT.getWorkspace().run(new IWorkspaceRunnable()
-          {
-            public void run(IProgressMonitor monitor) throws CoreException
-            {
-              monitor.beginTask("", resources.size());
-              for (IResource resource : resources)
-              {
-                try
-                {
-                  resource.refreshLocal(IResource.DEPTH_INFINITE, SubMonitor.convert(monitor, 1));
-                }
-                catch (Exception ex)
-                {
-                  ArticlePlugin.INSTANCE.log(ex);
-                }
-              }
-
-              monitor.done();
-            }
-          }, monitor);
-        }
-        catch (CoreException ex)
-        {
-          ArticlePlugin.INSTANCE.log(ex);
-        }
-      }
     }.schedule();
   }
 
@@ -625,40 +597,6 @@ public class DocDash extends ViewPart
             {
               throw new RuntimeException(ex);
             }
-          }
-        }
-
-        private void refresh(final Set<IResource> resources, IProgressMonitor monitor)
-        {
-          try
-          {
-            if (!resources.isEmpty())
-            {
-              ROOT.getWorkspace().run(new IWorkspaceRunnable()
-              {
-                public void run(IProgressMonitor monitor) throws CoreException
-                {
-                  monitor.beginTask("", resources.size());
-                  for (IResource resource : resources)
-                  {
-                    try
-                    {
-                      resource.refreshLocal(IResource.DEPTH_INFINITE, SubMonitor.convert(monitor, 1));
-                    }
-                    catch (Exception ex)
-                    {
-                      ArticlePlugin.INSTANCE.log(ex);
-                    }
-                  }
-
-                  monitor.done();
-                }
-              }, monitor);
-            }
-          }
-          catch (CoreException ex)
-          {
-            ArticlePlugin.INSTANCE.log(ex);
           }
         }
 
@@ -772,11 +710,6 @@ public class DocDash extends ViewPart
       return type;
     }
 
-    public String getName()
-    {
-      return name;
-    }
-
     @Override
     public int hashCode()
     {
@@ -859,11 +792,11 @@ public class DocDash extends ViewPart
    */
   private class DocContentProvider implements ITreeContentProvider
   {
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+    public DocContentProvider()
     {
     }
 
-    public void dispose()
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
     }
 
@@ -957,6 +890,10 @@ public class DocDash extends ViewPart
 
       return null;
     }
+
+    public void dispose()
+    {
+    }
   }
 
   /**
@@ -976,22 +913,8 @@ public class DocDash extends ViewPart
 
     private Image schemaImage = loadImage("html/helpcenter/extpoint.gif");
 
-    private Image loadImage(String path)
+    public DocLabelProvider()
     {
-      ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(RELENG_NAME, path);
-      return imageDescriptor.createImage();
-    }
-
-    @Override
-    public void dispose()
-    {
-      helpCenterImage.dispose();
-      documentationImage.dispose();
-      dependencyImage.dispose();
-      pluginImage.dispose();
-      packageImage.dispose();
-      schemaImage.dispose();
-      super.dispose();
     }
 
     @Override
@@ -1039,6 +962,24 @@ public class DocDash extends ViewPart
       }
 
       return super.getText(element);
+    }
+
+    @Override
+    public void dispose()
+    {
+      helpCenterImage.dispose();
+      documentationImage.dispose();
+      dependencyImage.dispose();
+      pluginImage.dispose();
+      packageImage.dispose();
+      schemaImage.dispose();
+      super.dispose();
+    }
+
+    private Image loadImage(String path)
+    {
+      ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(RELENG_NAME, path);
+      return imageDescriptor.createImage();
     }
   }
 }

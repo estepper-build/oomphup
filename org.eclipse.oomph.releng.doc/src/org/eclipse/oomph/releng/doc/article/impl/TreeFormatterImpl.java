@@ -718,11 +718,6 @@ public class TreeFormatterImpl extends FormatterImpl implements TreeFormatter
       return imagePath;
     }
 
-    public String getIDPrefix()
-    {
-      return idPrefix;
-    }
-
     public int getLevel()
     {
       return level;

@@ -17,7 +17,6 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.model.ThemesTable;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -42,8 +41,6 @@ public class ExcelTable
 
   private FormulaEvaluator evaluator;
 
-  private ThemesTable theme;
-
   private XSSFSheet sheet;
 
   private int rowMin = Integer.MAX_VALUE;
@@ -58,7 +55,6 @@ public class ExcelTable
   {
     XSSFWorkbook wb = new XSSFWorkbook(excel);
     evaluator = wb.getCreationHelper().createFormulaEvaluator();
-    theme = wb.getTheme();
     sheet = sheetName == null ? wb.getSheetAt(0) : wb.getSheet(sheetName);
 
     for (Iterator rowIt = sheet.rowIterator(); rowIt.hasNext();)
@@ -151,50 +147,50 @@ public class ExcelTable
   {
     switch (cell.getCellType())
     {
-    case Cell.CELL_TYPE_BLANK:
-      return "";
-
-    case Cell.CELL_TYPE_BOOLEAN:
-      return Boolean.toString(cell.getBooleanCellValue());
-
-    case Cell.CELL_TYPE_ERROR:
-      return cell.getErrorCellString();
-
-    case Cell.CELL_TYPE_FORMULA:
-      CellValue cellValue = evaluator.evaluate(cell);
-      switch (cellValue.getCellType())
-      {
       case Cell.CELL_TYPE_BLANK:
         return "";
 
       case Cell.CELL_TYPE_BOOLEAN:
-        return Boolean.toString(cellValue.getBooleanValue());
-
-      case Cell.CELL_TYPE_NUMERIC:
-        return getNumericValue(cellValue.getNumberValue());
-
-      case Cell.CELL_TYPE_STRING:
-        return cellValue.getStringValue();
+        return Boolean.toString(cell.getBooleanCellValue());
 
       case Cell.CELL_TYPE_ERROR:
+        return cell.getErrorCellString();
+
       case Cell.CELL_TYPE_FORMULA:
+        CellValue cellValue = evaluator.evaluate(cell);
+        switch (cellValue.getCellType())
+        {
+          case Cell.CELL_TYPE_BLANK:
+            return "";
+
+          case Cell.CELL_TYPE_BOOLEAN:
+            return Boolean.toString(cellValue.getBooleanValue());
+
+          case Cell.CELL_TYPE_NUMERIC:
+            return getNumericValue(cellValue.getNumberValue());
+
+          case Cell.CELL_TYPE_STRING:
+            return cellValue.getStringValue();
+
+          case Cell.CELL_TYPE_ERROR:
+          case Cell.CELL_TYPE_FORMULA:
+          default:
+            throw new IllegalStateException("Illegal cell type: " + cell.getCellType());
+        }
+
+      case Cell.CELL_TYPE_NUMERIC:
+        if (DateUtil.isCellDateFormatted(cell))
+        {
+          return cell.getDateCellValue().toString();
+        }
+
+        return getNumericValue(cell.getNumericCellValue());
+
+      case Cell.CELL_TYPE_STRING:
+        return cell.getStringCellValue();
+
       default:
         throw new IllegalStateException("Illegal cell type: " + cell.getCellType());
-      }
-
-    case Cell.CELL_TYPE_NUMERIC:
-      if (DateUtil.isCellDateFormatted(cell))
-      {
-        return cell.getDateCellValue().toString();
-      }
-
-      return getNumericValue(cell.getNumericCellValue());
-
-    case Cell.CELL_TYPE_STRING:
-      return cell.getStringCellValue();
-
-    default:
-      throw new IllegalStateException("Illegal cell type: " + cell.getCellType());
     }
   }
 
@@ -216,7 +212,7 @@ public class ExcelTable
     byte[] rgb = color.getRgb();
     for (byte c : rgb)
     {
-      int i = (int)c;
+      int i = c;
       if (i < 0)
       {
         i += 256;
@@ -397,14 +393,14 @@ public class ExcelTable
   {
     switch (style)
     {
-    case XSSFCellStyle.BORDER_NONE:
-      return 0;
+      case XSSFCellStyle.BORDER_NONE:
+        return 0;
 
-    case XSSFCellStyle.BORDER_MEDIUM:
-      return 2;
+      case XSSFCellStyle.BORDER_MEDIUM:
+        return 2;
 
-    case XSSFCellStyle.BORDER_THICK:
-      return 3;
+      case XSSFCellStyle.BORDER_THICK:
+        return 3;
     }
 
     return 1;
@@ -416,23 +412,23 @@ public class ExcelTable
     {
       switch (style)
       {
-      case XSSFCellStyle.BORDER_MEDIUM:
-        int mediumThickness = 2 - peerThickness;
-        if (mediumThickness > 0)
-        {
-          return "" + mediumThickness + "px solid";
-        }
+        case XSSFCellStyle.BORDER_MEDIUM:
+          int mediumThickness = 2 - peerThickness;
+          if (mediumThickness > 0)
+          {
+            return "" + mediumThickness + "px solid";
+          }
 
-        break;
+          break;
 
-      case XSSFCellStyle.BORDER_THICK:
-        int thickThickness = 3 - peerThickness;
-        if (thickThickness > 0)
-        {
-          return "" + thickThickness + "px solid";
-        }
+        case XSSFCellStyle.BORDER_THICK:
+          int thickThickness = 3 - peerThickness;
+          if (thickThickness > 0)
+          {
+            return "" + thickThickness + "px solid";
+          }
 
-        break;
+          break;
       }
 
       return "none";
@@ -440,30 +436,30 @@ public class ExcelTable
 
     switch (style)
     {
-    case XSSFCellStyle.BORDER_HAIR:
-    case XSSFCellStyle.BORDER_THIN:
-      return "1px solid";
+      case XSSFCellStyle.BORDER_HAIR:
+      case XSSFCellStyle.BORDER_THIN:
+        return "1px solid";
 
-    case XSSFCellStyle.BORDER_MEDIUM:
-      return "2px solid";
+      case XSSFCellStyle.BORDER_MEDIUM:
+        return "2px solid";
 
-    case XSSFCellStyle.BORDER_THICK:
-      return "3px solid";
+      case XSSFCellStyle.BORDER_THICK:
+        return "3px solid";
 
-    case XSSFCellStyle.BORDER_DOUBLE:
-      return "double";
+      case XSSFCellStyle.BORDER_DOUBLE:
+        return "double";
 
-    case XSSFCellStyle.BORDER_DOTTED:
-      return "dotted";
+      case XSSFCellStyle.BORDER_DOTTED:
+        return "dotted";
 
-    case XSSFCellStyle.BORDER_DASHED:
-    case XSSFCellStyle.BORDER_MEDIUM_DASHED:
-    case XSSFCellStyle.BORDER_DASH_DOT:
-    case XSSFCellStyle.BORDER_MEDIUM_DASH_DOT:
-    case XSSFCellStyle.BORDER_DASH_DOT_DOT:
-    case XSSFCellStyle.BORDER_MEDIUM_DASH_DOT_DOT:
-    case XSSFCellStyle.BORDER_SLANTED_DASH_DOT:
-      return "dashed";
+      case XSSFCellStyle.BORDER_DASHED:
+      case XSSFCellStyle.BORDER_MEDIUM_DASHED:
+      case XSSFCellStyle.BORDER_DASH_DOT:
+      case XSSFCellStyle.BORDER_MEDIUM_DASH_DOT:
+      case XSSFCellStyle.BORDER_DASH_DOT_DOT:
+      case XSSFCellStyle.BORDER_MEDIUM_DASH_DOT_DOT:
+      case XSSFCellStyle.BORDER_SLANTED_DASH_DOT:
+        return "dashed";
     }
 
     return "none";
@@ -499,8 +495,8 @@ public class ExcelTable
         break;
       }
 
-      if (mergedRegion.getFirstRow() <= rowIndex && rowIndex <= mergedRegion.getLastRow()
-          && mergedRegion.getFirstColumn() <= colIndex && colIndex <= mergedRegion.getLastColumn())
+      if (mergedRegion.getFirstRow() <= rowIndex && rowIndex <= mergedRegion.getLastRow() && mergedRegion.getFirstColumn() <= colIndex
+          && colIndex <= mergedRegion.getLastColumn())
       {
         // Skip cell
         return null;
