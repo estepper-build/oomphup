@@ -29,6 +29,7 @@
             id="org.eclipse.oomph.releng.doc.SnippetTreeEditorID"
             name="Snippet Tree Editor">
       </editor>
+      <!--
       <editor
             class="org.eclipse.emf.ecore.presentation.EcoreEditor"
             contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor$Reflective"
@@ -37,6 +38,7 @@
             id="org.eclipse.oomph.releng.doc.ArticleEditorID"
             name="Article Editor">
       </editor>
+      -->
    </extension>
 
    <extension
