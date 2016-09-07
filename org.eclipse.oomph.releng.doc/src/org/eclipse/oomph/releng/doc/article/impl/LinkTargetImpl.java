@@ -180,16 +180,24 @@ public abstract class LinkTargetImpl extends EObjectImpl implements LinkTarget
 
   protected void writeLink(PrintWriter out, String label, String href, String tooltip)
   {
-    if (tooltip != null && tooltip.length() != 0)
+    String targetAttribute = optionalAttribute("target", getTarget());
+    String tooltipAttribute = optionalAttribute("title", tooltip);
+    out.write("<a href=\"" + href + "\"" + targetAttribute + tooltipAttribute + ">" + label + "</a>");
+  }
+
+  protected String getTarget()
+  {
+    return null;
+  }
+
+  public static String optionalAttribute(String key, String value)
+  {
+    if (value != null && value.length() != 0)
     {
-      tooltip = " title=\"" + tooltip + "\"";
-    }
-    else
-    {
-      tooltip = "";
+      return " " + key + "=\"" + value + "\"";
     }
 
-    out.write("<a href=\"" + href + "\" target=\"_blank\"" + tooltip + ">" + label + "</a>");
+    return "";
   }
 
 } // LinkTargetImpl

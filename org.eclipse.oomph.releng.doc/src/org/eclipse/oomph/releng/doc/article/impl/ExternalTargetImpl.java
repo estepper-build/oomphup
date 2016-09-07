@@ -159,4 +159,10 @@ public class ExternalTargetImpl extends LinkTargetImpl implements ExternalTarget
     super.writeLink(out, "<code>" + label + "</code>", href, tooltip);
   }
 
+  @Override
+  protected String getTarget()
+  {
+    return "_blank";
+  }
+
 } // ExternalTargetImpl

@@ -43,4 +43,10 @@ public class SourceCodeImpl extends ExternalTargetImpl implements SourceCode
     return ArticlePackage.Literals.SOURCE_CODE;
   }
 
+  @Override
+  protected String getTarget()
+  {
+    return null;
+  }
+
 } // SourceCodeImpl
