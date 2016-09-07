@@ -15,11 +15,7 @@ import org.eclipse.oomph.releng.doc.article.Context;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLContentHandlerImpl;
 
 import com.sun.javadoc.ClassDoc;
@@ -45,7 +41,9 @@ public class ArticleDoclet
 
   public static final String OPTION_EXTERNALS = "-externals";
 
-  public static final String OPTION_MODEL = "-model";
+  // public static final String OPTION_MODEL_FOLDER = "-modelfolder";
+  //
+  // private static final String MODEL_EXTENSION = "article";
 
   public static boolean hasOption(RootDoc root, String optionName)
   {
@@ -89,7 +87,7 @@ public class ArticleDoclet
     for (String string : sourcepath)
     {
       System.out.print(sep);
-      System.out.print(string.replace('\\', '/').replaceAll("C:/", "/"));
+      System.out.print(string.replace('\\', '/').replace("C:/", "/"));
       sep = ";";
     }
 
@@ -110,7 +108,7 @@ public class ArticleDoclet
       for (int i = 1; i < option.length; i++)
       {
         String value = option[i];
-        System.out.print(" " + value.replace('\\', '/').replaceAll("C:/", "/"));
+        System.out.print(" " + value.replace('\\', '/').replace("C:/", "/"));
       }
 
       System.out.println();
@@ -141,10 +139,10 @@ public class ArticleDoclet
       return 2;
     }
 
-    if (OPTION_MODEL.equals(option))
-    {
-      return 2;
-    }
+    // if (OPTION_MODEL_FOLDER.equals(option))
+    // {
+    // return 2;
+    // }
 
     // Indicate we don't know about it
     return -1;
@@ -185,16 +183,30 @@ public class ArticleDoclet
       Documentation documentation = context.getDocumentation();
       documentation.generate();
 
-      String model = getOption(root, OPTION_MODEL);
-      if (model != null && model.length() != 0)
-      {
-        URI uri = URI.createFileURI(model);
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        Resource resource = resourceSet.createResource(uri);
-        resource.getContents().add(documentation);
-        resource.save(null);
-      }
+      // String modelFolder = getOption(root, OPTION_MODEL_FOLDER);
+      // if (modelFolder != null && modelFolder.length() != 0)
+      // {
+      // ResourceSet resourceSet = new ResourceSetImpl();
+      // resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(MODEL_EXTENSION, new XMIResourceFactoryImpl());
+      //
+      // URI contextURI = URI.createFileURI(modelFolder + "/" + context.getProject() + "." + MODEL_EXTENSION);
+      // Resource contextResource = resourceSet.createResource(contextURI);
+      // contextResource.getContents().add(context);
+      //
+      // for (Iterator<EObject> it = context.eAllContents(); it.hasNext();)
+      // {
+      // EObject object = it.next();
+      // for (EObject target : object.eCrossReferences())
+      // {
+      // if (target.eResource() == null)
+      // {
+      // contextResource.getContents().add(target);
+      // }
+      // }
+      // }
+      //
+      // contextResource.save(null);
+      // }
 
       return true;
     }
