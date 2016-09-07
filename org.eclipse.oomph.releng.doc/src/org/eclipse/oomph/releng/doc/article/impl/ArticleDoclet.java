@@ -15,7 +15,11 @@ import org.eclipse.oomph.releng.doc.article.Context;
 import org.eclipse.oomph.releng.doc.article.Documentation;
 import org.eclipse.oomph.releng.doc.article.util.ArticleException;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLContentHandlerImpl;
 
 import com.sun.javadoc.ClassDoc;
@@ -40,6 +44,8 @@ public class ArticleDoclet
   public static final String OPTION_PROJECT = "-project";
 
   public static final String OPTION_EXTERNALS = "-externals";
+
+  public static final String OPTION_MODEL = "-model";
 
   public static boolean hasOption(RootDoc root, String optionName)
   {
@@ -135,6 +141,11 @@ public class ArticleDoclet
       return 2;
     }
 
+    if (OPTION_MODEL.equals(option))
+    {
+      return 2;
+    }
+
     // Indicate we don't know about it
     return -1;
   }
@@ -173,6 +184,17 @@ public class ArticleDoclet
 
       Documentation documentation = context.getDocumentation();
       documentation.generate();
+
+      String model = getOption(root, OPTION_MODEL);
+      if (model != null && model.length() != 0)
+      {
+        URI uri = URI.createFileURI(model);
+
+        ResourceSet resourceSet = new ResourceSetImpl();
+        Resource resource = resourceSet.createResource(uri);
+        resource.getContents().add(documentation);
+        resource.save(null);
+      }
 
       return true;
     }

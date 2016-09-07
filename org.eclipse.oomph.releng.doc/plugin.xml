@@ -26,8 +26,16 @@
             contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor$Reflective"
             extensions="tree"
             icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
-            id="org.eclipse.emf.ecore.presentation.ReflectiveEditorID"
+            id="org.eclipse.oomph.releng.doc.SnippetTreeEditorID"
             name="Snippet Tree Editor">
+      </editor>
+      <editor
+            class="org.eclipse.emf.ecore.presentation.EcoreEditor"
+            contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor$Reflective"
+            extensions="article"
+            icon="icons/helpcenter.gif"
+            id="org.eclipse.oomph.releng.doc.ArticleEditorID"
+            name="Article Editor">
       </editor>
    </extension>
 
