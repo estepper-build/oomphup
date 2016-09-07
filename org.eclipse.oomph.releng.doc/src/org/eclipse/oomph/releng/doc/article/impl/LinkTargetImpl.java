@@ -189,7 +189,7 @@ public abstract class LinkTargetImpl extends EObjectImpl implements LinkTarget
       tooltip = "";
     }
 
-    out.write("<a href=\"" + href + "\"" + tooltip + ">" + label + "</a>");
+    out.write("<a href=\"" + href + "\" target=\"_blank\"" + tooltip + ">" + label + "</a>");
   }
 
 } // LinkTargetImpl
