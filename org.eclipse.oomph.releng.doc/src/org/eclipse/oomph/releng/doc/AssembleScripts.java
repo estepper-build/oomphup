@@ -351,6 +351,7 @@ public class AssembleScripts
     String pluginName = pluginProperties.getProperty("pluginName");
     if (pluginName == null)
     {
+      // TODO Consult MANIFEST.MF
       pluginName = "Plugin " + projectFolder.getName();
     }
 
@@ -427,9 +428,9 @@ public class AssembleScripts
    */
   public final class AntLib
   {
-    private Map<String, SourcePlugin> sourcePlugins = new HashMap<String, SourcePlugin>();
+    private final Map<String, SourcePlugin> sourcePlugins = new HashMap<String, SourcePlugin>();
 
-    private Map<String, JavaDoc> javaDocs = new HashMap<String, JavaDoc>();
+    private final Map<String, JavaDoc> javaDocs = new HashMap<String, JavaDoc>();
 
     public AntLib()
     {
@@ -1079,8 +1080,8 @@ public class AssembleScripts
             {
               for (String schemaPlugin : sort(schemaPlugins))
               {
-                writer.write("\t\t<pde.convertSchemaToHTML destination=\"${schemadoc.destdir}\" manifest=\"${plugins.dir}/" + schemaPlugin + "/plugin.xml\" />"
-                    + NL);
+                writer.write(
+                    "\t\t<pde.convertSchemaToHTML destination=\"${schemadoc.destdir}\" manifest=\"${plugins.dir}/" + schemaPlugin + "/plugin.xml\" />" + NL);
               }
             }
             else if ("<!-- JAVADOC DEPENDENCIES -->".equals(id))

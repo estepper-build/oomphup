@@ -286,6 +286,15 @@ public class DocDash extends ViewPart
     viewSite.setSelectionProvider(treeViewer);
 
     IToolBarManager toolbarManager = viewSite.getActionBars().getToolBarManager();
+    toolbarManager.add(new Action("Refresh", AbstractUIPlugin.imageDescriptorFromPlugin(RELENG_NAME, "icons/refresh.gif"))
+    {
+      @Override
+      public void run()
+      {
+        init();
+      }
+    });
+
     toolbarManager.add(new Action("Debug", Action.AS_CHECK_BOX)
     {
       {
@@ -296,15 +305,6 @@ public class DocDash extends ViewPart
       public void run()
       {
         debugPreprocessor = isChecked();
-      }
-    });
-
-    toolbarManager.add(new Action("Refresh", AbstractUIPlugin.imageDescriptorFromPlugin(RELENG_NAME, "icons/refresh.gif"))
-    {
-      @Override
-      public void run()
-      {
-        init();
       }
     });
 
